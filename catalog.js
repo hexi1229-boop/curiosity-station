@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'quotient',name:'分装小站：除法到底在找什么？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','除法','倒数','分数','零','反例','逆运算'],description:'分装6升水，用乘法检查商，辨清负号和0，再反求潜水器到达目标的时间。',icon:'÷',time:'8–12 分钟',fresh:true},
+    {id:'photosynthesis',name:'植物的糖，是从土里吸来的吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['光合作用','原料','产物','叶绿体','能量','有机物','水培'],description:'切换光照与原料，比较土培和水培，再辨清叶片中的淀粉是原来就有，还是现在新造。',icon:'光→糖',time:'8–12 分钟',fresh:true},
+    {id:'quotient',name:'分装小站：除法到底在找什么？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','除法','倒数','分数','零','反例','逆运算'],description:'分装6升水，用乘法检查商，辨清负号和0，再反求潜水器到达目标的时间。',icon:'÷',time:'8–12 分钟'},
     {id:'daynight',name:'太阳没关灯，为什么天黑了？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['地球自转','昼夜更替','方向','周期','日出','日落','视角'],description:'跟着赤道上的点转过一天，排出昼夜顺序，再换光照与观察方向重新判断。',icon:'昼/夜',time:'8–12 分钟'},
     {id:'inertia',name:'车停了，人为什么还往前？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['惯性','牛顿第一定律','质量','阻力','运动状态','科学推理'],description:'切换初始状态与阻力，拖动时间看运动，再预测小车上释放的小球落在哪里。',icon:'v→',time:'8–12 分钟'},
     {id:'purity',name:'看起来一样，就是纯净物吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['纯净物','混合物','物质分类','成分','分子','过滤'],description:'改变蔗糖量、重新排列分子，区分外观与成分，再判断冰水和过滤后的样品。',icon:'1/多',time:'8–12 分钟'},
