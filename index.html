@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#20574b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <meta name="description" content="挑一个问题，动手想一想。数学、语文和英语，每次探索一点。">
+  <title>好奇心小站 · 今天，探索一点</title>
+  <link rel="manifest" href="app.webmanifest"><link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="./"><img src="assets/icon.svg" alt="" width="34" height="34">好奇心小站</a><button class="text-button" id="install-help">存到桌面 <span aria-hidden="true">↗</span></button></header>
+  <main class="home-main">
+    <section class="welcome">
+      <div><p class="eyebrow">A LITTLE EVERY DAY · 每次探索一点</p><h1>今天，<br>想弄懂什么<span class="sun-dot">？</span></h1><p class="intro">挑一个你感兴趣的问题。<br>看一看、试一试，再用自己的话讲出来。</p><span class="session-note"><i></i> 一次选一项，就很好。</span></div>
+      <div class="desk-art" aria-hidden="true">
+        <div class="art-grid"></div><span class="art-note">What if…?</span>
+        <svg viewBox="0 0 400 300" role="presentation">
+          <ellipse cx="208" cy="255" rx="138" ry="15" fill="#1f574b" opacity=".08"/>
+          <g transform="translate(65 35) rotate(-8 70 70)"><rect x="5" y="5" width="132" height="132" rx="3" fill="#f2cc6a" stroke="#b79034" stroke-width="2"/><circle cx="71" cy="71" r="64" fill="#f8e4a7" stroke="#20574b" stroke-width="3"/><path d="M71 71h64" stroke="#20574b" stroke-width="2" stroke-dasharray="5 4"/><text x="99" y="65" fill="#20574b" font-size="20" font-style="italic">r</text></g>
+          <g transform="translate(167 139) rotate(6)"><path d="M0 0h159v89H64l-23 22V89H0Z" fill="#e3ebe2" stroke="#20574b" stroke-width="3"/><text x="24" y="59" fill="#20574b" font-size="46" font-family="Georgia,serif">“ Aha! ”</text></g>
+          <path d="m294 40 8 21 22 8-22 8-8 22-8-22-21-8 21-8Z" fill="#c36f50"/><circle cx="63" cy="233" r="11" fill="#c36f50"/><path d="m324 217 24-8m-14 20 23 2" stroke="#b79034" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </section>
+    <section aria-labelledby="choose-title"><div class="section-label"><h2 id="choose-title">从一个小问题开始</h2><span>3 个探索 · 自己选</span></div>
+      <div class="lesson-grid">
+        <a class="lesson-card math" href="lesson.html?topic=math"><div class="card-top"><span class="subject">数学 · 看见原理</span><span class="card-num">01</span></div><div class="card-sketch geometry" aria-hidden="true"><span class="sketch-square"></span><span class="sketch-circle"></span><span class="sketch-radius">r</span></div><h3>圆，遇上正方形</h3><p>一根绳子围成圆，展开有多长？<br>圆与正方形套在一起，面积怎么算？</p><div class="card-foot"><span>动画探索 + 5 题小练</span><span class="arrow" aria-hidden="true">↗</span></div></a>
+        <a class="lesson-card chinese" href="lesson.html?topic=chinese"><div class="card-top"><span class="subject">语文 · 换位表达</span><span class="card-num">02</span></div><div class="card-sketch speech" aria-hidden="true"><span>“ 你、我 ”</span><span>他、她。</span></div><h3>换个角度，说清楚</h3><p>把别人的话转述出去，<br>哪些要变，哪些意思一定不能丢？</p><div class="card-foot"><span>角色切换 + 5 题小练</span><span class="arrow" aria-hidden="true">↗</span></div></a>
+        <a class="lesson-card english" href="english.html"><div class="card-top"><span class="subject">英语 · 开口探索</span><span class="card-num">03</span></div><div class="card-sketch robot" aria-hidden="true"><svg viewBox="0 0 200 110"><path d="M45 38 30 15l30 10m95 13 15-23-30 10" fill="#c7dacf" stroke="#20574b" stroke-width="3"/><rect x="40" y="24" width="120" height="75" rx="28" fill="#e3eee5" stroke="#20574b" stroke-width="3"/><circle cx="76" cy="57" r="6" fill="#20574b"/><circle cx="124" cy="57" r="6" fill="#20574b"/><path d="m94 72 6 5 6-5m-6 5v6m-12 0q12 12 24 0" stroke="#20574b" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div><h3>你会选一只机器狗吗？</h3><p>听一个想法，说说你的选择。<br>再试着解决一个突然出现的小麻烦。</p><div class="card-foot"><span>约 5–8 分钟 · 5 个小任务</span><span class="arrow" aria-hidden="true">↗</span></div></a>
+      </div>
+    </section>
+    <aside class="closing-note"><span aria-hidden="true">✳</span><p>今天带走一个发现就够了。<br><strong>“我原来以为……现在发现……”</strong></p></aside>
+  </main>
+  <footer class="site-footer"><span>好奇心，比答得快更重要。</span><span id="offline-status" role="status">iPad · 手机 · Mac</span></footer>
+  <dialog id="install-dialog"><button class="dialog-close text-button" id="close-install" aria-label="关闭安装说明">✕</button><p class="eyebrow">下次，一点就来</p><h2>把小站放到桌面</h2><p><strong>iPad / iPhone</strong><br>用 Safari 打开这个网址 → 点“分享” → “添加到主屏幕”。若看到“作为网页 App 打开”，把它开启，再点“添加”。</p><p><strong>Mac</strong><br>在浏览器收藏同一个网址；Safari 支持时，也可以通过“文件 → 添加到程序坞”保存。</p><p class="muted">桌面图标需要在每台设备分别添加。首次打开请保持联网；浏览器成功缓存后，可离线使用本站内容。录音不上传，离开英语页面会清除。</p><a class="source-link" href="https://support.apple.com/zh-cn/guide/ipad/ipad8f1f7a29/ipados" target="_blank" rel="noopener noreferrer">Apple 的 iPad 操作说明 ↗</a><button class="primary" id="install-done">知道了</button></dialog>
+</body></html>

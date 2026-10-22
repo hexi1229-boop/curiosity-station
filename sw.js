@@ -1,0 +1,39 @@
+'use strict';
+const CACHE = 'curiosity-station-v3';
+const FILES = ['./','index.html','style.css','app.js','english.html','english.css','english.js','lesson.html','lessons/math.html','lessons/chinese.html','app.webmanifest','assets/icon.svg','assets/icon-180.png','assets/icon-192.png','assets/icon-512.png','assets/audio/robot-dog.m4a'];
+const urls = FILES.map(file=>new URL(file,self.location).href);
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    for (const url of urls) {
+      const response = await fetch(url, {cache:'reload'});
+      if (!response.ok || response.redirected || response.type === 'opaque') throw new Error('Asset not available');
+      await cache.put(url,response);
+    }
+    await self.skipWaiting();
+  })());
+});
+self.addEventListener('activate', event => event.waitUntil((async()=>{
+  for (const key of await caches.keys()) if (key.startsWith('curiosity-station-') && key !== CACHE) await caches.delete(key);
+  await self.clients.claim();
+})()));
+self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  url.search = '';
+  if (event.request.method !== 'GET' || !urls.includes(url.href)) return;
+  event.respondWith((async()=>{
+    const cached = await (await caches.open(CACHE)).match(url.href);
+    if (!cached) return fetch(event.request);
+    const range = event.request.headers.get('Range');
+    if (range && url.pathname.endsWith('.m4a')) {
+      const bytes = await cached.arrayBuffer();
+      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (!match) return new Response(null,{status:416,headers:{'Content-Range':`bytes */${bytes.byteLength}`}});
+      const start = match[1] ? Number(match[1]) : Math.max(0,bytes.byteLength-Number(match[2]));
+      const end = match[1] && match[2] ? Math.min(Number(match[2]),bytes.byteLength-1) : bytes.byteLength-1;
+      if (start > end || start >= bytes.byteLength) return new Response(null,{status:416,headers:{'Content-Range':`bytes */${bytes.byteLength}`}});
+      return new Response(bytes.slice(start,end+1),{status:206,headers:{'Content-Type':'audio/mp4','Content-Range':`bytes ${start}-${end}/${bytes.byteLength}`,'Content-Length':String(end-start+1),'Accept-Ranges':'bytes'}});
+    }
+    return cached;
+  })());
+});

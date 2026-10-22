@@ -1,0 +1,7 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#20574b"><meta name="apple-mobile-web-app-capable" content="yes"><title>学习 · 好奇心小站</title><link rel="stylesheet" href="style.css"><link rel="manifest" href="app.webmanifest"><link rel="apple-touch-icon" href="assets/icon-180.png"><script src="app.js" defer></script></head><body class="lesson-shell"><header class="lesson-bar"><a class="back-link" href="./">← 回到小站</a><h1 id="lesson-title">探索中</h1></header><iframe id="lesson-frame" class="lesson-frame" title="互动教程"></iframe><script>
+'use strict';
+const topics = {math:['圆与正方形','lessons/math.html'],chinese:['转述句 · 换个角度说清楚','lessons/chinese.html']};
+const topic = topics[new URLSearchParams(location.search).get('topic')];
+if (topic) { document.querySelector('#lesson-title').textContent = topic[0]; document.title = topic[0] + ' · 好奇心小站'; const frame = document.querySelector('#lesson-frame'); frame.title = topic[0]; frame.src = topic[1]; }
+else { location.replace('./'); }
+</script></body></html>
