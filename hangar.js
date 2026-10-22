@@ -1,0 +1,79 @@
+'use strict';
+if(!LearningFeedback.courses.some(c=>c[0]==='hangar'))LearningFeedback.courses.push(['hangar',HangarLesson.title,'hangar.html']);
+const hangarQuestions=HangarLesson.questions,hangarEscape=LearningFeedback.esc;
+const hangarTask=document.querySelector('#hangar-task');
+let hangarLog=LearningFeedback.create(HangarLesson.title,hangarQuestions),hangarIndex=hangarLog.index;
+function hangarPicture(){return '<svg class="hangar-picture" viewBox="0 0 340 180" role="img" aria-label="一座机库，图片不提供无人机数量和归属信息"><path d="M28 155V70Q170-35 312 70V155Z" fill="#dfebdf" stroke="#86a18b" stroke-width="3"/><path d="M70 155V75H270V155" fill="#c4d3c0"/><path d="M70 92H270M70 112H270M70 132H270" stroke="#9db49b"/><text x="170" y="58" text-anchor="middle">HANGAR</text><path d="M15 158H325" stroke="#c0bb9f" stroke-width="5"/></svg>';}
+function hangarScene(index){
+ if(index===0)return `<h2>听Leo介绍机库</h2>${hangarPicture()}<label class="audio-label" for="hangar-audio">英语示范 · 约7秒 · 可重复播放</label><audio id="hangar-audio" controls preload="metadata" src="assets/audio/hangar-report.m4a" aria-label="Leo介绍机库的英语示范"></audio><p id="hangar-audio-error" role="status" hidden>音频暂时无法播放，可以展开下方原文继续。</p><p>先听，留意物品的位置与归属。听不清也可以读原文。</p><details class="reading-hint" data-help="查看英文原文"><summary>需要时，看英文原文</summary><p class="english-line" lang="en">${hangarEscape(HangarLesson.story)}</p></details>`;
+ if(index===1)return `<h2>给新队员介绍机库</h2><div class="speech-bubble">机库里有两架无人机。</div>${hangarPicture()}<p>这次只说数量和地点，题目没有告诉你它们是谁的。</p>`;
+ if(index===2)return `<h2>同一条消息，能推出多少信息？</h2><div class="hangar-facts"><p><b>已知</b>机库里有三架无人机。</p><p><b>尚未给出</b>它们分别属于谁。</p></div><p class="english-line wrong-sentence" lang="en">There have three drones in the hangar.</p><p>修好句子，再检查有没有额外加上原消息没说的内容。</p>`;
+ if(index===3)return `<h2>一次提问，一次否定</h2><div class="hangar-facts"><p><b>想问</b>补给站里有没有水？</p><p><b>已知</b>补给站里没有任何头盔。</p></div><p>water：水　helmet：头盔</p><p>这里说的是物资是否存在，不是在问谁拥有它们。</p>`;
+ return `<h2>你来给队友作介绍</h2><div class="hangar-facts"><p><b>地点中的物品</b>站里有两把椅子。</p><p><b>自己拥有</b>我有一个头盔。</p><p><b>再问一句</b>站里有没有水？</p></div><p>先大声说3句，再留下刚才的原话。可以用键盘语音输入补记。</p><p class="source-note">这里不录音。文字与自检不能自动证明发音或流利度。</p>`;
+}
+function wordMarkup(){return `<details class="reading-hint" data-help="词汇小卡"><summary>需要时，看看词汇小卡</summary><div class="hangar-words">${HangarLesson.words.map(w=>`<div><b lang="en">${w.word}</b><span>${w.meaning}</span><small lang="en">${w.example}</small></div>`).join('')}</div></details>`;}
+function orderMarkup(){return `<div id="hangar-assembled" class="hangar-assembled" role="group" aria-label="已组成的机库说明"></div><p id="hangar-order-status" class="order-status" role="status"></p><div class="hangar-bank" role="group" aria-label="可用词牌">${HangarLesson.bank.map(id=>`<button type="button" data-token="${id}" lang="en">${hangarEscape(HangarLesson.tokens[id])}</button>`).join('')}</div><div class="order-tools"><button type="button" class="text-button" id="hangar-undo">撤销最后一块</button><button type="button" class="text-button" id="hangar-clear">清空重排</button></div>`;}
+function labMarkup(){return `<details class="hangar-lab" data-help="查看位置与归属模型"><summary>动手移一移：停在哪里，会改变属于谁吗？</summary><div class="hangar-lab-body"><p>另一个场景：总共3架无人机，你仍扮演Leo。先只改变机库里的数量，再试着改变归属设定。</p><label for="hangar-count">机库内的数量 <output id="hangar-count-label"></output></label><input id="hangar-count" type="range" min="0" max="3" step="1" value="1"><div class="hangar-view-buttons">${[0,1,2,3].map(n=>`<button data-count="${n}">${n}架</button>`).join('')}</div><svg id="hangar-model" viewBox="0 0 320 320" role="img"><path d="M12 187V52Q160-20 308 52V187Z" class="hangar-building"/><text x="160" y="44" text-anchor="middle">机库内</text><path d="M12 220H308" class="hangar-boundary"/><text x="160" y="311" text-anchor="middle">机库外停机区</text>${[0,1,2].map(i=>`<g data-drone="${i}" class="model-drone"><path d="M-22-14L22 14M-22 14L22-14"/><ellipse cx="-22" cy="-14" rx="15" ry="6"/><ellipse cx="22" cy="14" rx="15" ry="6"/><ellipse cx="-22" cy="14" rx="15" ry="6"/><ellipse cx="22" cy="-14" rx="15" ry="6"/><rect x="-10" y="-9" width="20" height="18" rx="6"/><text text-anchor="middle" y="43">${String.fromCharCode(65+i)}</text></g>`).join('')}</svg><p id="hangar-location" class="english-line view-sentence" lang="en"></p><p id="hangar-question-line" lang="en" class="question-line"></p><div class="hangar-owner-controls" role="group" aria-label="三架无人机的归属设定"><button data-owner="Mia">3架都属于Mia</button><button data-owner="Leo">3架都属于我（Leo）</button></div><p id="hangar-possession" class="english-line" lang="en"></p><p id="hangar-model-result" role="status"></p><p class="source-note">移动只改变位置；切换归属按钮才是另外改变题设。本课练现在时的简单存现句：一件用is，多件用are，不可数名词通常用is；疑问句把is/are放到there前。have还有包含、经历等其他用法，不把中文“有”一律替换成have。多名词列表、其他时态另学。</p></div></details>`;}
+function bindLab(){
+ const log=hangarLog,index=hangarIndex;
+ let count=log.checkpoint.hangarCount??1,owner=log.checkpoint.hangarOwner??'Mia';try{HangarLesson.view(count,owner);}catch{count=1;owner='Mia';}
+ const slider=document.querySelector('#hangar-count'),svg=document.querySelector('#hangar-model');
+ function draw(){const s=HangarLesson.view(count,owner);slider.value=count;slider.setAttribute('aria-valuetext',count+'架在机库内');document.querySelector('#hangar-count-label').textContent=count+'架';svg.setAttribute('aria-label',`共3架无人机，机库内${count}架，外面${s.outside}架；全部属于${owner}`);s.drones.forEach(d=>{svg.querySelector(`[data-drone="${d.id}"]`).style.transform=`translate(${d.x}px,${d.y}px)`;});document.querySelector('#hangar-location').textContent=s.existence;document.querySelector('#hangar-question-line').textContent=s.question+' '+s.reply;document.querySelector('#hangar-possession').textContent=s.ownership;document.querySelector('#hangar-model-result').textContent=`机库内${count}架，机库外${s.outside}架，一共仍是3架。${owner==='Mia'?'Mia拥有':'我（Leo）拥有'}的数量没有因位置变化而改变。`;document.querySelectorAll('[data-count]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.count)===count)));document.querySelectorAll('[data-owner]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.owner===owner)));}
+ function update(){log.point({hangarCount:count,hangarOwner:owner});log.draft(index,{'hangar-count':String(count)});log.help(index,'切换位置或归属模型');draw();}
+ slider.oninput=()=>{count=Number(slider.value);update();};document.querySelectorAll('[data-count]').forEach(b=>b.onclick=()=>{count=Number(b.dataset.count);update();});document.querySelectorAll('[data-owner]').forEach(b=>b.onclick=()=>{owner=b.dataset.owner;update();});draw();
+}
+function renderHangar(focus=false){
+  hangarTask.querySelectorAll('audio').forEach(audio=>audio.pause());
+  document.querySelector('#hangar-progress').textContent=hangarIndex===5?'5 题完成':`第 ${hangarIndex+1} / 5 题`;
+  document.querySelector('#hangar-dots').innerHTML=hangarQuestions.map((_,i)=>`<i class="${hangarLog.records[i].done?'done':''} ${i===hangarIndex?'current':''}"></i>`).join('');
+  if(hangarIndex===5){finishHangar();return;}
+  const q=hangarQuestions[hangarIndex],r=hangarLog.records[hangarIndex],open=q.kind==='open';
+  let order=HangarLesson.validOrder(hangarLog.checkpoint.hangarOrder)?[...hangarLog.checkpoint.hangarOrder]:[];
+  let selected=Number.isInteger(r.draft?.$choice)?r.draft.$choice:null;
+  const entry=q.kind==='choice'?`<div class="reading-choices" role="group" aria-label="选择你的判断">${q.options.map((option,i)=>`<button class="reading-choice" data-choice="${i}" aria-pressed="false"><span>${String.fromCharCode(65+i)}</span><span>${hangarEscape(option)}</span></button>`).join('')}</div>`:open?`<label for="hangar-answer">${hangarIndex===4?'先开口，再留下刚才的3句英语':'留下你的解释（中文或英语都可以）'}</label><textarea id="hangar-answer" maxlength="600" rows="4" placeholder="用自己的话，不必照搬示范。"></textarea><label class="reason-unsure"><input id="hangar-unsure" type="checkbox">我暂时说不清，先如实记下来</label>`:orderMarkup();
+
+  hangarTask.innerHTML=`<div class="hangar-layout"><article class="hangar-scene">${hangarScene(hangarIndex)}</article><section class="reading-work hangar-work"><p class="skill-label">${q.skill}</p><h2 id="hangar-question" tabindex="-1">${q.title}</h2>${hangarIndex===0?'':`<p class="hangar-context">${hangarEscape(q.context)}</p>`}${entry}<button class="primary" id="submit-hangar">${open?'先留下我的答案':'确认我的判断'}</button><div class="reading-message" id="hangar-message" role="status" aria-live="polite"></div><details class="reading-hint" data-help="本题提示"><summary>给我一点提示</summary><p>${q.hint}</p></details>${wordMarkup()}${!open?'<button class="text-button" id="hangar-method">暂时不会，看看方法</button>':''}<div id="hangar-review" hidden></div><div id="hangar-lab-slot"></div><div class="reading-next"><p>首答会保留。<br>不计时，不排名。</p><button class="primary" id="next-hangar" disabled>${hangarIndex===4?'看看学习反馈':'下一题'} →</button></div></section></div>`;
+  const message=document.querySelector('#hangar-message'),submit=document.querySelector('#submit-hangar'),next=document.querySelector('#next-hangar');
+  function say(text,error=false){message.textContent=text;message.dataset.error=String(error);}
+  function showLab(){if(hangarIndex!==0||document.querySelector('.hangar-lab'))return;document.querySelector('#hangar-lab-slot').innerHTML=labMarkup();bindLab();const details=document.querySelector('.hangar-lab'),log=hangarLog,index=hangarIndex;details.addEventListener('toggle',()=>{if(details.open)log.help(index,'查看位置与归属模型');});}
+  function finishClosed(){hangarTask.querySelectorAll('[data-choice],[data-token],[data-remove],#hangar-clear,#hangar-undo,#submit-hangar,#hangar-method').forEach(el=>el.disabled=true);if(q.kind==='order')document.querySelector('#hangar-order-status').textContent='本题已记录；首答、订正和求助情况已保留。';say(q.explanation);next.disabled=false;showLab();}
+  function getOpen(){const text=document.querySelector('#hangar-answer').value.trim();if(!text&&!document.querySelector('#hangar-unsure').checked){say('先留一点自己的想法；暂时说不清也可以如实记录。',true);return null;}return text||'暂时说不清';}
+  function showReview(){
+    const review=document.querySelector('#hangar-review');review.hidden=false;review.innerHTML=`<section class="reading-review"><h3>对照方法，检查自己的理由</h3><p>${q.reference}</p><ul>${q.checks.map(c=>`<li>${c}</li>`).join('')}</ul><p>原话已保留，想改可以修改上面的答案。开放答案不会自动判分。</p><div class="reading-self"><button data-self="已对照，认为理由说清了">我对照过，能说清</button><button data-self="对照后仍需要帮助">还想再练一练</button></div></section>`;submit.textContent='保存我的修改';
+    review.querySelectorAll('[data-self]').forEach(button=>button.onclick=()=>{const answer=getOpen();if(!answer)return;if(answer!==r.attempts.at(-1)?.answer)hangarLog.submit(hangarIndex,answer,null,answer);hangarLog.finish(hangarIndex,button.dataset.self);hangarTask.querySelectorAll('textarea,input,#submit-hangar,[data-self]').forEach(el=>el.disabled=true);button.setAttribute('aria-pressed','true');say('你的原话、修改和自检已保存。');next.disabled=false;});
+  }
+  hangarTask.querySelectorAll('[data-choice]').forEach(button=>button.onclick=()=>{selected=Number(button.dataset.choice);hangarTask.querySelectorAll('[data-choice]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));});
+  submit.onclick=()=>{
+    if(open){const answer=getOpen();if(!answer)return;const first=!r.first;if(answer!==r.attempts.at(-1)?.answer)hangarLog.submit(hangarIndex,answer,null,answer);if(first)hangarLog.help(hangarIndex,'参考方法（提交后）');showReview();say('先看你的方法是否讲得通，再完成自检。');return;}
+    let answer,correct;
+    if(q.kind==='choice'){if(selected===null||!q.options[selected]){say('先选一个判断，再确认。',true);return;}answer=q.options[selected];correct=selected===q.answer;}
+    else{correct=HangarLesson.checkOrder(order);if(correct===null){say('选出6块词牌组成完整句子，再核对。',true);return;}answer=HangarLesson.sentence(order);}
+    hangarLog.submit(hangarIndex,answer,correct);if(correct){hangarLog.finish(hangarIndex);finishClosed();}else{say('这次还没对应上题目中的关系。首答已保留，可以再试或打开提示。',true);if(hangarIndex===0)showLab();}
+  };
+  if(!open)document.querySelector('#hangar-method').onclick=()=>{if(!r.first)hangarLog.submit(hangarIndex,'暂时不会，选择查看方法',false);hangarLog.help(hangarIndex,'查看本题方法');hangarLog.finish(hangarIndex,'看过方法，留待再练');finishClosed();};
+  if(q.kind==='order'){
+    function drawOrder(){
+      document.querySelector('#hangar-assembled').innerHTML=order.length?order.map((id,i)=>`<button type="button" data-remove="${i}" aria-label="移除第${i+1}块 ${hangarEscape(HangarLesson.tokens[id])}" lang="en">${hangarEscape(HangarLesson.tokens[id])}</button>`).join(''):'<span>点下面的词牌，按顺序放进这里。</span>';
+      hangarTask.querySelectorAll('[data-token]').forEach(button=>{button.disabled=order.includes(Number(button.dataset.token))||order.length===6;});
+      document.querySelector('#hangar-order-status').textContent=`已选 ${order.length} / 6 块。点上面的词牌可以移除。`;
+      document.querySelector('#hangar-undo').disabled=!order.length;document.querySelector('#hangar-clear').disabled=!order.length;
+      hangarTask.querySelectorAll('[data-remove]').forEach(button=>button.onclick=()=>{order.splice(Number(button.dataset.remove),1);saveOrder();});
+    }
+    function saveOrder(){hangarLog.point({hangarOrder:[...order]});hangarLog.draft(hangarIndex,{'组句草稿':HangarLesson.sentence(order)});drawOrder();(hangarTask.querySelector('[data-token]:not(:disabled)')||document.querySelector('#submit-hangar')).focus({preventScroll:true});}
+    hangarTask.querySelectorAll('[data-token]').forEach(button=>button.onclick=()=>{const id=Number(button.dataset.token);if(order.includes(id)||order.length>=6)return;order.push(id);saveOrder();});
+    document.querySelector('#hangar-undo').onclick=()=>{order.pop();saveOrder();};document.querySelector('#hangar-clear').onclick=()=>{order=[];saveOrder();};drawOrder();
+  }
+  const audio=document.querySelector('#hangar-audio');
+  if(audio){audio.addEventListener('play',()=>{const count=(hangarLog.checkpoint.hangarAudioPlays||0)+1;hangarLog.point({hangarAudioPlays:count});hangarLog.note(hangarIndex,`示范音频开始播放 ${count} 次；不代表听完或听懂。`);});audio.addEventListener('error',()=>{document.querySelector('#hangar-audio-error').hidden=false;});}
+  LearningFeedback.watchHelp(hangarTask,hangarLog,hangarIndex);
+  if(r.done&&!open)finishClosed();else if(r.first){if(open){showReview();say('上次的答案和草稿已恢复，对照方法后完成自检即可继续。');}else{say('首答已经保留，可以继续尝试。',true);showLab();}}
+  next.onclick=()=>{hangarIndex++;renderHangar(true);};
+  if(focus){document.querySelector('#hangar-question').focus({preventScroll:true});document.querySelector('.reading-progress').scrollIntoView({block:'start'});}
+}
+function finishHangar(){
+  hangarTask.innerHTML=`<section class="reading-finish"><h2 tabindex="-1">5题完成，今天就到这里。</h2><p>先想你要表达哪条信息，再选句子的结构。</p><div class="finish-pair"><p><b>地点中有</b><span lang="en">There are two drones in the hangar.</span></p><p><b>自己拥有</b><span lang="en">I have a helmet.</span></p></div><p class="finish-note">2题判断、1题组句、2题解释和开口迁移。位置不自动证明归属；参考后的自检不等于独立掌握，文字也不能自动判断发音。</p><a class="secondary" href="records.html">查看学习记录 ↗</a><a class="secondary" href="./">回到小站</a><button class="text-button" id="restart-hangar">重新练这5题（保留旧记录）</button><details class="reading-hint"><summary>家长参考：课程依据</summary><p>对应2022英语课标存现句、语境中的语法意义、七年级听读和口头表达的局部要求。语法核对：<a href="https://learnenglish.britishcouncil.org/comment/198757" target="_blank" rel="noopener">British Council · There is / There are</a>、<a href="https://dictionary.cambridge.org/dictionary/english/have" target="_blank" rel="noopener">Cambridge Dictionary · have</a>。情境、题目和图示原创，音频为合成语音。</p></details></section>${hangarLog.html()}`;
+  document.querySelector('#restart-hangar').onclick=()=>{hangarLog=LearningFeedback.create(HangarLesson.title,hangarQuestions,true);hangarLog.save();hangarIndex=0;renderHangar(true);};hangarTask.querySelector('h2').focus({preventScroll:true});
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)hangarTask.querySelectorAll('audio').forEach(a=>a.pause());});
+window.addEventListener('pagehide',()=>hangarTask.querySelectorAll('audio').forEach(a=>a.pause()));
+renderHangar();
