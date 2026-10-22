@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#20574b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <meta name="description" content="同一组数据，两张图为什么给人相反的印象？先判断，再拖动纵轴起点验证，用固定5题练习读数、计算、辨错、迁移与表达。">
+  <title>两张图都没造假，为什么结论相反？· 马斯克的太空学校</title>
+  <link rel="manifest" href="app.webmanifest"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="rocket.css"><link rel="stylesheet" href="charts.css">
+  <script src="app.js" defer></script><script type="module" src="charts.js"></script>
+</head>
+<body class="rocket-page charts-page">
+  <header class="site-header rocket-header"><a class="back-link" href="./">← 回到小站</a><span>马斯克的太空学校</span></header>
+  <main class="rocket-main">
+    <section class="rocket-intro"><p class="eyebrow">太空任务 02 · 数据侦探</p><h1>两张图都没造假，<br>为什么结论<span>相反？</span></h1><p>同一份月球车续航数据，被做成两张海报。<br>一张说“变化不大”，另一张说“提升惊人”。你信谁？</p><div class="rocket-meta"><span>约 8–10 分钟</span><span>先判断 · 拖动验证</span><span>共 5 题，开场算第 1 题</span></div></section>
+    <nav class="rocket-tabs" aria-label="学习步骤"><button class="current" data-panel="observe" aria-current="step">01 先作判断</button><button data-panel="lab" disabled>02 拖动验证</button><button data-panel="practice" disabled>03 继续挑战</button></nav>
+    <section class="rocket-panel" id="observe" aria-labelledby="observe-title">
+      <div class="panel-heading"><p class="eyebrow">第 1 / 5 题 · 读图与判断</p><h2 id="observe-title" tabindex="-1">先给自己的判断，暂时不揭答案。</h2></div>
+      <div class="poster-pair">
+        <article class="chart-poster"><span class="poster-tag">海报 A</span><h3>“变化不大。”</h3><div id="poster-a"></div></article>
+        <article class="chart-poster warm"><span class="poster-tag">海报 B</span><h3>“提升惊人！”</h3><div id="poster-b"></div></article>
+      </div>
+      <p class="small-note">教学用虚构数据。两张图中的旧款都是 80 公里，新款都是 84 公里；海报上的评价等待你检查。</p>
+      <h3 class="opening-question">哪一句得到这些数据的支持？</h3>
+      <div class="rocket-answers" id="first-answers" aria-label="第1题选项">
+        <button class="rocket-answer" data-first="0" aria-pressed="false">新款的续航变成了旧款的 5 倍。</button>
+        <button class="rocket-answer" data-first="1" aria-pressed="false">新款多跑 4 公里，这个变化有多重要还要看任务。</button>
+        <button class="rocket-answer" data-first="2" aria-pressed="false">两张图长得不一样，肯定有一张改了数据。</button>
+        <button class="rocket-answer" data-first="3" aria-pressed="false">我还不能判断，想先动手查一查。</button>
+      </div>
+      <p id="first-feedback" class="rocket-feedback" role="status"></p>
+      <div class="panel-next"><span>保留第一次判断，验证后再回头看。</span><button class="primary" id="start-lab" disabled>记下判断，去验证 →</button></div>
+    </section>
+    <section class="rocket-panel" id="lab" aria-labelledby="lab-title" hidden>
+      <div class="panel-heading"><p class="eyebrow">你的实验 / 只改变纵轴起点</p><h2 id="lab-title" tabindex="-1">数据不动，柱子却“长大”了。</h2><p class="question-context">左图从 0 开始，右图由你控制。两张图的顶部始终是 85 公里。</p></div>
+      <div class="poster-pair lab-pair"><article class="chart-poster"><h3>对照图 · 从 0 开始</h3><div id="lab-control"></div></article><article class="chart-poster warm"><h3>实验图 · 你来调整</h3><div id="lab-variable"></div></article></div>
+      <div class="axis-controls"><label for="axis-start">右图纵轴起点 <output id="axis-value" for="axis-start">79 公里</output></label><input type="range" id="axis-start" min="0" max="79" step="1" value="79" aria-describedby="axis-instruction"><div class="range-ends"><span>0 · 显示完整柱子</span><span>79 · 截去底部</span></div><p id="axis-instruction">用手指拖动滑块，也可以点击下面的按钮。</p><div class="axis-presets"><button class="secondary" data-axis="0">从 0 开始</button><button class="secondary" data-axis="79">从 79 开始</button></div></div>
+      <div class="evidence-grid"><div><span>图上新柱高度 ÷ 旧柱高度</span><strong id="visible-ratio">5 倍</strong><small id="visible-formula">(84 − 79) ÷ (80 − 79)</small></div><div><span>实际新续航 ÷ 旧续航</span><strong>1.05 倍</strong><small>84 ÷ 80，始终不变</small></div></div>
+      <p class="experiment-observation" id="axis-observation">纵轴从 79 开始，旧柱只画出了 1 公里，新柱画出了 5 公里。</p>
+      <div class="experiment-checks" aria-live="polite"><span id="seen-zero">○ 比较从 0 开始</span><span id="seen-crop">○ 比较从 79 开始</span></div>
+      <div class="takeaway chart-explanation"><strong>柱子画出的部分，可能少了一截。</strong><p>从 79 开始时，图上比较的是 <b>84 − 79</b> 和 <b>80 − 79</b>，不是完整的 84 和 80。把这两截的高度比，当成真实续航比，就会被带偏。</p><p>“相反”的是对变化大小的评价。<b>新款仍比旧款多 4 公里，谁多谁少没有反转。</b>标题里的“没造假”指数据没改，不代表表达就公平。</p></div>
+      <details class="quiz-help"><summary>那所有图都必须从 0 开始吗？</summary><p>本课是用柱长比较总量的柱状图，应从 0 开始。折线图、散点图可以为观察细微变化选用非零起点，但要把刻度标清楚。看见非零起点，先检查图的类型和用途，不能直接断言造假。</p></details>
+      <div id="first-review" class="first-review" hidden></div>
+      <div class="panel-next"><span id="lab-next-note">把右图的起点 0 和 79 都试一次，再继续。</span><button class="primary" id="continue-practice" disabled>继续第 2 题 →</button></div>
+    </section>
+    <section class="rocket-panel" id="practice" aria-labelledby="practice-title" hidden>
+      <div class="panel-heading"><p class="eyebrow">计算 · 辨错 · 迁移 · 表达</p><h2 id="practice-title" tabindex="-1">让判断有证据。</h2></div><div id="chart-question"></div>
+    </section>
+    <details class="rocket-sources"><summary>给好奇的你：资料与教学说明</summary><p>本课数据、海报标题及月球车情境均为原创教学设定，不代表真实产品表现。截断的柱状图用于观察误导效果；制作比较总量的柱状图时应从零开始。</p><p>图表原则参考 <a href="https://service-manual.ons.gov.uk/data-visualisation/guidance/axes-and-gridlines" target="_blank" rel="noopener noreferrer">英国国家统计局：坐标轴与网格线</a>。非零起点对不同图表的影响，参考 <a href="https://digitalblog.ons.gov.uk/2016/06/27/does-the-axis-have-to-start-at-zero-part-1-line-charts/" target="_blank" rel="noopener noreferrer">ONS：折线图的坐标轴是否必须从零开始</a>。完成本课无需打开外部网站。</p></details>
+    <noscript><p>这节课需要开启 JavaScript 才能拖动图表和练习。你可以先观察：两图都标着 80 与 84，改变起点并没有改变数据。</p></noscript>
+  </main>
+  <footer class="site-footer"><span>先看刻度，再看结论。</span><span id="offline-status" role="status">马斯克的太空学校 · 数据侦探</span></footer>
+</body></html>

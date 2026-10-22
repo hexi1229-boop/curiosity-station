@@ -1,6 +1,6 @@
 'use strict';
-const CACHE = 'curiosity-station-v12';
-const FILES = ['./','index.html','style.css','app.js','english.html','english.css','english.js','rocket.html','rocket.css','rocket.js','scale.html','scale.css','scale.js','balance.html','balance.css','balance.js','balance-logic.mjs','lesson.html','lessons/math.html','lessons/chinese.html','app.webmanifest','assets/icon.svg','assets/icon-180.png','assets/icon-192.png','assets/icon-512.png','assets/audio/robot-dog.m4a'];
+const CACHE = 'curiosity-station-v14';
+const FILES = ['./','index.html','style.css','app.js','english.html','english.css','english.js','rocket.html','rocket.css','rocket.js','scale.html','scale.css','scale.js','balance.html','balance.css','balance.js','balance-logic.mjs','charts.html','charts.css','charts.js','chart-logic.mjs','lesson.html','lessons/math.html','lessons/chinese.html','app.webmanifest','assets/icon.svg','assets/icon-180.png','assets/icon-192.png','assets/icon-512.png','assets/audio/robot-dog.m4a'];
 const urls = FILES.map(file=>new URL(file,self.location).href);
 self.addEventListener('install', event => {
   event.waitUntil((async () => {

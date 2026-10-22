@@ -18,6 +18,7 @@
 @media(max-width:380px){.school-grid .card-sketch{opacity:.18;right:4px}.school-grid h3,.school-grid .lesson-card p{max-width:none}}
 
 .new-lesson{display:inline-block;background:#ecddb2;color:#80652f;padding:3px 6px;border-radius:5px;margin-left:5px;font-size:9px}.scale-card .card-sketch svg{max-width:100%}
+.explore-card+.explore-card{margin-top:14px}
 .school-grid .balance-card{grid-column:1/-1;border-top-color:#9bae78}.balance-card .card-sketch svg{max-width:100%}
 @media(min-width:621px){.school-grid .balance-card{position:relative;padding:23px 25px 17px}.school-grid .balance-card .card-sketch{position:absolute;right:30px;top:37px;width:150px;height:115px}.school-grid .balance-card h3{margin-top:26px;font-size:24px;max-width:calc(100% - 170px)}.school-grid .balance-card p{max-width:calc(100% - 170px)}}
 @media(min-width:621px){.school-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.school-grid .card-foot{flex-direction:row;align-items:center}}
