@@ -1,0 +1,19 @@
+/* Course discovery metadata; stable lesson URLs and evidence stay in LearningFeedback. */
+(function(root){
+  'use strict';
+  const items=[
+    {id:'reading',name:'这句话能证明你的答案吗？',subject:'语文',group:'school',stages:['六年级','初中衔接'],tags:['阅读理解','依据','推断','分点回答'],description:'从短文里找依据，把“我觉得”说得有根有据。',icon:'证',time:'8–12 分钟',fresh:true},
+    {id:'english',name:'你会选一只机器狗吗？',subject:'英语',group:'school',stages:['六年级','初中衔接'],tags:['口语','词汇','听力','表达'],description:'听懂一个想法，用英语说出自己的选择和理由。',icon:'Aa',time:'8–10 分钟'},
+    {id:'math',name:'圆，遇上正方形',subject:'数学',group:'school',stages:['六年级'],tags:['圆','周长','面积','组合图形','内切','外接'],description:'分清周长与面积，看懂圆与正方形套在一起怎么算。',icon:'◎',time:'8–12 分钟'},
+    {id:'scale',name:'造一枚迷你火箭',subject:'数学',group:'school',stages:['六年级','初中衔接'],tags:['比例尺','单位换算','缩放'],description:'把 20 米的原型，变成放得进盒子的模型。',icon:'1∶n',time:'8–10 分钟'},
+    {id:'chinese',name:'换个角度，说清楚',subject:'语文',group:'school',stages:['六年级'],tags:['句式转换','转述句','人称'],description:'转述别人的话，改对人称，也把原意保留下来。',icon:'“ ”',time:'8–10 分钟'},
+    {id:'balance',name:'9 个果子，只称 2 次？',subject:'数学',group:'school',stages:['六年级','初中衔接'],tags:['天秤','排除','推理','信息'],description:'亲手称出更重的那个，说清为什么两次一定够。',icon:'⚖',time:'8–10 分钟'},
+    {id:'charts',name:'两张图都没造假，为什么结论相反？',subject:'数学',group:'explore',stages:['六年级','初中衔接'],tags:['统计图','坐标轴','数据','百分比'],description:'先判断，再拖动坐标轴，看看数字怎样影响印象。',icon:'▥',time:'8–10 分钟'},
+    {id:'rocket',name:'火箭为什么要回收？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['火箭','回收','成本','决策','太空'],description:'看一级助推器回来，再算算什么时候更划算。',icon:'↗',time:'8–10 分钟'}
+  ];
+  function latest(sessions){const byCourse={};for(const s of [...sessions].sort((a,b)=>b.updatedAt-a.updatedAt))if(!byCourse[s.courseId])byCourse[s.courseId]=s;return byCourse;}
+  function select({group='all',subject='all',stage='all',query=''}={}){const words=query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);return items.filter(c=>(group==='all'||c.group===group)&&(subject==='all'||c.subject===subject)&&(stage==='all'||c.stages.includes(stage))&&words.every(w=>[c.name,c.subject,...c.tags,...c.stages].join(' ').toLocaleLowerCase().includes(w)));}
+  function home(sessions){const progress=latest(sessions);const continuing=items.filter(c=>progress[c.id]?.records.some(r=>!r.done)).sort((a,b)=>progress[b.id].updatedAt-progress[a.id].updatedAt)[0];const featured=continuing||items.find(c=>c.group==='school'&&!progress[c.id]?.records.every(r=>r.done))||items[0];const candidates=items.filter(c=>c.group==='school'&&c!==featured);candidates.sort((a,b)=>Number(!!progress[a.id]?.records.every(r=>r.done))-Number(!!progress[b.id]?.records.every(r=>r.done)));return {continuing,featured,school:candidates.slice(0,2),explore:items.find(c=>c.id==='charts'),progress};}
+  root.CourseCatalog={items,latest,select,home};
+  if(typeof module!=='undefined'&&module.exports)module.exports=root.CourseCatalog;
+})(typeof window!=='undefined'?window:globalThis);
