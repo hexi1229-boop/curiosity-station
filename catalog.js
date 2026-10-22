@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'particle',name:'水蒸发了，分子也变大了吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['分子','微观粒子','蒸发','凝结','状态变化','数量范围'],description:'拖动水分子模型，分清大小与间隔，再解释密闭和敞口情境。',icon:'H₂O',time:'8–12 分钟',fresh:true},
+    {id:'multiply',name:'负数乘负数，为什么是正数？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','乘法','分配律','负数','小数','零'],description:'改变两个因子，用分配律推理，再把负号放回潜水器的时间与方向。',icon:'×',time:'8–12 分钟',fresh:true},
+    {id:'particle',name:'水蒸发了，分子也变大了吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['分子','微观粒子','蒸发','凝结','状态变化','数量范围'],description:'拖动水分子模型，分清大小与间隔，再解释密闭和敞口情境。',icon:'H₂O',time:'8–12 分钟'},
     {id:'gist',name:'一句话说清整件事',subject:'语文',group:'school',stages:['初中衔接','七年级'],tags:['概括','主要信息','取舍','阅读理解','表达','短消息'],description:'点选信息卡，留下关键行动与结果，再换一篇材料独立概括。',icon:'摘',time:'8–12 分钟'},
     {id:'past',name:'昨天的试飞，怎么用英语讲清楚？',subject:'英语',group:'school',stages:['初中衔接','七年级'],tags:['一般过去时','did','口语','词汇','听读','语序'],description:'听试飞记录，重排问句词牌，再用英语讲清昨天做过和没做的事。',icon:'did',time:'8–12 分钟'},
     {id:'subtract',name:'减去负数，为什么反而变大？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','减法','负数','相反数','数轴','变化'],description:'切换求差与加相反数两种数轴表示，看清变大不等于变成正数。',icon:'−(−)',time:'8–12 分钟'},
