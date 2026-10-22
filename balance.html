@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#20574b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <title>9个果子，只称2次？· 好奇心小站</title><meta name="description" content="亲手把果子放上天秤，从三种结果理解为什么两次就够，再完成固定5道多维度练习。">
+  <link rel="manifest" href="app.webmanifest"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="rocket.css"><link rel="stylesheet" href="balance.css">
+  <script src="app.js" defer></script><script src="balance.js" type="module"></script>
+</head>
+<body class="rocket-page balance-page">
+  <header class="site-header rocket-header"><a class="back-link" href="./">← 回到小站</a><span>主科稳步学 · 数学扩展</span></header>
+  <main class="rocket-main">
+    <section class="rocket-intro"><p class="eyebrow">天秤实验室 · 排除与推理</p><h1>9 个果子，<br>只称 2 次<span>？</span></h1><p>它们看起来一样，有一个偷偷重了一点。<br>每称一次，你能少怀疑几个？</p><div class="rocket-meta"><span>约 8–10 分钟</span><span>亲手称 · 想透原因</span><span>固定 5 题收尾</span></div></section>
+    <div class="balance-rule"><strong>已知条件</strong><span>恰好 1 个更重，其余 8 个一样重。用无砝码天秤，只看左重、平衡、右重。</span></div>
+    <nav class="rocket-tabs" aria-label="学习步骤"><button class="current" data-panel="lab" aria-current="step">01 亲手称一称</button><button data-panel="why">02 为什么是 2 次</button><button data-panel="quiz">03 五题挑战</button></nav>
+    <section class="rocket-panel" id="lab" aria-labelledby="lab-title"><div class="panel-heading"><p class="eyebrow">自由实验 / 偏重的是谁，暂时保密</p><h2 id="lab-title" tabindex="-1">先选盘，再点果子放上去。</h2></div><div id="free-balance"></div><div class="panel-next"><span>自由实验可以多称几次。下面看看怎样保证最多用 2 次。</span><button class="primary" data-go="why">想透这件事 →</button></div></section>
+    <section class="rocket-panel" id="why" aria-labelledby="why-title" hidden>
+      <div class="panel-heading"><p class="eyebrow">从天秤能告诉我们什么开始</p><h2 id="why-title" tabindex="-1">一次称量，最多给出三种结果。</h2></div>
+      <div class="three-outcomes"><div><span>↙</span><strong>左边更重</strong></div><div><span>＝</span><strong>两边平衡</strong></div><div><span>↘</span><strong>右边更重</strong></div></div>
+      <p class="question-context">开始时，1 到 9 号都有可能更重，共 <b>9 种可能</b>。一次称量最多把它们分成 3 类；如果某一类里还不止一个果子，就不能唯一确定。</p>
+      <div class="takeaway"><strong>先证明：1 次不能保证找到。</strong><p>9 种可能，最多只有 3 种结果。至少一种结果会留下多个候选。就算某一局运气好，1 次找到了，也不能保证每一局都行。</p></div>
+      <h3 class="why-heading">那第一称，怎样分才有用？</h3><p class="small-note">左右放相同数量。点一种分法，看最不利的结果会剩几个。</p>
+      <div class="split-buttons"><button data-split="1" aria-pressed="false">1 对 1</button><button data-split="3" aria-pressed="true">3 对 3</button><button data-split="4" aria-pressed="false">4 对 4</button></div>
+      <div class="split-results" aria-live="polite"><div><span>左重 → 左盘</span><strong id="split-left">3</strong><small>个候选</small></div><div><span>平衡 → 桌上</span><strong id="split-table">3</strong><small>个候选</small></div><div><span>右重 → 右盘</span><strong id="split-right">3</strong><small>个候选</small></div></div><p id="split-verdict" class="split-verdict" role="status"></p>
+      <h3 class="why-heading">沿着每条路，都能走到答案。</h3><p class="question-context">第一称：<b>1、2、3</b> 对 <b>4、5、6</b>；<b>7、8、9</b> 留桌上。点一个结果，再试第二称。</p>
+      <div class="branch-picker" aria-label="第一称的结果"><button data-first="left" aria-pressed="false">第一称：左重</button><button data-first="level" aria-pressed="true">第一称：平衡</button><button data-first="right" aria-pressed="false">第一称：右重</button></div>
+      <div class="branch-card"><p id="first-reason"></p><strong id="second-plan"></strong><div class="branch-picker" aria-label="第二称的结果"><button data-second="left">第二称：左重</button><button data-second="level">第二称：平衡</button><button data-second="right">第二称：右重</button></div><p id="branch-answer" role="status">选择第二称的结果，看看哪一个被锁定。</p></div>
+      <div class="capacity-path" aria-label="9种可能，第一称剩3种，第二称剩1种"><strong>9</strong><span>第一称 →</span><strong>3</strong><span>第二称 →</span><strong>1</strong></div>
+      <div class="takeaway"><strong>1 次不够；2 次有办法保证做到。所以最少是 2 次。</strong><p>每次最多 3 种结果，两次最多区分 3 × 3＝9 种情况。分成 3、3、3，再从可疑的 3 个中称 1 对 1，就把这个能力用足了。关键是让最不利的一条路也尽量短。</p></div>
+      <details class="model-notes"><summary>为什么本课要左右放一样多个？</summary><p>这样，普通果子的重量互相抵消，哪边更重就能提供线索。题目没有告诉我们偏重多少，左右数量不同就不能只按“哪边低”来判断。所以实验中两盘数量不同时不会计入称量。</p><p>如果改成“有一个不同，但不知道更重还是更轻”，就是另一道题，本课的两次方案不能直接照搬。</p></details>
+      <div class="panel-next"><span>试着说出：为什么不够一次，又为什么两次一定行？</span><button class="primary" data-go="quiz">开始固定 5 题 →</button></div>
+    </section>
+    <section class="rocket-panel" id="quiz" aria-labelledby="quiz-title" hidden><div class="panel-heading"><p class="eyebrow">分组 · 读结果 · 操作 · 论证 · 迁移</p><h2 id="quiz-title" tabindex="-1">用五个任务，检查你的办法。</h2><p class="small-note">答错可以重试。做完这 5 题，就可以结束。</p></div><div id="balance-question"></div></section>
+  </main><footer class="site-footer"><span>好办法，经得起每一种情况。</span><span id="offline-status" role="status">主科稳步学 · 天秤问题</span></footer>
+</body></html>
