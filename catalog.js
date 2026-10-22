@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'forces',name:'两个力一样大，就会互相抵消吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['力','受力对象','相互作用','二力平衡','合力','运动状态'],description:'把力按受力者分组，调节拉力，再解释书与无人机怎样平衡。',icon:'⇄',time:'8–12 分钟',fresh:true},
+    {id:'grid',name:'只差一个字母，地点能跑到哪儿？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['经纬网','纬度','经度','定位','赤道','方向'],description:'拖动探测点，分清N/S和E/W，再到一张新的局部图中寻找站点。',icon:'N/E',time:'8–12 分钟',fresh:true},
+    {id:'forces',name:'两个力一样大，就会互相抵消吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['力','受力对象','相互作用','二力平衡','合力','运动状态'],description:'把力按受力者分组，调节拉力，再解释书与无人机怎样平衡。',icon:'⇄',time:'8–12 分钟'},
     {id:'multiply',name:'负数乘负数，为什么是正数？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','乘法','分配律','负数','小数','零'],description:'改变两个因子，用分配律推理，再把负号放回潜水器的时间与方向。',icon:'×',time:'8–12 分钟'},
     {id:'particle',name:'水蒸发了，分子也变大了吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['分子','微观粒子','蒸发','凝结','状态变化','数量范围'],description:'拖动水分子模型，分清大小与间隔，再解释密闭和敞口情境。',icon:'H₂O',time:'8–12 分钟'},
     {id:'gist',name:'一句话说清整件事',subject:'语文',group:'school',stages:['初中衔接','七年级'],tags:['概括','主要信息','取舍','阅读理解','表达','短消息'],description:'点选信息卡，留下关键行动与结果，再换一篇材料独立概括。',icon:'摘',time:'8–12 分钟'},
