@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'supplies',name:'两瓶水，英语里究竟在数什么？',subject:'英语',group:'school',stages:['初中衔接','七年级'],tags:['可数名词','不可数名词','单复数','单位','much','many','口语'],description:'同样的水换装不同瓶数，听清物资清单，再用英语把新清单说准确。',icon:'2瓶',time:'8–12 分钟',fresh:true},
+    {id:'purity',name:'看起来一样，就是纯净物吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['纯净物','混合物','物质分类','成分','分子','过滤'],description:'改变蔗糖量、重新排列分子，区分外观与成分，再判断冰水和过滤后的样品。',icon:'1/多',time:'8–12 分钟',fresh:true},
+    {id:'supplies',name:'两瓶水，英语里究竟在数什么？',subject:'英语',group:'school',stages:['初中衔接','七年级'],tags:['可数名词','不可数名词','单复数','单位','much','many','口语'],description:'同样的水换装不同瓶数，听清物资清单，再用英语把新清单说准确。',icon:'2瓶',time:'8–12 分钟'},
     {id:'qualifier',name:'一个“约”字，为什么不能随便删？',subject:'语文',group:'school',stages:['初中衔接','七年级'],tags:['词语作用','限定词','准确表达','阅读理解','条件','改写'],description:'在编辑台改词对照，分清精确程度、对象和条件，再独立修好一份试飞说明。',icon:'约',time:'8–12 分钟'},
     {id:'power',name:'3⁴是12吗？把乘方拆开看',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','乘方','底数','指数','括号','幂'],description:'展开因子卡，看清负号是否属于底数，再破解探测器复制游戏。',icon:'aⁿ',time:'8–12 分钟'},
     {id:'division',name:'细胞变多了，分工就会自动出现吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['细胞','生长','分裂','分化','组织','遗传信息'],description:'切换细胞变化模型，区分变大、变多和分工，再解释一份新的培养记录。',icon:'1→2',time:'8–12 分钟'},
