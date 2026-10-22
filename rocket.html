@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#20574b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <title>火箭为什么要回收？· 好奇心实验室</title>
+  <link rel="manifest" href="app.webmanifest"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="rocket.css">
+  <script src="app.js" defer></script><script src="rocket.js" defer></script>
+</head>
+<body class="rocket-page">
+  <header class="site-header rocket-header"><a class="back-link" href="./">← 回到小站</a><span>好奇心实验室</span></header>
+  <main class="rocket-main">
+    <section class="rocket-intro"><p class="eyebrow">太空任务 01 · 科学 × 数学 × 决策</p><h1>火箭为什么要回收<span>？</span></h1><p>当一次任务负责人：把能用的部分带回来，<br>再飞一次，真的会更划算吗？</p><div class="rocket-meta"><span>约 8–10 分钟</span><span>看动画 · 动手算</span><span>固定 5 题收尾</span></div></section>
+    <nav class="rocket-tabs" aria-label="探索步骤"><button class="current" data-panel="flight" aria-current="step">01 看它回来</button><button data-panel="cost">02 算一笔账</button><button data-panel="quiz">03 五题挑战</button></nav>
+    <section class="rocket-panel" id="flight" aria-labelledby="flight-title">
+      <div class="panel-heading"><p class="eyebrow">先看清：回来的是什么</p><h2 id="flight-title" tabindex="-1">一级回来，上面那一级继续飞。</h2></div>
+      <div class="flight-stage">
+        <svg id="flight-svg" viewBox="0 0 520 310" role="img" aria-labelledby="flight-svg-title flight-svg-desc">
+          <title id="flight-svg-title">一级助推器回收示意</title><desc id="flight-svg-desc">火箭升空后分离，上面一级继续飞行，下面的一级助推器返回着陆。轨迹与比例为示意。</desc>
+          <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#142d37"/><stop offset="1" stop-color="#2e5a58"/></linearGradient></defs>
+          <rect width="520" height="310" rx="18" fill="url(#sky)"/>
+          <g fill="#d0e2d5" opacity=".6"><circle cx="42" cy="37" r="1.5"/><circle cx="126" cy="22" r="1"/><circle cx="265" cy="32" r="1.5"/><circle cx="468" cy="55" r="1"/><circle cx="366" cy="18" r="1"/><circle cx="479" cy="131" r="1.5"/></g>
+          <path d="M0 275Q115 250 250 275T520 267V310H0Z" fill="#78978b" opacity=".22"/>
+          <path d="M65 249Q100 114 205 94Q316 104 413 249" fill="none" stroke="#a3c6b0" stroke-width="1.5" stroke-dasharray="5 7" opacity=".6"/>
+          <path d="m205 94 220-54" fill="none" stroke="#eac879" stroke-width="1.5" stroke-dasharray="5 7" opacity=".7"/>
+          <g fill="#b8cbc1" font-size="12"><text x="34" y="292">发射台</text><text x="377" y="292">着陆平台</text><text x="298" y="74">上面一级继续飞行 →</text></g>
+          <path d="M42 258h46m301 0h48" stroke="#c2d1c5" stroke-width="4" stroke-linecap="round"/><path d="m401 251 12-4 12 4" fill="none" stroke="#d7be7f"/>
+          <g id="booster" transform="translate(65 244)"><path id="engine-flame" d="M-5 12 0 39 5 12Z" fill="#efbf67" opacity="0"/><rect x="-10" y="-52" width="20" height="62" rx="3" fill="#f6f3e7"/><path d="M-10-43h20v7h-20" fill="#7eaa9a"/><path d="M-6 10h12l2 5H-8Z" fill="#b7c7c0"/><path id="landing-legs" d="m-9-4-13 16m31-16 13 16" stroke="#d0dcd3" stroke-width="3" opacity="0"/></g>
+          <g id="upper-stage" transform="translate(65 192)"><path d="M-10 0v-23Q-10-39 0-45Q10-39 10-23V0Z" fill="#eac879"/><path d="M-10-6h20" stroke="#7a8f81" stroke-width="2"/></g>
+          <g id="inspection-mark" opacity="0"><rect x="283" y="164" width="185" height="35" rx="17" fill="#d5e6d5"/><text x="375" y="187" text-anchor="middle" fill="#234f40" font-size="13">检查、维护 → 准备再飞</text></g>
+        </svg>
+        <div class="flight-caption" aria-live="polite"><strong id="flight-label">① 升空</strong><span id="flight-copy">一级助推器先出力，把上面一级和载荷送向高空。</span></div>
+      </div>
+      <div class="flight-controls"><button class="primary" id="play-flight">播放 16 秒动画</button><label for="flight-progress">拖动回看<input id="flight-progress" type="range" min="0" max="100" value="0"></label></div>
+      <div class="scene-buttons" aria-label="分步查看"><button data-scene="0" aria-pressed="true">升空</button><button data-scene="1" aria-pressed="false">分离</button><button data-scene="2" aria-pressed="false">减速返回</button><button data-scene="3" aria-pressed="false">检查再用</button></div>
+      <p class="small-note">以猎鹰 9 号的一级回收为例。动画轨迹、时间和比例为示意，不是整枚火箭一起返回。</p>
+      <div class="idea-grid"><article><span>01 / 留住硬件</span><h3>贵重的部件再用一次</h3><p>发动机、箭体等硬件如果还能用，就有机会少造一套。</p></article><article><span>02 / 付出代价</span><h3>回来也需要本领</h3><p>返回需要控制方向、减速和着陆，还要留出推进剂。任务能带多少货，也要一起考虑。</p></article><article><span>03 / 检查维护</span><h3>落地不等于马上再飞</h3><p>还要检查状态、进行必要的维护，并为下一次飞行作准备。这些也会产生成本。</p></article></div>
+      <div class="panel-next"><span>带着这个问题继续：省下的制造费，够不够抵消新费用？</span><button class="primary" data-go="cost">动手算一笔账 →</button></div>
+    </section>
+    <section class="rocket-panel" id="cost" aria-labelledby="cost-title" hidden>
+      <div class="panel-heading"><p class="eyebrow">改变一个条件，看看选择会不会变</p><h2 id="cost-title" tabindex="-1">让同一个一级，多飞几次。</h2></div>
+      <p class="model-badge">教学模拟 · 单位：任务币 · 不是真实发射报价</p>
+      <div class="price-grid"><div><span>每次造新的一级</span><strong>60</strong></div><div><span>可回收一级首次制造</span><strong>80</strong></div><div><span>两方案每次其他成本</span><strong>20</strong></div></div>
+      <div class="cost-controls"><label for="flights">要完成 <output id="flight-count">3</output> 次任务<input id="flights" type="range" min="1" max="6" value="3"><span class="range-ends"><span>1 次</span><span>6 次</span></span></label><label for="repair">每次再用前的检修费用<select id="repair"><option value="10">10 任务币</option><option value="30">30 任务币</option><option value="70">70 任务币</option></select></label></div>
+      <div class="cost-result" aria-live="polite"><div class="bar-row"><div><span>每次造新</span><strong id="new-total">240</strong></div><div class="bar-track"><div id="new-bar" class="cost-bar new-bar"></div></div><p id="new-formula"></p></div><div class="bar-row"><div><span>回收再用</span><strong id="reuse-total">160</strong></div><div class="bar-track"><div id="reuse-bar" class="cost-bar reuse-bar"></div></div><p id="reuse-formula"></p></div><p id="cost-verdict" class="cost-verdict"></p></div>
+      <p class="experiment-tip">试两下：先只飞 <b>1 次</b>；再飞 <b>3 次</b>、把检修费改成 <b>70</b>。还会选同一个方案吗？</p>
+      <details class="model-notes"><summary>这本账做了哪些简化？</summary><ul><li>两种方案完成相同任务；燃料、上面一级等其他费用统一算作每次 20 任务币。</li><li>假设每次都成功回收，检查维护后能再次使用。飞 3 次，中间只需为再次使用检修 2 次；最后一次之后不再使用，本模型不计后续检修。</li><li>现实中还要评估回收设施、运输、失败风险、可用寿命、运力和任务安排。这里用简单数字练习比较，不预测真实成本。</li></ul></details>
+      <div class="takeaway"><strong>更好的决定，要看条件。</strong><p>用得多，能分摊制造成本；检修贵、回收不顺利，或任务要求不同，都可能改变结果。</p></div>
+      <div class="panel-next"><span>现在把方法带走，换几个条件试一试。</span><button class="primary" data-go="quiz">开始 5 题挑战 →</button></div>
+    </section>
+    <section class="rocket-panel" id="quiz" aria-labelledby="quiz-title" hidden>
+      <div class="panel-heading"><p class="eyebrow">概念 · 计算 · 读图 · 变式 · 表达</p><h2 id="quiz-title" tabindex="-1">换五个角度，看看会不会。</h2><p class="small-note">做完这 5 题就结束。可以看提示，也可以返回账本再试。</p></div>
+      <div id="rocket-question"></div>
+    </section>
+    <details class="rocket-sources"><summary>给好奇的你：资料与模型说明</summary><p>本课为原创学习活动。一级回收与硬件复用参考 <a href="https://new.spacex.com/vehicles/falcon-9" target="_blank" rel="noopener noreferrer">SpaceX：Falcon 9</a>；返回需要额外系统和推进剂、可能影响运力的概念参考 <a href="https://ntrs.nasa.gov/citations/20150008958" target="_blank" rel="noopener noreferrer">NASA：可复用两级运载器的运力分析</a>。该研究的具体数值不代表猎鹰 9 号，本课也未采用那些数值。</p><p>动画、题目和任务币账本均为教学设计。参考资料是延伸阅读，完成本课不需要打开外部网站。</p></details>
+  </main>
+  <footer class="site-footer"><span>先提出想法，再用证据检查它。</span><span id="offline-status" role="status">好奇心实验室 · 太空任务 01</span></footer>
+</body></html>
