@@ -16,3 +16,6 @@
 @media(min-width:621px) and (max-width:800px){.school-grid .lesson-card{padding:18px 13px 14px}.school-grid h3{font-size:18px}.school-grid .subject{font-size:9px}.school-grid .card-foot{align-items:flex-start;flex-direction:column;gap:10px}.school-grid .card-action{align-self:flex-end}}
 @media(max-width:620px){.school-grid{grid-template-columns:1fr}.school-grid .lesson-card{padding:20px 21px 15px}.school-grid .card-sketch{position:absolute;width:85px;height:112px;right:12px;top:49px;opacity:.55}.school-grid .speech{max-width:none}.school-grid .robot svg{width:85px;height:70px}.school-grid h3{max-width:calc(100% - 78px);margin:28px 0 12px;font-size:21px}.school-grid .lesson-card p{max-width:calc(100% - 80px)}.school-grid .subject{font-size:11px}}
 @media(max-width:380px){.school-grid .card-sketch{opacity:.18;right:4px}.school-grid h3,.school-grid .lesson-card p{max-width:none}}
+
+.new-lesson{display:inline-block;background:#ecddb2;color:#80652f;padding:3px 6px;border-radius:5px;margin-left:5px;font-size:9px}.scale-card .card-sketch svg{max-width:100%}
+@media(min-width:621px){.school-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.school-grid .card-foot{flex-direction:row;align-items:center}}

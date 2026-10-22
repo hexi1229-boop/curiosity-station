@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#20574b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <meta name="description" content="拖动比例尺，造一枚放得进展示盒的迷你火箭。读懂比例、统一单位、正反推算，再用固定5题练一练。">
+  <title>造一枚迷你火箭：比例尺到底怎么用？· 好奇心小站</title>
+  <link rel="manifest" href="app.webmanifest"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="rocket.css"><link rel="stylesheet" href="scale.css">
+  <script src="app.js" defer></script><script src="scale.js" defer></script>
+</head>
+<body class="rocket-page scale-page">
+  <header class="site-header rocket-header"><a class="back-link" href="./">← 回到小站</a><span>主科稳步学 · 数学</span></header>
+  <main class="rocket-main">
+    <section class="rocket-intro"><p class="eyebrow">模型工作室 · 比例尺与单位换算</p><h1>造一枚迷你火箭<span>。</span><br><small>比例尺到底怎么用？</small></h1><p>一枚假想火箭高 20 米，展示盒只有 30 厘米高。<br>你来决定：把模型做多大？</p><div class="rocket-meta"><span>约 8–10 分钟</span><span>拖动动画 · 动手设计</span><span>固定 5 题收尾</span></div></section>
+    <nav class="rocket-tabs" aria-label="学习步骤"><button class="current" data-panel="workshop" aria-current="step">01 缩小试试</button><button data-panel="method">02 正反都会算</button><button data-panel="quiz">03 五题挑战</button></nav>
+    <section class="rocket-panel" id="workshop" aria-labelledby="workshop-title">
+      <div class="panel-heading"><p class="eyebrow">你的任务 / 竖直放进展示盒</p><h2 id="workshop-title" tabindex="-1">拖动比例尺，让模型变个大小。</h2></div>
+      <div class="scale-workshop">
+        <div class="scale-console"><span class="studio-label">原型高度固定</span><p class="original-size">20 <small>米</small></p><p class="unit-note">＝ 2000 厘米</p><div class="scale-ratio"><span>模型长度 ∶ 实际长度</span><strong id="ratio-value">1 ∶ 100</strong><p id="ratio-meaning">模型上 1 厘米，代表实际 100 厘米。</p></div><p class="studio-tip">先猜：右边的数越大，<br>模型会变大，还是变小？</p></div>
+        <div class="model-stage"><svg viewBox="0 0 360 330" role="img" aria-labelledby="model-svg-title model-svg-desc">
+          <title id="model-svg-title">迷你火箭与30厘米高的展示盒</title><desc id="model-svg-desc">模型高20厘米，可以竖直放进30厘米高的展示盒。</desc>
+          <defs><pattern id="blueprint-grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#c9dcd0" stroke-width=".7"/></pattern></defs>
+          <rect width="360" height="330" rx="16" fill="#eaf1e8"/><rect width="360" height="330" fill="url(#blueprint-grid)"/>
+          <text x="22" y="27" fill="#688271" font-size="11" letter-spacing="2">MINI ROCKET / MODEL LAB</text>
+          <path d="M90 285H286V105H90Z" fill="#ffffff60" stroke="#b88b46" stroke-width="2" stroke-dasharray="6 5"/>
+          <text x="210" y="95" fill="#8c6831" font-size="13">盒高 30 cm</text>
+          <path d="M76 105V285M71 105h10M71 165h10M71 225h10M71 285h10" fill="none" stroke="#769581"/>
+          <g fill="#5f7e6b" font-size="12" text-anchor="end"><text x="64" y="109">30</text><text x="64" y="169">20</text><text x="64" y="229">10</text><text x="64" y="289">0</text></g>
+          <g transform="translate(174 285)"><g id="scale-model"><path d="M0-120Q-15-108-15-96V-19L-26 0H26L15-19V-96Q15-108 0-120Z" fill="#fffef4" stroke="#20574b" stroke-width="2"/><path d="M-15-32H15V-18H-15Z" fill="#d4b465"/><circle cx="0" cy="-84" r="8" fill="#bed6cb" stroke="#20574b" stroke-width="2"/><path d="M-15-19V0M15-19V0" stroke="#20574b" stroke-width="2"/></g></g>
+          <g id="model-height-marker"><path d="M207 0H308" stroke="#20574b" stroke-dasharray="3 4"/><rect x="245" y="-25" width="81" height="22" rx="11" fill="#20574b"/><text id="model-height-text" x="285" y="-10" text-anchor="middle" fill="white" font-size="12">模型 20 cm</text></g>
+          <text x="180" y="312" text-anchor="middle" fill="#688271" font-size="11">屏幕上的厘米刻度仅作示意，请勿拿尺量屏幕。</text>
+        </svg></div>
+      </div>
+      <div class="scale-controls"><label for="scale-slider">拖动改变比例尺<input id="scale-slider" type="range" min="0" max="4" step="1" value="2" aria-valuetext="1比100"><span class="range-ends"><span>1∶50 · 模型较大</span><span>1∶200 · 模型较小</span></span></label><button class="secondary" id="play-scale">播放变化动画</button></div>
+      <div class="scale-presets" aria-label="比较三种常见方案"><button data-scale="0" aria-pressed="false">1∶50</button><button data-scale="2" aria-pressed="true">1∶100</button><button data-scale="4" aria-pressed="false">1∶200</button></div>
+      <div class="scale-readout" aria-live="polite"><p id="model-formula">2000 ÷ 100 ＝ 20 厘米</p><strong id="fit-verdict">20 ≤ 30，可以竖直放进去。</strong></div>
+      <p class="small-note">假想模型，只比较高度；盒宽足够，模型竖直放置。火箭各部分按相同比例缩小，不涉及真实火箭制造。</p>
+      <div class="takeaway"><strong>比例尺，先看谁和谁在比。</strong><p>本课用“模型长度 ∶ 实际长度”。1∶100 表示每一段对应的长度都缩小到原来的 1/100。比的两边必须使用相同单位。</p></div>
+      <div class="panel-next"><span>试过 1∶50 和 1∶200 后，你能说出哪个模型更大吗？</span><button class="primary" data-go="method">看看怎么算 →</button></div>
+    </section>
+    <section class="rocket-panel" id="method" aria-labelledby="method-title" hidden>
+      <div class="panel-heading"><p class="eyebrow">一条关系，两个方向</p><h2 id="method-title" tabindex="-1">先统一单位，再决定乘或除。</h2></div>
+      <div class="direction-buttons"><button data-direction="forward" aria-pressed="true">实际 → 模型</button><button data-direction="reverse" aria-pressed="false">模型 → 实际</button></div>
+      <div class="worked-example"><p id="example-task"></p><ol id="example-steps"></ol><button class="secondary" id="reveal-step">看第 2 步 →</button><p class="small-note">每次只看一步，先试着自己说出下一步。</p></div>
+      <div class="relation-strip"><span>实际长度</span><span>÷ 100 →<br>← × 100</span><span>模型长度</span></div>
+      <p class="small-note">上图对应 1∶100。一般写成 1∶n：模型长度＝实际长度 ÷ n；实际长度＝模型长度 × n。计算时单位要一致。</p>
+      <div class="takeaway"><strong>算完，问一句：大小合理吗？</strong><p>做缩小模型，结果应该比实际小；从模型还原，结果应该比模型大。单位也要跟着每一步走。</p></div>
+      <div class="panel-next"><span>带着“单位、方向、大小”三个检查点，开始练习。</span><button class="primary" data-go="quiz">开始固定 5 题 →</button></div>
+    </section>
+    <section class="rocket-panel" id="quiz" aria-labelledby="quiz-title" hidden>
+      <div class="panel-heading"><p class="eyebrow">理解 · 正推 · 反推 · 辨错 · 决策</p><h2 id="quiz-title" tabindex="-1">完成五个任务，交出你的设计。</h2><p class="small-note">可以看提示、返回动画。做完这 5 题，就可以结束。</p></div><div id="scale-question"></div>
+    </section>
+  </main>
+  <footer class="site-footer"><span>先想清关系，再动手计算。</span><span id="offline-status" role="status">主科稳步学 · 比例尺</span></footer>
+</body></html>
