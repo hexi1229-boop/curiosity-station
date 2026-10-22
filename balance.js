@@ -4,7 +4,7 @@ const fruitIds = [1,2,3,4,5,6,7,8,9];
 const resultNames = {left:'左边更重',right:'右边更重',level:'两边平衡'};
 const placeNames = {left:'左盘',right:'右盘',table:'桌上'};
 
-function createBalance(root, {prefix, limit=Infinity, onSolved=()=>{}}) {
+function createBalance(root, {prefix, limit=Infinity, onSolved=()=>{}, onEvidence=()=>{}}) {
   let heavy, places, candidates, records, target, dirty, solved;
   root.innerHTML = `<div class="balance-toolbar"><strong data-count>已称 0 次</strong><button class="text-button" data-reset>重新开一局</button></div>
     <div class="balance-machine"><svg viewBox="0 0 480 270" role="img" aria-labelledby="${prefix}-title ${prefix}-desc"><title id="${prefix}-title">可操作的双盘天秤</title><desc id="${prefix}-desc">还未称量。</desc><ellipse cx="240" cy="249" rx="160" ry="9" fill="#dce3d1"/><path d="M240 104 216 240H264Z" fill="#c3cfb0" stroke="#768b66" stroke-width="2"/><rect x="194" y="237" width="92" height="10" rx="5" fill="#718665"/><path class="balance-beam" d="M84 110H396" stroke="#55734c" stroke-width="8" stroke-linecap="round"/><circle cx="240" cy="110" r="10" fill="#dfc888" stroke="#55734c" stroke-width="3"/>
@@ -64,8 +64,9 @@ function createBalance(root, {prefix, limit=Infinity, onSolved=()=>{}}) {
   root.querySelectorAll('[data-target]').forEach(button=>button.onclick=()=>{target=button.dataset.target;paint();});
   root.querySelectorAll('[data-fruit]').forEach(button=>button.onclick=()=>{const i=Number(button.dataset.fruit)-1;places[i]=places[i]===target?'table':target;changed();});
   $('[data-clear]').onclick=()=>{places.fill('table');changed();};
-  $('[data-example]').onclick=()=>{places=['left','left','left','right','right','right','table','table','table'];changed();};
-  $('[data-reset]').onclick=reset;
+  $('[data-example]').onclick=()=>{onEvidence('help','自动摆成 3 对 3');places=['left','left','left','right','right','right','table','table','table'];changed();};
+  $('[data-reset]').onclick=()=>{onEvidence('reset');reset();};
+  $('.balance-evidence').addEventListener('toggle',()=>{if($('.balance-evidence').open) onEvidence('help','称量记录与候选');});
   $('[data-weigh]').onclick=()=>{
     const left=placed('left'),right=placed('right');
     if(!left.length || left.length!==right.length) {message('这次不计数：请在左右两盘放一样多个果子，且至少各放 1 个。',true);return;}
@@ -76,12 +77,14 @@ function createBalance(root, {prefix, limit=Infinity, onSolved=()=>{}}) {
     if(candidates.length===1) message('已有证据能唯一确定了！选出编号，用证据确认。');
     else if(records.length>=limit) message(`已经称了 2 次，仍有 ${candidates.length} 个候选。重新开一局，试试先把 9 个均分成三组。`,true);
     else message(`这次结果之后，还有 ${candidates.length} 个候选。想一想下一称怎样继续排除；需要时可打开记录。`);
+    onEvidence('weigh',{left,right,result,count:records.length,remaining:candidates.length});
     paint();
     $('.balance-machine').scrollIntoView({block:'start'});
   };
   $('[data-guess]').onclick=()=>{
     const guess=Number($(`#${prefix}-guess`).value);
     if(!guess) {message('先选择你判断的编号。',true);return;}
+    onEvidence('guess',{guess,correct:candidates.length===1&&guess===candidates[0]});
     if(candidates.length!==1) {message(`现有证据还允许 ${candidates.length} 个果子偏重。即使猜中了，也还没有唯一确定；需要继续称，或重新安排。`,true);return;}
     if(guess!==candidates[0]) {message('这个编号与称量结果不符。打开记录，再检查哪一个还没有被排除。',true);return;}
     solved=true;message(`找到了！${guess} 号更重。你用了 ${records.length} 次称量，并且排除了其他所有可能。`);paint();onSolved(records.length);
@@ -90,6 +93,7 @@ function createBalance(root, {prefix, limit=Infinity, onSolved=()=>{}}) {
 }
 
 function showPanel(id) {
+  if(id!=='quiz'&&!document.querySelector('#quiz').hidden&&questionIndex<5) feedbackLog.help(questionIndex,'回看讲解或演示');
   document.querySelectorAll('.rocket-panel').forEach(panel=>panel.hidden=panel.id!==id);
   document.querySelectorAll('[data-panel]').forEach(button=>{const selected=button.dataset.panel===id;button.classList.toggle('current',selected);if(selected) button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');});
   document.querySelector(`#${id} h2`).focus({preventScroll:true});document.querySelector('.rocket-tabs').scrollIntoView({block:'start'});
@@ -126,30 +130,68 @@ const questions=[
 ];
 const questionBox=document.querySelector('#balance-question');
 let questionIndex=0;
+let feedbackLog=LearningFeedback.create('9 个果子，只称 2 次？',questions);
 function renderQuestion(focus=true) {
   if(questionIndex===5) {showFinish();return;}
-  const q=questions[questionIndex];
-  let body=q.kind==='hands'?'<div id="practice-balance"></div>':q.kind==='transfer'?'<div class="number-entry"><label for="weigh-answer">最少需要几次？</label><div><input id="weigh-answer" inputmode="numeric" autocomplete="off"><span>次</span><button class="secondary" id="check-number">核对一下</button></div></div><div class="balance-reason" id="transfer-reason" hidden><label for="my-reason">说出为什么两次不够，以及三次怎样做到（也可写下，选填）</label><textarea id="my-reason" maxlength="600" placeholder="两次不够，因为……三次可以这样安排……"></textarea><label><input type="checkbox" id="reason-check">我讲清了“不够的原因”和“做得到的办法”。</label><p class="small-note">表达部分由你自检，不做机器判分。</p></div>':`<div class="rocket-answers">${q.options.map((option,i)=>`<button class="rocket-answer" data-answer="${i}" aria-pressed="false">${String.fromCharCode(65+i)}. ${option}</button>`).join('')}</div>`;
-  questionBox.innerHTML=`<div class="rocket-question"><div class="quiz-meta"><span>第 ${questionIndex+1} / 5 题 · ${q.skill}</span><span class="quiz-dots" aria-hidden="true">${questions.map((_,i)=>`<i class="${i<=questionIndex?'active':''}"></i>`).join('')}</span></div><h3 tabindex="-1">${q.title}</h3><p class="question-context">${q.context}</p>${body}<div class="rocket-feedback" role="status" id="question-feedback"></div>${q.hint?`<details class="quiz-help"><summary>给我一点提示</summary><p>${q.hint}</p></details>`:''}<div class="quiz-next"><span>不计时，不排名。</span><button class="primary" id="next-question" disabled>${questionIndex===4?'完成这次学习':'下一题'} →</button></div></div>`;
+  const q=questions[questionIndex], final=questionIndex===4;
+  const number=q.kind==='number'||q.kind==='transfer';
+  const inputId='balance'==='scale'?'length-answer':'balance'==='balance'?'weigh-answer':'cost-answer';
+  let selected=null;
+  let body=q.kind==='hands'?'<div id="practice-balance"></div>':number?`<div class="number-entry"><label for="${inputId}">填入计算结果</label><div><input id="${inputId}" inputmode="decimal" autocomplete="off"><span>${q.unit||('balance'==='balance'?'次':'任务币')}</span><button class="secondary" id="check-number">核对一下</button></div></div>`:q.kind==='speak'?'':(q.kind==='chart'?chartTable():'')+`<div class="rocket-answers">${q.options.map((option,i)=>`<button class="rocket-answer" data-answer="${i}" aria-pressed="false">${LearningFeedback.esc(option)}</button>`).join('')}</div>`;
+  if(final) body+=LearningFeedback.reasonField('balance'==='balance'?'用一句话或一个算式，说明为什么更少不够、你的办法怎样做到':'balance'==='scale'?'用一句话说明：为什么选它，另外两种呢？':'留一句你的建议：选什么、为什么、还要确认什么？')+(q.kind==='speak'||q.kind==='design'?'<button class="primary" id="submit-reason">记下答案和理由，再核对</button>':'');
+  questionBox.innerHTML=`<div class="rocket-question"><div class="quiz-meta"><span>第 ${questionIndex+1} / 5 题 · ${q.skill}</span><span class="quiz-dots" aria-hidden="true">${questions.map((_,i)=>`<i class="${i<=questionIndex?'active':''}"></i>`).join('')}</span></div><h3 tabindex="-1">${q.title}</h3><p class="question-context">${q.context}</p>${body}<div class="rocket-feedback" role="status" id="question-feedback"></div>${q.hint?`<details class="quiz-help" data-help="题目提示"><summary>给我一点提示</summary><p>${q.hint}</p></details>`:''}<div id="reason-review" hidden></div><div class="quiz-next"><span>首次作答会保留；不计时、不排名。</span><button class="primary" id="next-question" disabled>${final?'查看学习反馈':'下一题'} →</button></div></div>`;
   const next=questionBox.querySelector('#next-question'),feedback=questionBox.querySelector('#question-feedback');
-  function check(correct) {
-    feedback.textContent=correct?q.explanation:'再想想每一种结果会留下几个候选。可以打开提示，或者回到讲解。';feedback.classList.toggle('error',!correct);
-    next.disabled=!correct||q.kind==='transfer';
-    if(correct) {questionBox.querySelectorAll('[data-answer],#weigh-answer,#check-number').forEach(el=>el.disabled=true);if(q.kind==='transfer') questionBox.querySelector('#transfer-reason').hidden=false;}
+  LearningFeedback.watchHelp(questionBox,feedbackLog,questionIndex);
+  function check(answer,correct) {
+    const reason=final?LearningFeedback.readReason(questionBox):'';
+    if(final&&!reason) {feedback.textContent='留一句自己的理由；暂时说不清也可以勾选如实记录。';return;}
+    feedbackLog.submit(questionIndex,answer,correct,reason||'');
+    feedback.textContent=correct===false?'再检查一下条件和关系。首次答案已保留，可以修改或看提示。':q.explanation||'你的原话已保留。对照参考，自检一下。';
+    feedback.classList.toggle('error',correct===false);
+    if(correct===false) return;
+    questionBox.querySelectorAll('[data-answer],input,textarea,#check-number,#submit-reason').forEach(el=>el.disabled=true);
+    if(!final) {feedbackLog.finish(questionIndex);next.disabled=false;return;}
+    const review=questionBox.querySelector('#reason-review');
+    review.hidden=false;
+    review.innerHTML=`<div class="evidence-review"><strong>对照理由，不按关键词判分</strong><p>${q.explanation||'一种建议：回收再用，在这次 3 次飞行的模型中少花 80 任务币；还要核实回收是否可靠、检修费用和载荷要求。不同建议可以成立，但理由要符合给定条件。'}</p><div class="evidence-self"><button data-self="已说清理由">我已对照，理由说清了</button><button data-self="还需要帮助">理由还需要帮助</button></div></div>`;
+    review.querySelectorAll('[data-self]').forEach(button=>button.onclick=()=>{review.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));feedbackLog.finish(questionIndex,button.dataset.self);next.disabled=false;});
+    feedbackLog.help(questionIndex,'参考思路（提交后）');
   }
-  questionBox.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{questionBox.querySelectorAll('[data-answer]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));check(Number(button.dataset.answer)===q.answer);});
-  if(q.kind==='hands') createBalance(questionBox.querySelector('#practice-balance'),{prefix:'practice',limit:2,onSolved:()=>{feedback.textContent='这次用称量结果唯一确定了答案，操作任务完成。';next.disabled=false;}});
-  if(q.kind==='transfer') {
-    const input=questionBox.querySelector('#weigh-answer');
-    const checkNumber=()=>{const value=input.value.trim().replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248));check(/^\d+$/.test(value)&&Number(value)===q.answer);};
-    questionBox.querySelector('#check-number').onclick=checkNumber;input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();checkNumber();}};
-    questionBox.querySelector('#reason-check').onchange=e=>{next.disabled=!e.target.checked;};
+  questionBox.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{
+    selected=Number(button.dataset.answer);
+    questionBox.querySelectorAll('[data-answer]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));
+    if(!final) check(q.options[selected],selected===q.answer);
+  });
+  if(number) {
+    const input=questionBox.querySelector('#'+inputId);
+    const checkNumber=()=>{
+      const value=input.value.trim().replace(/[０-９．]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248));
+      if(!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)) {feedback.textContent='请先填一个数值；空白或格式错误不会计入作答。';return;}
+      check(input.value.trim()+' '+(q.unit||('balance'==='balance'?'次':'任务币')),Number(value)===q.answer);
+    };
+    questionBox.querySelector('#check-number').onclick=checkNumber;
+    input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();checkNumber();}};
+  }
+  if(final&&(q.kind==='design'||q.kind==='speak')) questionBox.querySelector('#submit-reason').onclick=()=>{
+    if(q.kind==='design'&&selected===null) {feedback.textContent='先选一个方案，再留下理由。';return;}
+    check(q.kind==='speak'?LearningFeedback.readReason(questionBox)||'':q.options[selected],q.kind==='speak'?null:selected===q.answer);
+  };
+  if(q.kind==='hands') {
+    let round=1;
+    feedbackLog.note(questionIndex,'操作题会提供候选数反馈；不据此判定已独立掌握。');
+    createBalance(questionBox.querySelector('#practice-balance'),{prefix:'practice',limit:2,onSolved:()=>{feedback.textContent='已用证据唯一确定。称量记录和首次判断已保留。';feedbackLog.finish(questionIndex);next.disabled=false;},onEvidence:(type,data)=>{
+      if(type==='help') feedbackLog.help(questionIndex,data);
+      if(type==='weigh') {feedbackLog.note(questionIndex,`第 ${round} 局，第 ${data.count} 称：左 ${data.left.join('、')}；右 ${data.right.join('、')} → ${resultNames[data.result]}；剩 ${data.remaining} 个候选。`);if(data.count===2&&data.remaining>1) feedbackLog.submit(questionIndex,`第 ${round} 局两称后仍有 ${data.remaining} 个候选`,false);}
+      if(type==='guess') feedbackLog.submit(questionIndex,`判断 ${data.guess} 号更重（第 ${round} 局）`,data.correct);
+      if(type==='reset') {feedbackLog.note(questionIndex,`第 ${round} 局重新开始；之前记录保留。`);round++;}
+    }});
   }
   next.onclick=()=>{questionIndex++;renderQuestion();};
   if(focus) {questionBox.querySelector('h3').focus({preventScroll:true});document.querySelector('.rocket-tabs').scrollIntoView({block:'start'});}
 }
 function showFinish() {
-  questionBox.innerHTML='<div class="finish-star" aria-hidden="true">✳</div><h3 class="finish-title" tabindex="-1">5 题完成，你的办法经得起检查。</h3><p class="question-context">选择与次数已核对，动手称量已完成；最后的解释由你自检。今天可以到这里。</p><div class="takeaway"><strong>带走一个思考习惯</strong><p>先数清可能，再看一次操作能排除多少；说“最少”时，既要证明更少不行，也要给出做得到的办法。</p></div><div class="finish-actions"><a href="./">回到小站</a><button class="text-button" id="retry-balance">重做这 5 题</button></div>';
-  questionBox.querySelector('#retry-balance').onclick=()=>{questionIndex=0;renderQuestion();};questionBox.querySelector('h3').focus({preventScroll:true});document.querySelector('.rocket-tabs').scrollIntoView({block:'start'});
+  questionBox.innerHTML='<div class="finish-star" aria-hidden="true">✳</div><h3 class="finish-title" tabindex="-1">5 题完成，看看这次的思路。</h3><p class="question-context">选择与次数已核对，动手称量已完成；最后的解释由你自检。今天可以到这里。</p><div class="takeaway"><strong>带走一个思考习惯</strong><p>先数清可能，再看一次操作能排除多少；说“最少”时，既要证明更少不行，也要给出做得到的办法。</p></div><div class="finish-actions"><a href="./">回到小站</a><button class="text-button" id="retry-balance">重做这 5 题</button></div>';
+  questionBox.insertAdjacentHTML('beforeend',feedbackLog.html());
+  questionBox.querySelector('#retry-balance').onclick=()=>{feedbackLog=LearningFeedback.create('9 个果子，只称 2 次？',questions);questionIndex=0;renderQuestion();};questionBox.querySelector('h3').focus({preventScroll:true});document.querySelector('.rocket-tabs').scrollIntoView({block:'start'});
 }
 createBalance(document.querySelector('#free-balance'),{prefix:'free'});setSplit(3);setFirst('level');renderQuestion(false);

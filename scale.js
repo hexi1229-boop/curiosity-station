@@ -39,6 +39,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden) stopScale(
 window.addEventListener('pagehide',stopScale);
 
 function showPanel(id) {
+  if(id!=='quiz'&&!document.querySelector('#quiz').hidden&&questionIndex<5) feedbackLog.help(questionIndex,'回看讲解或演示');
   stopScale();
   document.querySelectorAll('.rocket-panel').forEach(panel=>panel.hidden=panel.id!==id);
   document.querySelectorAll('[data-panel]').forEach(button=>{
@@ -76,45 +77,60 @@ const questions = [
 ];
 let questionIndex = 0;
 const questionBox = document.querySelector('#scale-question');
-function renderQuestion(focus = true) {
-  if(questionIndex===questions.length) {showFinish();return;}
-  const q = questions[questionIndex];
-  let body;
-  if(q.kind==='number') body = `<div class="number-entry"><label for="length-answer">填入计算结果</label><div><input id="length-answer" inputmode="decimal" autocomplete="off" aria-describedby="answer-unit"><span id="answer-unit">${q.unit}</span><button class="secondary" id="check-number">核对一下</button></div></div>`;
-  else body = `<div class="rocket-answers">${q.options.map((option,i)=>`<button class="rocket-answer" data-answer="${i}" aria-pressed="false">${String.fromCharCode(65+i)}. ${option}</button>`).join('')}</div>`;
-  if(q.kind==='design') body += '<div class="design-reason" id="design-reason" hidden><label for="my-reason">说给家人听，也可以写下来（选填）</label><textarea id="my-reason" maxlength="500" placeholder="我选……因为……另外两种……"></textarea><label><input type="checkbox" id="reason-check">我说明了为什么能放进去，也比较了另外两种方案。</label><p class="small-note">理由由你自检，不做机器判分。</p></div>';
-  questionBox.innerHTML = `<div class="rocket-question"><div class="quiz-meta"><span>第 ${questionIndex+1} / 5 题 · ${q.skill}</span><span class="quiz-dots" aria-hidden="true">${questions.map((_,i)=>`<i class="${i<=questionIndex?'active':''}"></i>`).join('')}</span></div><h3 id="question-heading" tabindex="-1">${q.title}</h3><p class="question-context">${q.context}</p>${body}<div class="rocket-feedback" role="status" id="question-feedback"></div><details class="quiz-help"><summary>给我一点提示</summary><p>${q.hint}</p></details><div class="quiz-next"><span>可以再想一次，不计时、不排名。</span><button class="primary" id="next-question" disabled>${questionIndex===4?'完成设计':'下一题'} →</button></div></div>`;
-  const next = questionBox.querySelector('#next-question');
-  const feedback = questionBox.querySelector('#question-feedback');
-  function check(correct) {
-    feedback.textContent = correct ? q.explanation : '再检查一下关系和单位。需要时，可以打开提示或返回前面的演示。';
-    feedback.classList.toggle('error',!correct);
-    next.disabled = !correct || q.kind==='design';
-    if(correct) {
-      questionBox.querySelectorAll('[data-answer],#length-answer,#check-number').forEach(el=>el.disabled=true);
-      if(q.kind==='design') questionBox.querySelector('#design-reason').hidden=false;
-    }
+let feedbackLog=LearningFeedback.create('造一枚迷你火箭：比例尺到底怎么用？',questions);
+function renderQuestion(focus=true) {
+  if(questionIndex===5) {showFinish();return;}
+  const q=questions[questionIndex], final=questionIndex===4;
+  const number=q.kind==='number'||q.kind==='transfer';
+  const inputId='scale'==='scale'?'length-answer':'scale'==='balance'?'weigh-answer':'cost-answer';
+  let selected=null;
+  let body=q.kind==='hands'?'<div id="practice-balance"></div>':number?`<div class="number-entry"><label for="${inputId}">填入计算结果</label><div><input id="${inputId}" inputmode="decimal" autocomplete="off"><span>${q.unit||('scale'==='balance'?'次':'任务币')}</span><button class="secondary" id="check-number">核对一下</button></div></div>`:q.kind==='speak'?'':(q.kind==='chart'?chartTable():'')+`<div class="rocket-answers">${q.options.map((option,i)=>`<button class="rocket-answer" data-answer="${i}" aria-pressed="false">${LearningFeedback.esc(option)}</button>`).join('')}</div>`;
+  if(final) body+=LearningFeedback.reasonField('scale'==='balance'?'用一句话或一个算式，说明为什么更少不够、你的办法怎样做到':'scale'==='scale'?'用一句话说明：为什么选它，另外两种呢？':'留一句你的建议：选什么、为什么、还要确认什么？')+(q.kind==='speak'||q.kind==='design'?'<button class="primary" id="submit-reason">记下答案和理由，再核对</button>':'');
+  questionBox.innerHTML=`<div class="rocket-question"><div class="quiz-meta"><span>第 ${questionIndex+1} / 5 题 · ${q.skill}</span><span class="quiz-dots" aria-hidden="true">${questions.map((_,i)=>`<i class="${i<=questionIndex?'active':''}"></i>`).join('')}</span></div><h3 tabindex="-1">${q.title}</h3><p class="question-context">${q.context}</p>${body}<div class="rocket-feedback" role="status" id="question-feedback"></div>${q.hint?`<details class="quiz-help" data-help="题目提示"><summary>给我一点提示</summary><p>${q.hint}</p></details>`:''}<div id="reason-review" hidden></div><div class="quiz-next"><span>首次作答会保留；不计时、不排名。</span><button class="primary" id="next-question" disabled>${final?'查看学习反馈':'下一题'} →</button></div></div>`;
+  const next=questionBox.querySelector('#next-question'),feedback=questionBox.querySelector('#question-feedback');
+  LearningFeedback.watchHelp(questionBox,feedbackLog,questionIndex);
+  function check(answer,correct) {
+    const reason=final?LearningFeedback.readReason(questionBox):'';
+    if(final&&!reason) {feedback.textContent='留一句自己的理由；暂时说不清也可以勾选如实记录。';return;}
+    feedbackLog.submit(questionIndex,answer,correct,reason||'');
+    feedback.textContent=correct===false?'再检查一下条件和关系。首次答案已保留，可以修改或看提示。':q.explanation||'你的原话已保留。对照参考，自检一下。';
+    feedback.classList.toggle('error',correct===false);
+    if(correct===false) return;
+    questionBox.querySelectorAll('[data-answer],input,textarea,#check-number,#submit-reason').forEach(el=>el.disabled=true);
+    if(!final) {feedbackLog.finish(questionIndex);next.disabled=false;return;}
+    const review=questionBox.querySelector('#reason-review');
+    review.hidden=false;
+    review.innerHTML=`<div class="evidence-review"><strong>对照理由，不按关键词判分</strong><p>${q.explanation||'一种建议：回收再用，在这次 3 次飞行的模型中少花 80 任务币；还要核实回收是否可靠、检修费用和载荷要求。不同建议可以成立，但理由要符合给定条件。'}</p><div class="evidence-self"><button data-self="已说清理由">我已对照，理由说清了</button><button data-self="还需要帮助">理由还需要帮助</button></div></div>`;
+    review.querySelectorAll('[data-self]').forEach(button=>button.onclick=()=>{review.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));feedbackLog.finish(questionIndex,button.dataset.self);next.disabled=false;});
+    feedbackLog.help(questionIndex,'参考思路（提交后）');
   }
   questionBox.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{
+    selected=Number(button.dataset.answer);
     questionBox.querySelectorAll('[data-answer]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));
-    check(Number(button.dataset.answer)===q.answer);
+    if(!final) check(q.options[selected],selected===q.answer);
   });
-  if(q.kind==='number') {
-    const input = questionBox.querySelector('#length-answer');
-    const checkNumber = () => {
-      const value = input.value.trim().replace(/[０-９．]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248));
-      check(/^\d+(\.\d+)?$/.test(value) && Number(value)===q.answer);
+  if(number) {
+    const input=questionBox.querySelector('#'+inputId);
+    const checkNumber=()=>{
+      const value=input.value.trim().replace(/[０-９．]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248));
+      if(!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)) {feedback.textContent='请先填一个数值；空白或格式错误不会计入作答。';return;}
+      check(input.value.trim()+' '+(q.unit||('scale'==='balance'?'次':'任务币')),Number(value)===q.answer);
     };
     questionBox.querySelector('#check-number').onclick=checkNumber;
-    input.onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();checkNumber();}};
+    input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();checkNumber();}};
   }
-  if(q.kind==='design') questionBox.querySelector('#reason-check').onchange=event=>{next.disabled=!event.target.checked;};
+  if(final&&(q.kind==='design'||q.kind==='speak')) questionBox.querySelector('#submit-reason').onclick=()=>{
+    if(q.kind==='design'&&selected===null) {feedback.textContent='先选一个方案，再留下理由。';return;}
+    check(q.kind==='speak'?LearningFeedback.readReason(questionBox)||'':q.options[selected],q.kind==='speak'?null:selected===q.answer);
+  };
+
   next.onclick=()=>{questionIndex++;renderQuestion();};
   if(focus) {questionBox.querySelector('h3').focus({preventScroll:true});document.querySelector('.rocket-tabs').scrollIntoView({block:'start'});}
 }
 function showFinish() {
   questionBox.innerHTML = '<div class="finish-star" aria-hidden="true">✳</div><h3 class="finish-title" tabindex="-1">5 题完成，模型设计交卷！</h3><p class="question-context">5 题答案已核对；最后的设计理由由你完成表达与自检。今天可以到这里。</p><div class="takeaway"><strong>带走三个检查点</strong><p>单位一致吗？该乘还是该除？结果大小合理吗？</p></div><div class="finish-actions"><a href="./">回到小站</a><button class="text-button" id="retry-scale">重做这 5 题</button></div><details class="bonus-lab"><summary>可选彩蛋 · 长度减半，面积也减半吗？</summary><p>想一想上一课的圆和正方形。一个边长 2 厘米的正方形，面积是 4 平方厘米。边长缩成 1 厘米，面积变成 1 平方厘米。</p><div class="bonus-grid" role="img" aria-label="大正方形分成四个相等小正方形，其中一个涂成黄色。小正方形边长是大正方形的一半，面积是四分之一。"></div><p class="bonus-label">长度变成 1/2，面积变成 1/4。</p><p>圆也一样：半径减半，面积变成原来的 1/4。缩放长度与缩放面积，是两回事。</p></details>';
-  questionBox.querySelector('#retry-scale').onclick=()=>{questionIndex=0;renderQuestion();};
+  questionBox.insertAdjacentHTML('beforeend',feedbackLog.html());
+  questionBox.querySelector('#retry-scale').onclick=()=>{feedbackLog=LearningFeedback.create('造一枚迷你火箭：比例尺到底怎么用？',questions);questionIndex=0;renderQuestion();};
   questionBox.querySelector('h3').focus({preventScroll:true});
   document.querySelector('.rocket-tabs').scrollIntoView({block:'start'});
 }

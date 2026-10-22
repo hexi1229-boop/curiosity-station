@@ -20,6 +20,8 @@
 .practice-lab textarea{display:block;width:100%;min-height:130px;font:inherit;line-height:1.8;padding:12px;border:1px solid var(--pl-line);border-radius:10px;background:#fffefa;color:var(--pl-ink);resize:vertical;margin:12px 0}.practice-lab .pl-self-checks{display:grid;gap:12px;margin:16px 0}.practice-lab .pl-self-checks label{display:flex;align-items:flex-start;gap:10px;min-height:44px;cursor:pointer}.practice-lab .pl-self-checks input{appearance:auto;width:20px;height:20px;min-width:20px;margin:5px 0 0;accent-color:var(--pl-green)}
 
 </style>
+<style>.learning-report{color-scheme:light;text-align:left;background:#fffefa;color:#243e36;border:1px solid #d3ddcf;border-radius:16px;padding:22px;margin:28px 0;overflow-wrap:anywhere;font:16px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.learning-report *{box-sizing:border-box}.learning-report h3{font-size:23px;line-height:1.4;margin:0 0 8px}.learning-report .report-course{font-weight:650;margin:0 0 6px}.learning-report p{margin:6px 0}.learning-report .report-note,.report-note{font-size:13px;color:#647366;line-height:1.65}.learning-report .report-list{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:12px}.learning-report .report-list>li{padding:15px;border:1px solid #d8dfd4;border-radius:10px;background:#f7f8f1;margin:0}.learning-report h4{font-size:17px;margin:0 0 6px;font-weight:650;line-height:1.6}.learning-report .report-context{font-size:13px;color:#647366}.learning-report .report-status{font-size:13px;color:#20574b;font-weight:650}.report-words{white-space:pre-wrap}.evidence-reason{text-align:left;margin:20px 0;line-height:1.7}.evidence-reason textarea{display:block;box-sizing:border-box;width:100%;min-height:88px;background:#fffefa;color:#243e36;border:1px solid #ccd6c6;border-radius:10px;padding:12px;font:inherit;margin:10px 0;resize:vertical}.evidence-reason .reason-unsure{display:flex;align-items:flex-start;gap:8px;font-size:14px;min-height:44px}.evidence-reason input[type=checkbox]{appearance:auto;position:static;opacity:1;width:18px;height:18px;min-width:18px;margin:4px 0;accent-color:#20574b}.evidence-review{margin:18px 0;padding:16px;background:#edf2e7;border-radius:12px;text-align:left}.evidence-review p{margin:8px 0}.evidence-self{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}.evidence-self button{min-height:44px;font:inherit;padding:10px 14px;border:1px solid #aabda5;border-radius:10px;background:#fffefa;color:#20574b;cursor:pointer}.evidence-self button[aria-pressed=true]{background:#20574b;color:white}.evidence-self button:focus-visible{outline:3px solid #b88b43;outline-offset:3px}.learning-report audio{display:block;width:100%;max-width:100%;margin:10px 0}@media(max-width:480px){.learning-report{padding:16px 12px}.learning-report .report-list>li{padding:12px}.evidence-self button{flex:1 1 140px}}
+</style>
 </head>
 <body>
 <main>
@@ -118,22 +120,77 @@
   </footer>
 </main>
 <script>
+/* Shared session-only evidence. The standalone lessons embed this same file. */
+(function (root) {
+  'use strict';
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function create(title, questions) {
+    if (questions.length !== 5) throw new Error('A lesson has exactly five tasks');
+    const records = questions.map(q => ({title:q.title || q, context:[q.context,q.source,q.task].filter(Boolean).join(' '), first:null, attempts:[], helps:[], notes:[], done:false, self:''}));
+    function help(index, label) {
+      const r = records[index];
+      const phase = r.done ? '完成后回看' : r.first ? '首答后' : '首答前';
+      if (!r.helps.some(h => h.label === label && h.phase === phase)) r.helps.push({label, phase});
+    }
+    function submit(index, answer, correct = null, explanation = '') {
+      const r = records[index];
+      if (!String(answer).trim() || r.done) return false;
+      const attempt = {answer:String(answer).trim(), correct, explanation:String(explanation).trim(), helped:r.helps.some(h=>h.phase !== '完成后回看')};
+      r.attempts.push(attempt);
+      if (!r.first) r.first = {...attempt};
+      return true;
+    }
+    function note(index, text) {
+      const notes = records[index].notes;
+      if (text && notes[notes.length-1] !== text) notes.push(String(text));
+    }
+    function finish(index, self = '') { records[index].done = true; records[index].self = self; }
+    function status(r) {
+      if (!r.first) return '未提交答案';
+      if (r.first.correct === null) return '表达 / 自检，未自动判分';
+      if (r.first.correct) return r.first.helped ? '首答正确，答前用过帮助' : '首答正确，答前未打开帮助';
+      return r.attempts.some(a=>a.correct) ? '首答未通过，重试后通过' : '首答未通过，已查看方法或仍需帮助';
+    }
+    function html() {
+      return `<section class="learning-report" aria-label="本次学习反馈"><h3>本次学习反馈 · 5 题</h3><p class="report-course">${esc(title)}</p><p class="report-note">今天可以到这里。需要时截图给家长；首答与求助记录帮助发现下一步，不等于已经长期掌握。</p><ol class="report-list">${records.map((r,i)=>{
+        const first = r.first;
+        const last = r.attempts[r.attempts.length-1];
+        const laterExplanation = last?.explanation && last.explanation !== first?.explanation;
+        return `<li><h4>${i+1}. ${esc(r.title)}</h4>${r.context?`<p class="report-context">${esc(r.context)}</p>`:''}<p class="report-status">${esc(status(r))}</p><p><b>首次答案：</b><span class="report-words">${esc(first?.answer || '未提交，直接查看方法')}</span></p>${first?.explanation&&first.explanation!==first.answer?`<p><b>首次解释：</b><span class="report-words">${esc(first.explanation)}</span></p>`:''}${last && last !== first && r.attempts.length>1?`<p><b>最后提交：</b>${esc(last.answer)}</p>`:''}${laterExplanation?`<p><b>修改后解释：</b>${esc(last.explanation)}</p>`:''}<p><b>帮助：</b>${r.helps.length?r.helps.map(h=>`${esc(h.phase)}·${esc(h.label)}`).join('；'):'未打开提示或回看'}</p><p>有效提交 ${r.attempts.length} 次${r.self?`；自评：${esc(r.self)}`:''}。</p>${r.notes.map(n=>`<p class="report-note">${esc(n)}</p>`).join('')}</li>`;
+      }).join('')}</ol><p class="report-note">只记录当前页面内的操作；纸上演算、外部求助无法自动识别。记录不上传，刷新或离开前请先截图。</p></section>`;
+    }
+    return {records, help, submit, note, finish, html};
+  }
+  function reasonField(label = '留一句自己的理由', placeholder = '一句话或一个算式就好，也可用键盘上的语音输入。') {
+    return `<div class="evidence-reason"><label for="my-reason">${esc(label)}</label><textarea id="my-reason" maxlength="500" rows="2" placeholder="${esc(placeholder)}"></textarea><label class="reason-unsure"><input type="checkbox" id="reason-unsure">我暂时说不清，先记下来</label><p class="report-note">这是本题的一部分，不另加题；先留自己的想法，再看参考。</p></div>`;
+  }
+  function readReason(container) {
+    const input = container.querySelector('#my-reason');
+    return input?.value.trim() || (container.querySelector('#reason-unsure')?.checked ? '暂时说不清' : null);
+  }
+  function watchHelp(container, log, index) {
+    container.querySelectorAll('details[data-help]').forEach(details=>details.addEventListener('toggle',()=>{if(details.open) log.help(index,details.dataset.help);}));
+  }
+  root.LearningFeedback = {create, esc, reasonField, readReason, watchHelp};
+  if (typeof module !== 'undefined' && module.exports) module.exports = root.LearningFeedback;
+})(typeof window !== 'undefined' ? window : globalThis);
+
 function createPractice(root, config) {
   'use strict';
   root.classList.add('practice-lab');
-  let run=null, picked=-1, unlocked=false;
-  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let run=null, picked=-1, unlocked=false, log=null;
+  const esc=LearningFeedback.esc;
   const button=(action,label,primary=false)=>`<button type="button" data-action="${action}" class="${primary?'pl-primary':''}">${esc(label)}</button>`;
   const find=s=>root.querySelector(s);
-  const qNow=()=>config.questions[run.queue[run.pos]];
-  function render(html,focus=false){
+  const qNow=()=>config.questions[run.pos];
+  function render(html,focus=false) {
     root.innerHTML=`<div class="pl-enter">${html}</div>`;
     if(focus){const h=find('h2,h3');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}root.scrollIntoView({block:'start',behavior:'auto'});}
   }
-  function home(focus=false){
-    render(`<p class="pl-tag">强化小练 · 固定 5 题</p><h2>换五个角度，看看会不会。</h2><p>${esc(config.intro)}</p><p class="pl-small">先自己试，再看提示或解析。做完 5 题就结束。</p><div class="pl-actions">${button('start','开始强化小练',true)}</div><details><summary>给陪练的大人</summary><p>${esc(config.parent)}</p></details><details><summary>课外动手任务（另选时间）</summary><p>想把知识用到生活里时，再来试这个任务。</p>${button('project',config.project.button)}</details>`,focus);
+  function home(focus=false) {
+    render(`<p class="pl-tag">强化小练 · 固定 5 题</p><h2>换五个角度，看看会不会。</h2><p>${esc(config.intro)}</p><p class="pl-small">先自己试，再看提示或解析。做完 5 题，自动生成本次学习反馈。</p><div class="pl-actions">${button('start','开始强化小练',true)}</div><details><summary>给陪练的大人</summary><p>${esc(config.parent)}</p></details><details><summary>课外动手任务（另选时间）</summary><p>想把知识用到生活里时，再来试这个任务。</p>${button('project',config.project.button)}</details>`,focus);
   }
-  function start(){run={queue:config.questions.map((_,i)=>i),pos:0};question();}
+  function start(){run={pos:0};log=LearningFeedback.create(config.math?'圆，遇上正方形':'六年级语文 · 句式转换',config.questions);question();}
   function diagram(d){
     if(!d)return '';
     let s='';
@@ -145,52 +202,75 @@ function createPractice(root, config) {
     else s='<circle cx="150" cy="78" r="60" fill="#e6f1e9" stroke="currentColor" stroke-width="2"/><path d="M'+(d.label.includes('半径')?'150':'90')+' 78 H210" stroke="currentColor" stroke-width="2"/><circle cx="150" cy="78" r="3" fill="currentColor"/>';
     return `<svg class="pl-diagram" viewBox="0 0 300 180" role="img" aria-label="${esc(d.label)}">${s}<text x="150" y="165" text-anchor="middle">${esc(d.label)}</text></svg>`;
   }
-  function writingFields(q){
-    return `<label for="pl-writing" class="pl-small">写出你的转述句</label><textarea id="pl-writing" rows="3" placeholder="先自己写，再对照。"></textarea><div class="pl-reference" hidden><div class="pl-summary"><p class="pl-small">一种清楚的写法</p><p>${esc(q.reference)}</p></div><p>写法可以不同，按下面四项核对；有遗漏就直接修改。</p><div class="pl-self-checks">${q.checks.map(c=>`<label><input type="checkbox" data-self-check><span>${esc(c)}</span></label>`).join('')}</div><p class="pl-small" data-check-status role="status">四项由你自己核对，不自动给句子判分。</p></div>`;
-  }
+
   function question(){
     picked=-1;unlocked=false;
-    const q=qNow();
-    render(`<p class="pl-tag">强化小练 · ${run.pos+1} / ${run.queue.length}</p><div class="pl-dots" aria-hidden="true">${run.queue.map((_,i)=>`<i class="pl-dot ${i<run.pos?'done':i===run.pos?'now':''}"></i>`).join('')}</div><p class="pl-small">${esc(q.dimension)} · ${esc(q.skill)}${config.math?' · 计算取 π≈3.14':''}</p><h3 id="pl-title">${esc(q.title)}</h3>${q.source?`<p class="pl-source">${esc(q.source)}</p>`:''}${diagram(q.diagram)}${q.task?`<p>${esc(q.task)}</p>`:''}${q.type==='writing'?writingFields(q):q.options?`<div class="pl-options" role="radiogroup" aria-labelledby="pl-title">${q.options.map((o,i)=>`<label class="pl-option"><input type="radio" name="pl-answer" value="${i}"><span>${esc(o)}</span></label>`).join('')}</div>`:`<label class="pl-small" for="pl-number">填数值，单位已写好</label><div class="pl-number"><input type="text" id="pl-number" inputmode="decimal" autocomplete="off" aria-label="答案数值"><span>${esc(q.unit)}</span></div>`}<div class="pl-hint" hidden></div><div class="pl-feedback" role="status" aria-live="polite">${q.type==='writing'?'这题用自己的话写；对照原意核查，不按字面完全一致判分。':q.options?'选好后，点“检查”。':'可在纸上算，再填数值。'}</div><div class="pl-actions">${q.type==='writing'?button('reference','对照参考答案',true):button('check','检查',true)}${button('hint','给我一点提示')}${q.type==='writing'?'':button('solution','看解法')}<button type="button" class="pl-primary" data-action="next" hidden>${run.pos===run.queue.length-1?(q.type==='writing'?'我已核对，完成练习':'完成练习'):'下一题'}</button></div>`,true);
+    const q=qNow(), writing=q.type==='writing', final=run.pos===4;
+    const body=writing?'<label for="pl-writing">先写自己的转述句</label><textarea id="pl-writing" maxlength="500" rows="3" placeholder="先留自己的句子，再看参考。"></textarea>':q.options?`<div class="pl-options" role="radiogroup" aria-labelledby="pl-title">${q.options.map((o,i)=>`<label class="pl-option"><input type="radio" name="pl-answer" value="${i}"><span>${esc(o)}</span></label>`).join('')}</div>`:`<label class="pl-small" for="pl-number">填数值，单位已写好</label><div class="pl-number"><input type="text" id="pl-number" inputmode="decimal" autocomplete="off" aria-label="答案数值"><span>${esc(q.unit)}</span></div>`;
+    render(`<p class="pl-tag">强化小练 · ${run.pos+1} / 5</p><div class="pl-dots" aria-hidden="true">${config.questions.map((_,i)=>`<i class="pl-dot ${i<run.pos?'done':i===run.pos?'now':''}"></i>`).join('')}</div><p class="pl-small">${esc(q.dimension)} · ${esc(q.skill)}${config.math?' · 计算取 π≈3.14':''}</p><h3 id="pl-title">${esc(q.title)}</h3>${q.source?`<p class="pl-source">${esc(q.source)}</p>`:''}${diagram(q.diagram)}${q.task?`<p>${esc(q.task)}</p>`:''}${body}${final?LearningFeedback.reasonField(writing?'用几个字说明，你主要改了哪里？':'用一句话或一个算式，说明为什么这样变。'):''}<div class="pl-hint" hidden></div><div class="pl-feedback" role="status" aria-live="polite">先试自己的想法；首次提交会保留。</div><div class="pl-actions">${button('check',writing?'保存原话，再对照':'检查',true)}${button('hint','给我一点提示')}${writing?'':button('solution','看解法')}<button type="button" class="pl-primary" data-action="next" hidden>${final?'查看学习反馈':'下一题'}</button></div><div id="pl-review" hidden></div>`,true);
   }
-  function feedback(msg,kind=''){const box=find('.pl-feedback');box.textContent=msg;box.dataset.kind=kind;}
+  function feedback(message,kind=''){find('.pl-feedback').textContent=message;find('.pl-feedback').dataset.kind=kind;}
   function unlock(){
-    unlocked=true;
-    root.querySelectorAll('input').forEach(el=>el.disabled=true);
-    ['check','hint','solution'].forEach(a=>find(`[data-action="${a}"]`).hidden=true);
-    const next=find('[data-action="next"]');next.hidden=false;next.focus({preventScroll:true});
+    unlocked=true;log.finish(run.pos);
+    root.querySelectorAll('input,textarea').forEach(el=>el.disabled=true);
+    ['check','hint','solution'].forEach(a=>{const b=find(`[data-action="${a}"]`);if(b)b.hidden=true;});
+    find('[data-action="next"]').hidden=false;
+  }
+  function selfReview(q){
+    root.querySelectorAll('input,textarea').forEach(el=>el.disabled=true);
+    ['check','hint','solution'].forEach(a=>{const b=find(`[data-action="${a}"]`);if(b)b.hidden=true;});
+    const review=find('#pl-review');review.hidden=false;
+    review.innerHTML=`<div class="evidence-review"><b>参考思路，写法不必相同</b><p>${esc(q.reference||q.why)}</p>${q.checks?`<ul>${q.checks.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`:''}<p>对照自己的原话：关系和理由说清了吗？</p><div class="evidence-self">${button('self-clear','我已对照，说清了')}${button('self-help','我还需要帮助')}</div></div>`;
+    log.help(run.pos,'参考思路（提交后）');
   }
   function check(){
     if(unlocked)return;
-    const q=qNow();let ok;
-    if(q.options){if(picked<0){feedback('先选一个答案，再检查。');return;}ok=picked===q.answer;}
-    else {const raw=find('#pl-number').value.trim().replace(/[０-９．]/g,c=>c==='．'?'.':String.fromCharCode(c.charCodeAt(0)-65248));if(!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(raw)){feedback('请填一个数值，例如 3.14；单位不用再写。');return;}ok=Math.abs(Number(raw)-q.value)<0.005;}
-    if(ok){feedback('对了。'+q.why,'right');unlock();}
-    else {feedback('再想一步：'+(q.wrong?.[picked]||q.hint),'wrong');}
+    const q=qNow();let answer,ok=null;
+    if(q.type==='writing') {
+      answer=find('#pl-writing').value.trim();
+      if(!answer&&!find('#reason-unsure').checked){feedback('先写自己的句子；暂时不会也可以如实勾选。');return;}
+      answer=answer||'暂时不会改写';
+    } else if(q.options) {
+      if(picked<0){feedback('先选一个答案，再检查。');return;}
+      answer=q.options[picked];ok=picked===q.answer;
+    } else {
+      const raw=find('#pl-number').value.trim().replace(/[０-９．]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248));
+      if(!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(raw)){feedback('请填一个数值，例如 3.14；单位不用再写。');return;}
+      answer=find('#pl-number').value.trim()+' '+q.unit;ok=Math.abs(Number(raw)-q.value)<0.005;
+    }
+    const reason=run.pos===4?LearningFeedback.readReason(root):'';
+    if(run.pos===4&&!reason){feedback('留一句理由；暂时说不清也可以如实勾选。');return;}
+    log.submit(run.pos,answer,ok,reason||'');
+    if(ok===false){feedback('再想一步：'+(q.wrong?.[picked]||q.hint),'wrong');log.help(run.pos,'答错后的提示');return;}
+    if(run.pos===4){feedback('首次答案与理由已保留，下面只做自检。');selfReview(q);}
+    else {feedback('对了。'+q.why,'right');unlock();}
   }
   function end(){
-    const count=run.queue.length;
-    const skills=[...new Set(run.queue.slice(0,count).map(i=>config.questions[i].skill))].join('、');
-    render(`<p class="pl-tag">5 / 5 · 强化小练完成</p><h2>五个角度，都试过了。</h2>${count?`<p>刚才一起看了：${esc(skills)}。</p>`:'<p>先休息一下，想聊的时候再来。</p>'}<p>合上页面，去做点别的吧。</p>`,true);
-    run=null;
+    render(`<p class="pl-tag">5 / 5 · 强化小练完成</p><h2>五个角度，都试过了。</h2><p>今天可以收工。下面是本次的原话与求助记录。</p>${log.html()}<div class="pl-actions">${button('start','重新开始这 5 题')}</div>`,true);
+    run.pos=5;
   }
-  function project(){render(`<p class="pl-tag">可选小任务 · 约 5–10 分钟 · 随时可以停</p><h2>${esc(config.project.title)}</h2><p>${esc(config.project.intro)}</p><ol>${config.project.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="pl-summary"><b>没有标准台词，讲清你的理由就行。</b><p>${esc(config.project.reflect)}</p></div><p class="pl-small">这是把本课知识用起来的家庭小实验，不需要一次做完。</p><div class="pl-actions">${button('home','回到练习选择',true)}</div>`,true);}
-  root.addEventListener('change',e=>{if(e.target.hasAttribute('data-self-check')){const count=root.querySelectorAll('[data-self-check]:checked').length;find('[data-check-status]').textContent=count===4?'四项已核对。再读一遍自己的句子，确认能让别人听明白。':`已核对 ${count} / 4 项；有遗漏就直接修改。`;}if(e.target.name==='pl-answer'){picked=Number(e.target.value);feedback('选好了，再点“检查”。');}});
+  function project(){render(`<p class="pl-tag">可选小任务 · 另选时间</p><h2>${esc(config.project.title)}</h2><p>${esc(config.project.intro)}</p><ol>${config.project.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><p>${esc(config.project.reflect)}</p><div class="pl-actions">${button('home','回到练习选择',true)}</div>`,true);}
+  root.addEventListener('change',e=>{if(e.target.name==='pl-answer'){picked=Number(e.target.value);feedback('选好了，再点“检查”。');}});
   root.addEventListener('keydown',e=>{if(e.target.id==='pl-number'&&e.key==='Enter'){e.preventDefault();check();}});
   root.addEventListener('click',e=>{
-    const b=e.target.closest('button[data-action]');if(!b)return;
-    const a=b.dataset.action;
+    const b=e.target.closest('button[data-action]');if(!b)return;const a=b.dataset.action;
     if(a==='start')start();
     else if(a==='home')home(true);
     else if(a==='check')check();
-    else if(a==='hint'){const h=find('.pl-hint');h.hidden=false;h.textContent=qNow().hint;b.hidden=true;}
-    else if(a==='solution'){const q=qNow();const answer=q.options?q.options[q.answer]:q.value+' '+q.unit;feedback('一起拆开看。答案：'+answer.replace(/[。！？]$/,'')+'。'+q.why);unlock();}
-    else if(a==='next'&&unlocked){run.pos++;if(run.pos===run.queue.length)end();else question();}
+    else if(a==='hint'){log.help(run.pos,'题目提示');const h=find('.pl-hint');h.hidden=false;h.textContent=qNow().hint;b.hidden=true;}
+    else if(a==='solution'){
+      const q=qNow();
+      if(run.pos===4&&!log.records[run.pos].first)log.note(run.pos,'未留下自己的解释，先查看了解法。');
+      log.help(run.pos,'直接看解法');
+      const answer=q.options?q.options[q.answer]:q.value+' '+q.unit;
+      feedback('一起拆开看。答案：'+answer.replace(/[。！？]$/,'')+'。'+q.why);unlock();
+    }
+    else if(a==='self-clear'||a==='self-help'){unlock();log.finish(run.pos,a==='self-clear'?'已说清（自评，未自动判分）':'还需要帮助');find('#pl-review').querySelectorAll('button').forEach(el=>el.disabled=true);}
+    else if(a==='next'&&unlocked){run.pos++;if(run.pos===5)end();else question();}
     else if(a==='project')project();
-    else if(a==='reference'){find('.pl-reference').hidden=false;b.hidden=true;unlocked=true;find('[data-action="next"]').hidden=false;feedback('请对照上面四项检查。需要修改时，可以继续编辑自己的句子。');}
   });
   home();
-  return {home};
+  return {home,review(){if(run&&run.pos<5)log.help(run.pos,'回看讲解或演示');}};
 }
 
 (() => {
@@ -212,6 +292,7 @@ function createPractice(root, config) {
   function stop(){if(timer!==null){clearInterval(timer);timer=null;}byId('auto-play').textContent='自动演示';}
   function showTab(name,focus=false){
     if(!tabs.some(t=>t.dataset.tab===name))return;
+    if(activeTab==='practice'&&name!=='practice')practice.review();
     stop();activeTab=name;
     tabs.forEach(t=>{const chosen=t.dataset.tab===name;t.setAttribute('aria-selected',String(chosen));t.tabIndex=chosen?0:-1;byId(t.dataset.tab).hidden=!chosen;if(chosen&&focus)t.focus();});
   }
@@ -247,7 +328,7 @@ function createPractice(root, config) {
   }
   document.querySelectorAll('[data-role]').forEach(b=>b.addEventListener('click',()=>{role=b.dataset.role;renderRole();}));
   renderStep();renderRole();
-  createPractice(byId('choice-practice'),{"parent":"前四题分别检查信息保留、人称、询问和请求，最后一题自己写并对照核查。意思完整、指代清楚的不同写法同样可以成立。","project":{"button":"小任务：家庭传话员","title":"让没在现场的人也听明白。","intro":"找一位家人一起玩。没有搭档时，可以自己换角色，先说原话，再隔一会儿转述。","steps":["妈妈周一在客厅对你说：“请你明天把我的蓝色笔记本带到学校，交给李老师。”先圈出：谁的东西、哪天、带到哪里、交给谁。","当天在客厅，把这条消息转述给爸爸。第二天早晨在卧室，再转述一次。哪些词要变？哪些信息始终不变？","让听的人复述任务，再对照原话检查。如果他理解错了，先找出缺的或含糊的信息，再改说法。"],"reflect":"试着在“清楚”和“简短”之间做选择：哪些词能省？省掉“蓝色”“李老师”或具体日期，可能造成什么误会？"},"questions":[{"title":"找出保留原意的改写。","options":["我问老班长为什么不吃鱼。","我禁不住问老班长为什么不吃鱼。","他禁不住问老班长为什么不吃鱼。"],"answer":1,"hint":"“禁不住”写出发问的状态；题目没有要求换叙述者。","why":"补回“禁不住”才完整。“怎么”在这里问原因，可以换成“为什么”。开头的“我”保留。","skill":"保留信息","source":"我禁不住问：“老班长，你怎么不吃鱼啊？”","task":null,"diagram":null,"wrong":["询问的内容有了，但漏了“禁不住”。","","题目没有换叙述者，开头的“我”不能随便变成“他”。"],"dimension":"信息保留"},{"title":"谁给谁留了饭？","options":["妈妈对我说，我已经给她留了饭。","妈妈对我说，她已经给你留了饭。","妈妈对我说，她已经给我留了饭。"],"answer":2,"hint":"原话“我”指妈妈；“你”指现在转述这件事的我。","why":"妈妈留饭给我，所以是“她已经给我留了饭”。“已经”也要保留。","skill":"辨认人称","source":"妈妈对我说：“我已经给你留了饭。”","task":"继续由原句提示语中的“我”讲述。","diagram":null,"wrong":null,"dimension":"人称转换"},{"title":"原来问的是什么？","options":["老师问小明，他为什么没有交作业。","老师说小明没有交作业。","老师问小明，他有没有交作业。"],"answer":0,"hint":"“为什么没交”是在问原因；“有没有交”是在问是否发生。","why":"保留“问”和“为什么没有交作业”，才能转述同一个问题。句末用句号。","skill":"保留询问","source":"老师问小明：“你为什么没有交作业？”","task":null,"diagram":null,"wrong":null,"dimension":"问句转述"},{"title":"这是一项请求，怎样转述？","options":["同学说，我已经把书放在桌上了。","同学请我把书放在桌上。","同学请我别把书放在桌上。"],"answer":1,"hint":"原句请求我去做，没说已经做完，也没说不许做。","why":"“请我……”保留请求的意思。不能添“已经”，也不能添“别”。","skill":"保留请求","source":"同学对我说：“请你把书放在桌上。”","task":null,"diagram":null,"wrong":null,"dimension":"请求转述"},{"type":"writing","title":"最后一题，自己改写一句。","skill":"自主表达与核对","dimension":"综合应用","source":"哥哥认真地对我说：“我不会把你的秘密告诉别人。”","task":"继续由提示语中的“我”讲述。先自己写，再看参考答案。","hint":"先认清“我、你”各指谁，再检查“认真地”和“不会”有没有保留。","reference":"哥哥认真地对我说，他不会把我的秘密告诉别人。","checks":["“认真地”保留了，哥哥说话的状态没有丢。","原话的“我”指哥哥；“你的”变成“我的”。","“不会”保留了，秘密仍然属于“我”。","整理了标点，指代清楚，整句读起来通顺。"]}],"intro":"找遗漏、认人称、辨语气，最后把完整句子自己写出来。"});
+  const practice=createPractice(byId('choice-practice'),{"parent":"前四题分别检查信息保留、人称、询问和请求，最后一题自己写并对照核查。意思完整、指代清楚的不同写法同样可以成立。","project":{"button":"小任务：家庭传话员","title":"让没在现场的人也听明白。","intro":"找一位家人一起玩。没有搭档时，可以自己换角色，先说原话，再隔一会儿转述。","steps":["妈妈周一在客厅对你说：“请你明天把我的蓝色笔记本带到学校，交给李老师。”先圈出：谁的东西、哪天、带到哪里、交给谁。","当天在客厅，把这条消息转述给爸爸。第二天早晨在卧室，再转述一次。哪些词要变？哪些信息始终不变？","让听的人复述任务，再对照原话检查。如果他理解错了，先找出缺的或含糊的信息，再改说法。"],"reflect":"试着在“清楚”和“简短”之间做选择：哪些词能省？省掉“蓝色”“李老师”或具体日期，可能造成什么误会？"},"questions":[{"title":"找出保留原意的改写。","options":["我问老班长为什么不吃鱼。","我禁不住问老班长为什么不吃鱼。","他禁不住问老班长为什么不吃鱼。"],"answer":1,"hint":"“禁不住”写出发问的状态；题目没有要求换叙述者。","why":"补回“禁不住”才完整。“怎么”在这里问原因，可以换成“为什么”。开头的“我”保留。","skill":"保留信息","source":"我禁不住问：“老班长，你怎么不吃鱼啊？”","task":null,"diagram":null,"wrong":["询问的内容有了，但漏了“禁不住”。","","题目没有换叙述者，开头的“我”不能随便变成“他”。"],"dimension":"信息保留"},{"title":"谁给谁留了饭？","options":["妈妈对我说，我已经给她留了饭。","妈妈对我说，她已经给你留了饭。","妈妈对我说，她已经给我留了饭。"],"answer":2,"hint":"原话“我”指妈妈；“你”指现在转述这件事的我。","why":"妈妈留饭给我，所以是“她已经给我留了饭”。“已经”也要保留。","skill":"辨认人称","source":"妈妈对我说：“我已经给你留了饭。”","task":"继续由原句提示语中的“我”讲述。","diagram":null,"wrong":null,"dimension":"人称转换"},{"title":"原来问的是什么？","options":["老师问小明，他为什么没有交作业。","老师说小明没有交作业。","老师问小明，他有没有交作业。"],"answer":0,"hint":"“为什么没交”是在问原因；“有没有交”是在问是否发生。","why":"保留“问”和“为什么没有交作业”，才能转述同一个问题。句末用句号。","skill":"保留询问","source":"老师问小明：“你为什么没有交作业？”","task":null,"diagram":null,"wrong":null,"dimension":"问句转述"},{"title":"这是一项请求，怎样转述？","options":["同学说，我已经把书放在桌上了。","同学请我把书放在桌上。","同学请我别把书放在桌上。"],"answer":1,"hint":"原句请求我去做，没说已经做完，也没说不许做。","why":"“请我……”保留请求的意思。不能添“已经”，也不能添“别”。","skill":"保留请求","source":"同学对我说：“请你把书放在桌上。”","task":null,"diagram":null,"wrong":null,"dimension":"请求转述"},{"type":"writing","title":"最后一题，自己改写一句。","skill":"自主表达与核对","dimension":"综合应用","source":"哥哥认真地对我说：“我不会把你的秘密告诉别人。”","task":"继续由提示语中的“我”讲述。先自己写，再看参考答案。","hint":"先认清“我、你”各指谁，再检查“认真地”和“不会”有没有保留。","reference":"哥哥认真地对我说，他不会把我的秘密告诉别人。","checks":["“认真地”保留了，哥哥说话的状态没有丢。","原话的“我”指哥哥；“你的”变成“我的”。","“不会”保留了，秘密仍然属于“我”。","整理了标点，指代清楚，整句读起来通顺。"]}],"intro":"找遗漏、认人称、辨语气，最后把完整句子自己写出来。"});
 })();
 </script>
 </body>
