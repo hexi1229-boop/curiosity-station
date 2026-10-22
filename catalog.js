@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'change',name:'冒泡了，就一定发生化学变化吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['物理变化','化学变化','新物质','分子','原子','证据'],description:'比较沸腾与电解，区分眼前的现象和判断变化的证据。',icon:'H₂O',time:'8–12 分钟',fresh:true},
+    {id:'tomato',name:'一颗番茄，是组织还是器官？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['结构层次','细胞','组织','器官','系统','植物'],description:'从整株番茄看到一个细胞，亲手排列层次，再用组成和功能说明理由。',icon:'◎',time:'8–12 分钟',fresh:true},
+    {id:'change',name:'冒泡了，就一定发生化学变化吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['物理变化','化学变化','新物质','分子','原子','证据'],description:'比较沸腾与电解，区分眼前的现象和判断变化的证据。',icon:'H₂O',time:'8–12 分钟'},
     {id:'map',name:'地图转了，北方也会跟着转吗？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['地图判读','方向','指向标','参照点','比例尺','路线'],description:'转动一张地图，找准方向，再用自己的话给朋友指路。',icon:'N↗',time:'8–12 分钟'},
     {id:'speed',name:'跑得远，就一定更快吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['平均速度','路程','时间','单位换算','运动'],description:'改变用时，比较同样时间里的路程，再看途中停留怎样影响平均速度。',icon:'m/s',time:'8–12 分钟'},
     {id:'equation',name:'神秘货箱有多重？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['一元一次方程','等式','天秤','移项','检验'],description:'亲手改变天秤两边，看清解方程的每一步为什么成立。',icon:'x＝?',time:'8–12 分钟'},

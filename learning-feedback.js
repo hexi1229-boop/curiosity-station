@@ -3,21 +3,27 @@
   'use strict';
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const prefix='curiosity-station:learning:v1:';
-  const courses=[['math','圆，遇上正方形','lesson.html?topic=math'],['chinese','六年级语文 · 句式转换','lesson.html?topic=chinese'],['english','英语 · 机器狗，还是一只真狗？','english.html'],['scale','造一枚迷你火箭：比例尺到底怎么用？','scale.html'],['balance','9 个果子，只称 2 次？','balance.html'],['rocket','火箭为什么要回收？','rocket.html'],['charts','两张图都没造假，为什么结论相反？','charts.html'],['reading','这句话能证明你的答案吗？','reading.html'],['equation','神秘货箱有多重？','equation.html'],['speed','跑得远，就一定更快吗？','speed.html'],['map','地图转了，北方也会跟着转吗？','map.html'],['change','冒泡了，就一定发生化学变化吗？','change.html']];
+  const courses=[['math','圆，遇上正方形','lesson.html?topic=math'],['chinese','六年级语文 · 句式转换','lesson.html?topic=chinese'],['english','英语 · 机器狗，还是一只真狗？','english.html'],['scale','造一枚迷你火箭：比例尺到底怎么用？','scale.html'],['balance','9 个果子，只称 2 次？','balance.html'],['rocket','火箭为什么要回收？','rocket.html'],['charts','两张图都没造假，为什么结论相反？','charts.html'],['reading','这句话能证明你的答案吗？','reading.html'],['equation','神秘货箱有多重？','equation.html'],['speed','跑得远，就一定更快吗？','speed.html'],['map','地图转了，北方也会跟着转吗？','map.html'],['change','冒泡了，就一定发生化学变化吗？','change.html'],['tomato','一颗番茄，是组织还是器官？','tomato.html']];
   const clone=value=>JSON.parse(JSON.stringify(value));
   const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
   let storageError=false;
   const bridged=!!root.__learningSeed;
   function valid(s) {return s?.version===1 && typeof s.id==='string' && /^[a-zA-Z0-9-]+$/.test(s.id) && typeof s.title==='string' && Array.isArray(s.records) && s.records.length===5 && s.records.every(r=>Array.isArray(r.attempts)&&Array.isArray(r.helps)&&Array.isArray(r.notes));}
+  // Older cached registries recorded newly published lessons as 'other'.
+  // Resolve only an exact known title; keep all learning evidence untouched.
+  function resolveCourse(session) {
+    const course=session?.courseId==='other' && courses.find(c=>c[1]===session.title);
+    return course ? {...session,courseId:course[0]} : session;
+  }
   function history() {
-    if(bridged) return clone(root.__learningSeed.sessions || []).sort((a,b)=>b.updatedAt-a.updatedAt);
+    if(bridged) return clone(root.__learningSeed.sessions || []).map(resolveCourse).sort((a,b)=>b.updatedAt-a.updatedAt);
     try {
       const result=[],storage=root.localStorage;
       if(!storage) return result;
       for(let i=0;i<storage.length;i++) {
         const key=storage.key(i);
         if(!key?.startsWith(prefix)) continue;
-        try {const s=JSON.parse(storage.getItem(key));if(valid(s))result.push(s);}catch(_) { /* Keep unreadable entries untouched. */ }
+        try {const s=JSON.parse(storage.getItem(key));if(valid(s))result.push(resolveCourse(s));}catch(_) { /* Keep unreadable entries untouched. */ }
       }
       return result.sort((a,b)=>b.updatedAt-a.updatedAt);
     } catch(_) {storageError=true;return [];}
@@ -144,6 +150,6 @@
     watchDraft(container,log,index);
     container.querySelectorAll('details[data-help]').forEach(details=>details.addEventListener('toggle',()=>{if(details.open) log.help(index,details.dataset.help);}));
   }
-  root.LearningFeedback = {create, esc, reasonField, readReason, watchHelp, watchDraft, history, courses, installMathBridge, get storageError(){return storageError;}};
+  root.LearningFeedback = {create, esc, reasonField, readReason, watchHelp, watchDraft, history, courses, resolveCourse, installMathBridge, get storageError(){return storageError;}};
   if (typeof module !== 'undefined' && module.exports) module.exports = root.LearningFeedback;
 })(typeof window !== 'undefined' ? window : globalThis);

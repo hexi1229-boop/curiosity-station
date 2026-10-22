@@ -51,6 +51,7 @@
     return true;
   }
   function validate(s) {
+    s=root.LearningFeedback.resolveCourse?.(s) || s;
     const course=root.LearningFeedback.courses.find(c=>c[0]===s?.courseId);
     if(!plain(s)||s.version!==1||!id(s.id)||!course||course[1]!==s.title||!time(s.startedAt)||!time(s.updatedAt)||!maybe(s.completedAt,time)||!integer(s.revision)||
       !maybe(s.backupOriginId,id)||!Array.isArray(s.records)||s.records.length!==5||!s.records.every(record)||!checkpoint(s.checkpoint,s.courseId))throw Error('备份中的课程记录不完整或版本不兼容，未导入任何记录。请保留原文件。');
@@ -64,8 +65,8 @@
       for(let i=0;i<storage.length;i++) {
         const key=storage.key(i);
         if(!key?.startsWith(prefix))continue;
-        const session=JSON.parse(storage.getItem(key));
-        safeTree(session);validate(session);
+        let session=JSON.parse(storage.getItem(key));
+        safeTree(session);session=validate(session);
         if(key!==prefix+session.id)throw Error('mismatched key');
         sessions.push(session);
       }
@@ -85,7 +86,7 @@
     try {data=JSON.parse(content.replace(/^\uFEFF/,''));}catch(_) {throw Error('文件无法读取，请选择完整的 .json 备份文件。');}
     safeTree(data);
     if(data?.format!==format||data.version!==1||!Array.isArray(data.sessions))throw Error('这不是当前版本的小站备份，请选择“导出学习记录”生成的文件。');
-    data.sessions.forEach(validate);
+    data.sessions=data.sessions.map(validate);
     if(new Set(data.sessions.map(s=>s.id)).size!==data.sessions.length)throw Error('备份中有重复的记录编号，未导入。请选择原始备份文件。');
     return data.sessions;
   }
