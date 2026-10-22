@@ -113,21 +113,22 @@ function chartTable() {
   return `<table class="quiz-table"><caption>模拟总费用（任务币，条形长度可比较）</caption><thead><tr><th scope="col">任务次数</th><th scope="col">每次造新</th><th scope="col">回收再用</th></tr></thead><tbody>${[1,2,3].map(n=>{const c=missionCosts(n,10);return `<tr><th scope="row">${n} 次</th><td>${c.newCost}<span class="table-bar" style="--bar:${c.newCost/240*100}%" aria-hidden="true"></span></td><td>${c.reuseCost}<span class="table-bar reuse" style="--bar:${c.reuseCost/240*100}%" aria-hidden="true"></span></td></tr>`;}).join('')}</tbody></table>`;
 }
 let feedbackLog=LearningFeedback.create('火箭为什么要回收？',questions);
+questionIndex=feedbackLog.index;
 function renderQuestion(focus=true) {
   if(questionIndex===5) {showFinish();return;}
   const q=questions[questionIndex], final=questionIndex===4;
   const number=q.kind==='number'||q.kind==='transfer';
   const inputId='rocket'==='scale'?'length-answer':'rocket'==='balance'?'weigh-answer':'cost-answer';
-  let selected=null;
+  let selected=feedbackLog.records[questionIndex].draft?.$choice ?? null;
   let body=q.kind==='hands'?'<div id="practice-balance"></div>':number?`<div class="number-entry"><label for="${inputId}">填入计算结果</label><div><input id="${inputId}" inputmode="decimal" autocomplete="off"><span>${q.unit||('rocket'==='balance'?'次':'任务币')}</span><button class="secondary" id="check-number">核对一下</button></div></div>`:q.kind==='speak'?'':(q.kind==='chart'?chartTable():'')+`<div class="rocket-answers">${q.options.map((option,i)=>`<button class="rocket-answer" data-answer="${i}" aria-pressed="false">${LearningFeedback.esc(option)}</button>`).join('')}</div>`;
   if(final) body+=LearningFeedback.reasonField('rocket'==='balance'?'用一句话或一个算式，说明为什么更少不够、你的办法怎样做到':'rocket'==='scale'?'用一句话说明：为什么选它，另外两种呢？':'留一句你的建议：选什么、为什么、还要确认什么？')+(q.kind==='speak'||q.kind==='design'?'<button class="primary" id="submit-reason">记下答案和理由，再核对</button>':'');
   questionBox.innerHTML=`<div class="rocket-question"><div class="quiz-meta"><span>第 ${questionIndex+1} / 5 题 · ${q.skill}</span><span class="quiz-dots" aria-hidden="true">${questions.map((_,i)=>`<i class="${i<=questionIndex?'active':''}"></i>`).join('')}</span></div><h3 tabindex="-1">${q.title}</h3><p class="question-context">${q.context}</p>${body}<div class="rocket-feedback" role="status" id="question-feedback"></div>${q.hint?`<details class="quiz-help" data-help="题目提示"><summary>给我一点提示</summary><p>${q.hint}</p></details>`:''}<div id="reason-review" hidden></div><div class="quiz-next"><span>首次作答会保留；不计时、不排名。</span><button class="primary" id="next-question" disabled>${final?'查看学习反馈':'下一题'} →</button></div></div>`;
   const next=questionBox.querySelector('#next-question'),feedback=questionBox.querySelector('#question-feedback');
   LearningFeedback.watchHelp(questionBox,feedbackLog,questionIndex);
-  function check(answer,correct) {
+  function check(answer,correct,restoring=false) {
     const reason=final?LearningFeedback.readReason(questionBox):'';
     if(final&&!reason) {feedback.textContent='留一句自己的理由；暂时说不清也可以勾选如实记录。';return;}
-    feedbackLog.submit(questionIndex,answer,correct,reason||'');
+    if(!restoring) feedbackLog.submit(questionIndex,answer,correct,reason||'');
     feedback.textContent=correct===false?'再检查一下条件和关系。首次答案已保留，可以修改或看提示。':q.explanation||'你的原话已保留。对照参考，自检一下。';
     feedback.classList.toggle('error',correct===false);
     if(correct===false) return;
@@ -137,7 +138,7 @@ function renderQuestion(focus=true) {
     review.hidden=false;
     review.innerHTML=`<div class="evidence-review"><strong>对照理由，不按关键词判分</strong><p>${q.explanation||'一种建议：回收再用，在这次 3 次飞行的模型中少花 80 任务币；还要核实回收是否可靠、检修费用和载荷要求。不同建议可以成立，但理由要符合给定条件。'}</p><div class="evidence-self"><button data-self="已说清理由">我已对照，理由说清了</button><button data-self="还需要帮助">理由还需要帮助</button></div></div>`;
     review.querySelectorAll('[data-self]').forEach(button=>button.onclick=()=>{review.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));feedbackLog.finish(questionIndex,button.dataset.self);next.disabled=false;});
-    feedbackLog.help(questionIndex,'参考思路（提交后）');
+    if(!restoring) feedbackLog.help(questionIndex,'参考思路（提交后）');
   }
   questionBox.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{
     selected=Number(button.dataset.answer);
@@ -159,14 +160,17 @@ function renderQuestion(focus=true) {
     check(q.kind==='speak'?LearningFeedback.readReason(questionBox)||'':q.options[selected],q.kind==='speak'?null:selected===q.answer);
   };
 
+  const previous=feedbackLog.records[questionIndex].attempts.at(-1);
+  if(previous&&q.kind!=='hands')check(previous.answer,previous.correct,true);
   next.onclick=()=>{questionIndex++;renderQuestion();};
   if(focus) {questionBox.querySelector('h3').focus({preventScroll:true});document.querySelector('.rocket-tabs').scrollIntoView({block:'start'});}
 }
 function showFinish() {
   questionBox.innerHTML = '<div class="finish-star" aria-hidden="true">✳</div><h3 class="finish-title" tabindex="-1">5 题完成，今天就到这里。</h3><p class="question-context">前 4 题已核对，第 5 题由你完成表达与自检。</p><ul class="finish-points"><li>知道回来的是什么。</li><li>会把制造、任务和检修费用放在一起算。</li><li>条件变了，愿意重新作判断。</li></ul><div class="takeaway"><strong>带走一句话</strong><p>回收让硬件有机会多次使用；到底划不划算，要比较总费用，也要满足任务要求。</p></div><div class="finish-actions"><a href="./">回到小站</a><button class="text-button" id="retry-rocket">重做这 5 题</button></div>';
   questionBox.insertAdjacentHTML('beforeend',feedbackLog.html());
-  questionBox.querySelector('#retry-rocket').onclick = () => {feedbackLog=LearningFeedback.create('火箭为什么要回收？',questions);questionIndex=0;renderQuestion();};
+  questionBox.querySelector('#retry-rocket').onclick = () => {feedbackLog=LearningFeedback.create('火箭为什么要回收？',questions,true);feedbackLog.save();questionIndex=0;renderQuestion();};
   questionBox.querySelector('h3').focus({preventScroll:true});
   document.querySelector('.rocket-tabs').scrollIntoView({block:'start'});
 }
 drawFlight(0); stopFlight(); updateCost(); renderQuestion(false);
+if(feedbackLog.active)showPanel('quiz');

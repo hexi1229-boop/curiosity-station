@@ -8,6 +8,155 @@
 <title>圆与正方形 · 六年级互动学习</title>
 <style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit;max-width:800px;margin:0 auto}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
 
+<script>/* Local learning evidence. Standalone lessons embed this same file. No network writes. */
+(function (root) {
+  'use strict';
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const prefix='curiosity-station:learning:v1:';
+  const courses=[['math','圆，遇上正方形','lesson.html?topic=math'],['chinese','六年级语文 · 句式转换','lesson.html?topic=chinese'],['english','英语 · 机器狗，还是一只真狗？','english.html'],['scale','造一枚迷你火箭：比例尺到底怎么用？','scale.html'],['balance','9 个果子，只称 2 次？','balance.html'],['rocket','火箭为什么要回收？','rocket.html'],['charts','两张图都没造假，为什么结论相反？','charts.html']];
+  const clone=value=>JSON.parse(JSON.stringify(value));
+  const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
+  let storageError=false;
+  const bridged=!!root.__learningSeed;
+  function valid(s) {return s?.version===1 && typeof s.id==='string' && /^[a-zA-Z0-9-]+$/.test(s.id) && typeof s.title==='string' && Array.isArray(s.records) && s.records.length===5 && s.records.every(r=>Array.isArray(r.attempts)&&Array.isArray(r.helps)&&Array.isArray(r.notes));}
+  function history() {
+    if(bridged) return clone(root.__learningSeed.sessions || []).sort((a,b)=>b.updatedAt-a.updatedAt);
+    try {
+      const result=[],storage=root.localStorage;
+      if(!storage) return result;
+      for(let i=0;i<storage.length;i++) {
+        const key=storage.key(i);
+        if(!key?.startsWith(prefix)) continue;
+        try {const s=JSON.parse(storage.getItem(key));if(valid(s))result.push(s);}catch(_) { /* Keep unreadable entries untouched. */ }
+      }
+      return result.sort((a,b)=>b.updatedAt-a.updatedAt);
+    } catch(_) {storageError=true;return [];}
+  }
+  function announce(state) {
+    if(!root.document) return;
+    let box=root.document.getElementById('learning-save-status');
+    if(!box) {box=root.document.createElement('p');box.id='learning-save-status';box.className='learning-save-status';box.setAttribute('role','status');root.document.body.append(box);}
+    box.textContent=state==='saved'?'学习记录已自动保存在本机':state==='saving'?'正在保存本机记录…':'本机保存未成功，请先截图保留这次记录';
+    box.dataset.state=state;
+  }
+  function write(session,remote=false) {
+    if(bridged) {
+      session.revision++;
+      const sessions=root.__learningSeed.sessions;
+      const index=sessions.findIndex(s=>s.id===session.id);
+      if(index<0)sessions.push(clone(session));else sessions[index]=clone(session);
+      announce('saving');
+      root.parent.postMessage({type:'learning-save-v1',session:clone(session)},'*');
+      return;
+    }
+    try {
+      if(!root.localStorage) return;
+      const stored=JSON.parse(root.localStorage.getItem(prefix+session.id)||'null');
+      // A stale second tab gets a separate copy instead of overwriting newer work.
+      if(remote && stored && stored.revision>=session.revision)throw new Error('Newer record exists');
+      if(!remote && stored && stored.revision>session.revision) {session.id=newId();session.revision=0;}
+      if(!remote)session.revision++;
+      root.localStorage.setItem(prefix+session.id,JSON.stringify(session));
+      storageError=false;if(!remote)announce('saved');
+    } catch(_) {storageError=true;if(!remote)announce('failed');}
+  }
+  if(bridged) root.addEventListener('message',event=>{
+    if(event.source===root.parent && event.data?.type==='learning-saved-v1') {storageError=!event.data.ok;announce(event.data.ok?'saved':'failed');}
+  });
+  function installMathBridge(frame) {
+    root.addEventListener('message',event=>{
+      const s=event.data?.session;
+      if(event.source!==frame.contentWindow || event.data?.type!=='learning-save-v1' || !valid(s) || s.courseId!=='math' || JSON.stringify(s).length>2000000) return;
+      write(s,true);
+      event.source.postMessage({type:'learning-saved-v1',ok:!storageError},'*');
+    });
+  }
+  function create(title, questions, fresh=false) {
+    if (questions.length !== 5) throw new Error('A lesson has exactly five tasks');
+    const existing=history();
+    const saved=!fresh && existing.find(s=>s.title===title);
+    const session=saved || {version:1,id:newId(),courseId:courses.find(c=>c[1]===title)?.[0]||'other',title,startedAt:Date.now(),updatedAt:Math.max(Date.now(),(existing[0]?.updatedAt||0)+1),revision:0,checkpoint:{},records:questions.map(q=>({title:q.title||q,context:[q.context,q.source,q.task].filter(Boolean).join(' '),first:null,attempts:[],helps:[],notes:[],done:false,self:'',draft:{}}))};
+    const records=session.records;
+    let active=!!saved;
+    function save() {active=true;session.updatedAt=Math.max(Date.now(),session.updatedAt+1);if(records.every(r=>r.done)&&!session.completedAt)session.completedAt=Date.now();write(session);}
+    function point(patch) {Object.assign(session.checkpoint,patch);save();}
+    function draft(index,fields) {records[index].draft={...records[index].draft,...fields};save();}
+    function help(index, label) {
+      const r = records[index];
+      const phase = r.done ? '完成后回看' : r.first ? '首答后' : '首答前';
+      if (!r.helps.some(h => h.label === label && h.phase === phase)) r.helps.push({label, phase});
+      save();
+    }
+    function submit(index, answer, correct = null, explanation = '') {
+      const r = records[index];
+      if (!String(answer).trim() || r.done) return false;
+      const attempt = {answer:String(answer).trim(), correct, explanation:String(explanation).trim(), helped:r.helps.some(h=>h.phase !== '完成后回看')};
+      r.attempts.push(attempt);
+      if (!r.first) r.first = {...attempt};
+      save();
+      return true;
+    }
+    function note(index, text) {
+      const notes = records[index].notes;
+      if (text && notes[notes.length-1] !== text) notes.push(String(text));
+      save();
+    }
+    function finish(index, self = '') { records[index].done = true; records[index].self = self; save(); }
+    function status(r) {
+      if (!r.first) return '未提交答案';
+      if (r.first.correct === null) return '表达 / 自检，未自动判分';
+      if (r.first.correct) return r.first.helped ? '首答正确，答前用过帮助' : '首答正确，答前未打开帮助';
+      return r.attempts.some(a=>a.correct) ? '首答未通过，重试后通过' : '首答未通过，已查看方法或仍需帮助';
+    }
+    function html() {
+      return `<section class="learning-report" aria-label="本次学习反馈"><h3>本次学习反馈 · ${records.filter(r=>r.done).length} / 5 题完成</h3><p class="report-course">${esc(title)}</p>${storageError?'<p class="report-status">本机保存未成功，请先截图保留这次记录。</p>':''}<p class="report-note">记录按作答过程保留，随时可以截图给家长；首答与求助记录帮助发现下一步，不等于已经长期掌握。</p><ol class="report-list">${records.map((r,i)=>{
+        const first = r.first;
+        const last = r.attempts[r.attempts.length-1];
+        const laterExplanation = last?.explanation && last.explanation !== first?.explanation;
+        return `<li><h4>${i+1}. ${esc(r.title)}</h4>${r.context?`<p class="report-context">${esc(r.context)}</p>`:''}<p class="report-status">${esc(status(r))}</p><p><b>首次答案：</b><span class="report-words">${esc(first?.answer || (r.done?'未提交，直接查看方法':'尚未提交'))}</span></p>${first?.explanation&&first.explanation!==first.answer?`<p><b>首次解释：</b><span class="report-words">${esc(first.explanation)}</span></p>`:''}${last && last !== first && r.attempts.length>1?`<p><b>最后提交：</b>${esc(last.answer)}</p>`:''}${laterExplanation?`<p><b>修改后解释：</b>${esc(last.explanation)}</p>`:''}<p><b>帮助：</b>${r.helps.length?r.helps.map(h=>`${esc(h.phase)}·${esc(h.label)}`).join('；'):'未打开提示或回看'}</p><p>有效提交 ${r.attempts.length} 次${r.self?`；自评：${esc(r.self)}`:''}。</p>${!r.done&&Object.entries(r.draft||{}).some(([k,v])=>typeof v==='string'&&v.trim()&&!k.startsWith('$'))?`<p><b>未提交草稿：</b><span class="report-words">${Object.entries(r.draft).filter(([k,v])=>typeof v==='string'&&v.trim()&&!k.startsWith('$')).map(([k,v])=>esc(v)).join('；')}</span></p>`:''}${r.notes.map(n=>`<p class="report-note">${esc(n)}</p>`).join('')}</li>`;
+      }).join('')}</ol><p class="report-note">文字与操作记录自动保存在当前浏览器／桌面入口，不上传。纸上演算、外部求助无法自动识别；录音只在本次页面回听，不保存音频。</p></section>`;
+    }
+    return {records, help, submit, note, finish, html, save, point, draft, checkpoint:session.checkpoint, get active(){return active;}, get index(){const i=records.findIndex(r=>!r.done);return i<0?5:i;}};
+  }
+  function reasonField(label = '留一句自己的理由', placeholder = '一句话或一个算式就好，也可用键盘上的语音输入。') {
+    return `<div class="evidence-reason"><label for="my-reason">${esc(label)}</label><textarea id="my-reason" maxlength="500" rows="2" placeholder="${esc(placeholder)}"></textarea><label class="reason-unsure"><input type="checkbox" id="reason-unsure">我暂时说不清，先记下来</label><p class="report-note">这是本题的一部分，不另加题；先留自己的想法，再看参考。</p></div>`;
+  }
+  function readReason(container) {
+    const input = container.querySelector('#my-reason');
+    return input?.value.trim() || (container.querySelector('#reason-unsure')?.checked ? '暂时说不清' : null);
+  }
+  const bindings=new WeakMap();
+  function watchDraft(container,log,index) {
+    const previous=bindings.get(container);
+    if(previous) for(const type of ['input','change','click'])container.removeEventListener(type,previous,true);
+    const fields=log.records[index].draft || {};
+    container.querySelectorAll('input,textarea,select').forEach(el=>{
+      const key=el.type==='radio'?'$radio:'+el.name:el.id;
+      if(!key || !(key in fields))return;
+      if(el.type==='radio')el.checked=el.value===fields[key];
+      else if(el.type==='checkbox')el.checked=fields[key];else el.value=fields[key];
+    });
+    container.querySelectorAll('[data-answer],[data-choice]').forEach(el=>el.setAttribute('aria-pressed',String(Number(el.dataset.answer??el.dataset.choice)===fields.$choice)));
+    const listener=event=>{
+      const el=event.target;
+      if(event.type==='click') {
+        const button=el.closest('[data-answer],[data-choice]');
+        if(button&&!button.disabled)log.draft(index,{$choice:Number(button.dataset.answer??button.dataset.choice)});
+      } else if(el.matches('input,textarea,select')&&!el.disabled) {
+        const key=el.type==='radio'?'$radio:'+el.name:el.id;
+        if(key)log.draft(index,{[key]:el.type==='checkbox'?el.checked:el.value});
+      }
+    };
+    for(const type of ['input','change','click'])container.addEventListener(type,listener,true);
+    bindings.set(container,listener);
+  }
+  function watchHelp(container, log, index) {
+    watchDraft(container,log,index);
+    container.querySelectorAll('details[data-help]').forEach(details=>details.addEventListener('toggle',()=>{if(details.open) log.help(index,details.dataset.help);}));
+  }
+  root.LearningFeedback = {create, esc, reasonField, readReason, watchHelp, watchDraft, history, courses, installMathBridge, get storageError(){return storageError;}};
+  if (typeof module !== 'undefined' && module.exports) module.exports = root.LearningFeedback;
+})(typeof window !== 'undefined' ? window : globalThis);</script>
 </head>
 <body>
 <iframe id="codex-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="圆与正方形 · 六年级互动学习" data-srcdoc="&lt;!doctype html&gt;
@@ -1505,6 +1654,12 @@ html&gt;body{padding:0}&lt;/style&gt;
 
 &lt;/style&gt;
 &lt;style&gt;.learning-report{color-scheme:light;text-align:left;background:#fffefa;color:#243e36;border:1px solid #d3ddcf;border-radius:16px;padding:22px;margin:28px 0;overflow-wrap:anywhere;font:16px/1.65 -apple-system,BlinkMacSystemFont,&quot;PingFang SC&quot;,&quot;Microsoft YaHei&quot;,sans-serif}.learning-report *{box-sizing:border-box}.learning-report h3{font-size:23px;line-height:1.4;margin:0 0 8px}.learning-report .report-course{font-weight:650;margin:0 0 6px}.learning-report p{margin:6px 0}.learning-report .report-note,.report-note{font-size:13px;color:#647366;line-height:1.65}.learning-report .report-list{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:12px}.learning-report .report-list&gt;li{padding:15px;border:1px solid #d8dfd4;border-radius:10px;background:#f7f8f1;margin:0}.learning-report h4{font-size:17px;margin:0 0 6px;font-weight:650;line-height:1.6}.learning-report .report-context{font-size:13px;color:#647366}.learning-report .report-status{font-size:13px;color:#20574b;font-weight:650}.report-words{white-space:pre-wrap}.evidence-reason{text-align:left;margin:20px 0;line-height:1.7}.evidence-reason textarea{display:block;box-sizing:border-box;width:100%;min-height:88px;background:#fffefa;color:#243e36;border:1px solid #ccd6c6;border-radius:10px;padding:12px;font:inherit;margin:10px 0;resize:vertical}.evidence-reason .reason-unsure{display:flex;align-items:flex-start;gap:8px;font-size:14px;min-height:44px}.evidence-reason input[type=checkbox]{appearance:auto;position:static;opacity:1;width:18px;height:18px;min-width:18px;margin:4px 0;accent-color:#20574b}.evidence-review{margin:18px 0;padding:16px;background:#edf2e7;border-radius:12px;text-align:left}.evidence-review p{margin:8px 0}.evidence-self{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}.evidence-self button{min-height:44px;font:inherit;padding:10px 14px;border:1px solid #aabda5;border-radius:10px;background:#fffefa;color:#20574b;cursor:pointer}.evidence-self button[aria-pressed=true]{background:#20574b;color:white}.evidence-self button:focus-visible{outline:3px solid #b88b43;outline-offset:3px}.learning-report audio{display:block;width:100%;max-width:100%;margin:10px 0}@media(max-width:480px){.learning-report{padding:16px 12px}.learning-report .report-list&gt;li{padding:12px}.evidence-self button{flex:1 1 140px}}
+
+.learning-save-status{font:12px/1.6 -apple-system,BlinkMacSystemFont,&quot;PingFang SC&quot;,sans-serif!important;color:#5d735d!important;background:#edf2e7;border-radius:10px;padding:10px 15px;margin:16px auto;max-width:780px;box-sizing:border-box;text-align:center}.learning-save-status[data-state=failed]{color:#863e2f!important;background:#fae7d8}
+
+
+
+
 &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
@@ -1843,17 +1998,84 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;div id=&quot;cs-quiz&quot; hidden&gt;&lt;div id=&quot;math-practice&quot;&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;script&gt;
-/* Shared session-only evidence. The standalone lessons embed this same file. */
+/* Local learning evidence. Standalone lessons embed this same file. No network writes. */
 (function (root) {
   &#x27;use strict&#x27;;
   const esc = value =&gt; String(value ?? &#x27;&#x27;).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, c =&gt; ({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;,&quot;&#x27;&quot;:&#x27;&amp;#39;&#x27;}[c]));
-  function create(title, questions) {
+  const prefix=&#x27;curiosity-station:learning:v1:&#x27;;
+  const courses=[[&#x27;math&#x27;,&#x27;圆，遇上正方形&#x27;,&#x27;lesson.html?topic=math&#x27;],[&#x27;chinese&#x27;,&#x27;六年级语文 · 句式转换&#x27;,&#x27;lesson.html?topic=chinese&#x27;],[&#x27;english&#x27;,&#x27;英语 · 机器狗，还是一只真狗？&#x27;,&#x27;english.html&#x27;],[&#x27;scale&#x27;,&#x27;造一枚迷你火箭：比例尺到底怎么用？&#x27;,&#x27;scale.html&#x27;],[&#x27;balance&#x27;,&#x27;9 个果子，只称 2 次？&#x27;,&#x27;balance.html&#x27;],[&#x27;rocket&#x27;,&#x27;火箭为什么要回收？&#x27;,&#x27;rocket.html&#x27;],[&#x27;charts&#x27;,&#x27;两张图都没造假，为什么结论相反？&#x27;,&#x27;charts.html&#x27;]];
+  const clone=value=&gt;JSON.parse(JSON.stringify(value));
+  const newId=()=&gt;Date.now().toString(36)+&#x27;-&#x27;+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
+  let storageError=false;
+  const bridged=!!root.__learningSeed;
+  function valid(s) {return s?.version===1 &amp;&amp; typeof s.id===&#x27;string&#x27; &amp;&amp; /^[a-zA-Z0-9-]+$/.test(s.id) &amp;&amp; typeof s.title===&#x27;string&#x27; &amp;&amp; Array.isArray(s.records) &amp;&amp; s.records.length===5 &amp;&amp; s.records.every(r=&gt;Array.isArray(r.attempts)&amp;&amp;Array.isArray(r.helps)&amp;&amp;Array.isArray(r.notes));}
+  function history() {
+    if(bridged) return clone(root.__learningSeed.sessions || []).sort((a,b)=&gt;b.updatedAt-a.updatedAt);
+    try {
+      const result=[],storage=root.localStorage;
+      if(!storage) return result;
+      for(let i=0;i&lt;storage.length;i++) {
+        const key=storage.key(i);
+        if(!key?.startsWith(prefix)) continue;
+        try {const s=JSON.parse(storage.getItem(key));if(valid(s))result.push(s);}catch(_) { /* Keep unreadable entries untouched. */ }
+      }
+      return result.sort((a,b)=&gt;b.updatedAt-a.updatedAt);
+    } catch(_) {storageError=true;return [];}
+  }
+  function announce(state) {
+    if(!root.document) return;
+    let box=root.document.getElementById(&#x27;learning-save-status&#x27;);
+    if(!box) {box=root.document.createElement(&#x27;p&#x27;);box.id=&#x27;learning-save-status&#x27;;box.className=&#x27;learning-save-status&#x27;;box.setAttribute(&#x27;role&#x27;,&#x27;status&#x27;);root.document.body.append(box);}
+    box.textContent=state===&#x27;saved&#x27;?&#x27;学习记录已自动保存在本机&#x27;:state===&#x27;saving&#x27;?&#x27;正在保存本机记录…&#x27;:&#x27;本机保存未成功，请先截图保留这次记录&#x27;;
+    box.dataset.state=state;
+  }
+  function write(session,remote=false) {
+    if(bridged) {
+      session.revision++;
+      const sessions=root.__learningSeed.sessions;
+      const index=sessions.findIndex(s=&gt;s.id===session.id);
+      if(index&lt;0)sessions.push(clone(session));else sessions[index]=clone(session);
+      announce(&#x27;saving&#x27;);
+      root.parent.postMessage({type:&#x27;learning-save-v1&#x27;,session:clone(session)},&#x27;*&#x27;);
+      return;
+    }
+    try {
+      if(!root.localStorage) return;
+      const stored=JSON.parse(root.localStorage.getItem(prefix+session.id)||&#x27;null&#x27;);
+      // A stale second tab gets a separate copy instead of overwriting newer work.
+      if(remote &amp;&amp; stored &amp;&amp; stored.revision&gt;=session.revision)throw new Error(&#x27;Newer record exists&#x27;);
+      if(!remote &amp;&amp; stored &amp;&amp; stored.revision&gt;session.revision) {session.id=newId();session.revision=0;}
+      if(!remote)session.revision++;
+      root.localStorage.setItem(prefix+session.id,JSON.stringify(session));
+      storageError=false;if(!remote)announce(&#x27;saved&#x27;);
+    } catch(_) {storageError=true;if(!remote)announce(&#x27;failed&#x27;);}
+  }
+  if(bridged) root.addEventListener(&#x27;message&#x27;,event=&gt;{
+    if(event.source===root.parent &amp;&amp; event.data?.type===&#x27;learning-saved-v1&#x27;) {storageError=!event.data.ok;announce(event.data.ok?&#x27;saved&#x27;:&#x27;failed&#x27;);}
+  });
+  function installMathBridge(frame) {
+    root.addEventListener(&#x27;message&#x27;,event=&gt;{
+      const s=event.data?.session;
+      if(event.source!==frame.contentWindow || event.data?.type!==&#x27;learning-save-v1&#x27; || !valid(s) || s.courseId!==&#x27;math&#x27; || JSON.stringify(s).length&gt;2000000) return;
+      write(s,true);
+      event.source.postMessage({type:&#x27;learning-saved-v1&#x27;,ok:!storageError},&#x27;*&#x27;);
+    });
+  }
+  function create(title, questions, fresh=false) {
     if (questions.length !== 5) throw new Error(&#x27;A lesson has exactly five tasks&#x27;);
-    const records = questions.map(q =&gt; ({title:q.title || q, context:[q.context,q.source,q.task].filter(Boolean).join(&#x27; &#x27;), first:null, attempts:[], helps:[], notes:[], done:false, self:&#x27;&#x27;}));
+    const existing=history();
+    const saved=!fresh &amp;&amp; existing.find(s=&gt;s.title===title);
+    const session=saved || {version:1,id:newId(),courseId:courses.find(c=&gt;c[1]===title)?.[0]||&#x27;other&#x27;,title,startedAt:Date.now(),updatedAt:Math.max(Date.now(),(existing[0]?.updatedAt||0)+1),revision:0,checkpoint:{},records:questions.map(q=&gt;({title:q.title||q,context:[q.context,q.source,q.task].filter(Boolean).join(&#x27; &#x27;),first:null,attempts:[],helps:[],notes:[],done:false,self:&#x27;&#x27;,draft:{}}))};
+    const records=session.records;
+    let active=!!saved;
+    function save() {active=true;session.updatedAt=Math.max(Date.now(),session.updatedAt+1);if(records.every(r=&gt;r.done)&amp;&amp;!session.completedAt)session.completedAt=Date.now();write(session);}
+    function point(patch) {Object.assign(session.checkpoint,patch);save();}
+    function draft(index,fields) {records[index].draft={...records[index].draft,...fields};save();}
     function help(index, label) {
       const r = records[index];
       const phase = r.done ? &#x27;完成后回看&#x27; : r.first ? &#x27;首答后&#x27; : &#x27;首答前&#x27;;
       if (!r.helps.some(h =&gt; h.label === label &amp;&amp; h.phase === phase)) r.helps.push({label, phase});
+      save();
     }
     function submit(index, answer, correct = null, explanation = &#x27;&#x27;) {
       const r = records[index];
@@ -1861,13 +2083,15 @@ html&gt;body{padding:0}&lt;/style&gt;
       const attempt = {answer:String(answer).trim(), correct, explanation:String(explanation).trim(), helped:r.helps.some(h=&gt;h.phase !== &#x27;完成后回看&#x27;)};
       r.attempts.push(attempt);
       if (!r.first) r.first = {...attempt};
+      save();
       return true;
     }
     function note(index, text) {
       const notes = records[index].notes;
       if (text &amp;&amp; notes[notes.length-1] !== text) notes.push(String(text));
+      save();
     }
-    function finish(index, self = &#x27;&#x27;) { records[index].done = true; records[index].self = self; }
+    function finish(index, self = &#x27;&#x27;) { records[index].done = true; records[index].self = self; save(); }
     function status(r) {
       if (!r.first) return &#x27;未提交答案&#x27;;
       if (r.first.correct === null) return &#x27;表达 / 自检，未自动判分&#x27;;
@@ -1875,14 +2099,14 @@ html&gt;body{padding:0}&lt;/style&gt;
       return r.attempts.some(a=&gt;a.correct) ? &#x27;首答未通过，重试后通过&#x27; : &#x27;首答未通过，已查看方法或仍需帮助&#x27;;
     }
     function html() {
-      return `&lt;section class=&quot;learning-report&quot; aria-label=&quot;本次学习反馈&quot;&gt;&lt;h3&gt;本次学习反馈 · 5 题&lt;/h3&gt;&lt;p class=&quot;report-course&quot;&gt;${esc(title)}&lt;/p&gt;&lt;p class=&quot;report-note&quot;&gt;今天可以到这里。需要时截图给家长；首答与求助记录帮助发现下一步，不等于已经长期掌握。&lt;/p&gt;&lt;ol class=&quot;report-list&quot;&gt;${records.map((r,i)=&gt;{
+      return `&lt;section class=&quot;learning-report&quot; aria-label=&quot;本次学习反馈&quot;&gt;&lt;h3&gt;本次学习反馈 · ${records.filter(r=&gt;r.done).length} / 5 题完成&lt;/h3&gt;&lt;p class=&quot;report-course&quot;&gt;${esc(title)}&lt;/p&gt;${storageError?&#x27;&lt;p class=&quot;report-status&quot;&gt;本机保存未成功，请先截图保留这次记录。&lt;/p&gt;&#x27;:&#x27;&#x27;}&lt;p class=&quot;report-note&quot;&gt;记录按作答过程保留，随时可以截图给家长；首答与求助记录帮助发现下一步，不等于已经长期掌握。&lt;/p&gt;&lt;ol class=&quot;report-list&quot;&gt;${records.map((r,i)=&gt;{
         const first = r.first;
         const last = r.attempts[r.attempts.length-1];
         const laterExplanation = last?.explanation &amp;&amp; last.explanation !== first?.explanation;
-        return `&lt;li&gt;&lt;h4&gt;${i+1}. ${esc(r.title)}&lt;/h4&gt;${r.context?`&lt;p class=&quot;report-context&quot;&gt;${esc(r.context)}&lt;/p&gt;`:&#x27;&#x27;}&lt;p class=&quot;report-status&quot;&gt;${esc(status(r))}&lt;/p&gt;&lt;p&gt;&lt;b&gt;首次答案：&lt;/b&gt;&lt;span class=&quot;report-words&quot;&gt;${esc(first?.answer || &#x27;未提交，直接查看方法&#x27;)}&lt;/span&gt;&lt;/p&gt;${first?.explanation&amp;&amp;first.explanation!==first.answer?`&lt;p&gt;&lt;b&gt;首次解释：&lt;/b&gt;&lt;span class=&quot;report-words&quot;&gt;${esc(first.explanation)}&lt;/span&gt;&lt;/p&gt;`:&#x27;&#x27;}${last &amp;&amp; last !== first &amp;&amp; r.attempts.length&gt;1?`&lt;p&gt;&lt;b&gt;最后提交：&lt;/b&gt;${esc(last.answer)}&lt;/p&gt;`:&#x27;&#x27;}${laterExplanation?`&lt;p&gt;&lt;b&gt;修改后解释：&lt;/b&gt;${esc(last.explanation)}&lt;/p&gt;`:&#x27;&#x27;}&lt;p&gt;&lt;b&gt;帮助：&lt;/b&gt;${r.helps.length?r.helps.map(h=&gt;`${esc(h.phase)}·${esc(h.label)}`).join(&#x27;；&#x27;):&#x27;未打开提示或回看&#x27;}&lt;/p&gt;&lt;p&gt;有效提交 ${r.attempts.length} 次${r.self?`；自评：${esc(r.self)}`:&#x27;&#x27;}。&lt;/p&gt;${r.notes.map(n=&gt;`&lt;p class=&quot;report-note&quot;&gt;${esc(n)}&lt;/p&gt;`).join(&#x27;&#x27;)}&lt;/li&gt;`;
-      }).join(&#x27;&#x27;)}&lt;/ol&gt;&lt;p class=&quot;report-note&quot;&gt;只记录当前页面内的操作；纸上演算、外部求助无法自动识别。记录不上传，刷新或离开前请先截图。&lt;/p&gt;&lt;/section&gt;`;
+        return `&lt;li&gt;&lt;h4&gt;${i+1}. ${esc(r.title)}&lt;/h4&gt;${r.context?`&lt;p class=&quot;report-context&quot;&gt;${esc(r.context)}&lt;/p&gt;`:&#x27;&#x27;}&lt;p class=&quot;report-status&quot;&gt;${esc(status(r))}&lt;/p&gt;&lt;p&gt;&lt;b&gt;首次答案：&lt;/b&gt;&lt;span class=&quot;report-words&quot;&gt;${esc(first?.answer || (r.done?&#x27;未提交，直接查看方法&#x27;:&#x27;尚未提交&#x27;))}&lt;/span&gt;&lt;/p&gt;${first?.explanation&amp;&amp;first.explanation!==first.answer?`&lt;p&gt;&lt;b&gt;首次解释：&lt;/b&gt;&lt;span class=&quot;report-words&quot;&gt;${esc(first.explanation)}&lt;/span&gt;&lt;/p&gt;`:&#x27;&#x27;}${last &amp;&amp; last !== first &amp;&amp; r.attempts.length&gt;1?`&lt;p&gt;&lt;b&gt;最后提交：&lt;/b&gt;${esc(last.answer)}&lt;/p&gt;`:&#x27;&#x27;}${laterExplanation?`&lt;p&gt;&lt;b&gt;修改后解释：&lt;/b&gt;${esc(last.explanation)}&lt;/p&gt;`:&#x27;&#x27;}&lt;p&gt;&lt;b&gt;帮助：&lt;/b&gt;${r.helps.length?r.helps.map(h=&gt;`${esc(h.phase)}·${esc(h.label)}`).join(&#x27;；&#x27;):&#x27;未打开提示或回看&#x27;}&lt;/p&gt;&lt;p&gt;有效提交 ${r.attempts.length} 次${r.self?`；自评：${esc(r.self)}`:&#x27;&#x27;}。&lt;/p&gt;${!r.done&amp;&amp;Object.entries(r.draft||{}).some(([k,v])=&gt;typeof v===&#x27;string&#x27;&amp;&amp;v.trim()&amp;&amp;!k.startsWith(&#x27;$&#x27;))?`&lt;p&gt;&lt;b&gt;未提交草稿：&lt;/b&gt;&lt;span class=&quot;report-words&quot;&gt;${Object.entries(r.draft).filter(([k,v])=&gt;typeof v===&#x27;string&#x27;&amp;&amp;v.trim()&amp;&amp;!k.startsWith(&#x27;$&#x27;)).map(([k,v])=&gt;esc(v)).join(&#x27;；&#x27;)}&lt;/span&gt;&lt;/p&gt;`:&#x27;&#x27;}${r.notes.map(n=&gt;`&lt;p class=&quot;report-note&quot;&gt;${esc(n)}&lt;/p&gt;`).join(&#x27;&#x27;)}&lt;/li&gt;`;
+      }).join(&#x27;&#x27;)}&lt;/ol&gt;&lt;p class=&quot;report-note&quot;&gt;文字与操作记录自动保存在当前浏览器／桌面入口，不上传。纸上演算、外部求助无法自动识别；录音只在本次页面回听，不保存音频。&lt;/p&gt;&lt;/section&gt;`;
     }
-    return {records, help, submit, note, finish, html};
+    return {records, help, submit, note, finish, html, save, point, draft, checkpoint:session.checkpoint, get active(){return active;}, get index(){const i=records.findIndex(r=&gt;!r.done);return i&lt;0?5:i;}};
   }
   function reasonField(label = &#x27;留一句自己的理由&#x27;, placeholder = &#x27;一句话或一个算式就好，也可用键盘上的语音输入。&#x27;) {
     return `&lt;div class=&quot;evidence-reason&quot;&gt;&lt;label for=&quot;my-reason&quot;&gt;${esc(label)}&lt;/label&gt;&lt;textarea id=&quot;my-reason&quot; maxlength=&quot;500&quot; rows=&quot;2&quot; placeholder=&quot;${esc(placeholder)}&quot;&gt;&lt;/textarea&gt;&lt;label class=&quot;reason-unsure&quot;&gt;&lt;input type=&quot;checkbox&quot; id=&quot;reason-unsure&quot;&gt;我暂时说不清，先记下来&lt;/label&gt;&lt;p class=&quot;report-note&quot;&gt;这是本题的一部分，不另加题；先留自己的想法，再看参考。&lt;/p&gt;&lt;/div&gt;`;
@@ -1891,17 +2115,44 @@ html&gt;body{padding:0}&lt;/style&gt;
     const input = container.querySelector(&#x27;#my-reason&#x27;);
     return input?.value.trim() || (container.querySelector(&#x27;#reason-unsure&#x27;)?.checked ? &#x27;暂时说不清&#x27; : null);
   }
+  const bindings=new WeakMap();
+  function watchDraft(container,log,index) {
+    const previous=bindings.get(container);
+    if(previous) for(const type of [&#x27;input&#x27;,&#x27;change&#x27;,&#x27;click&#x27;])container.removeEventListener(type,previous,true);
+    const fields=log.records[index].draft || {};
+    container.querySelectorAll(&#x27;input,textarea,select&#x27;).forEach(el=&gt;{
+      const key=el.type===&#x27;radio&#x27;?&#x27;$radio:&#x27;+el.name:el.id;
+      if(!key || !(key in fields))return;
+      if(el.type===&#x27;radio&#x27;)el.checked=el.value===fields[key];
+      else if(el.type===&#x27;checkbox&#x27;)el.checked=fields[key];else el.value=fields[key];
+    });
+    container.querySelectorAll(&#x27;[data-answer],[data-choice]&#x27;).forEach(el=&gt;el.setAttribute(&#x27;aria-pressed&#x27;,String(Number(el.dataset.answer??el.dataset.choice)===fields.$choice)));
+    const listener=event=&gt;{
+      const el=event.target;
+      if(event.type===&#x27;click&#x27;) {
+        const button=el.closest(&#x27;[data-answer],[data-choice]&#x27;);
+        if(button&amp;&amp;!button.disabled)log.draft(index,{$choice:Number(button.dataset.answer??button.dataset.choice)});
+      } else if(el.matches(&#x27;input,textarea,select&#x27;)&amp;&amp;!el.disabled) {
+        const key=el.type===&#x27;radio&#x27;?&#x27;$radio:&#x27;+el.name:el.id;
+        if(key)log.draft(index,{[key]:el.type===&#x27;checkbox&#x27;?el.checked:el.value});
+      }
+    };
+    for(const type of [&#x27;input&#x27;,&#x27;change&#x27;,&#x27;click&#x27;])container.addEventListener(type,listener,true);
+    bindings.set(container,listener);
+  }
   function watchHelp(container, log, index) {
+    watchDraft(container,log,index);
     container.querySelectorAll(&#x27;details[data-help]&#x27;).forEach(details=&gt;details.addEventListener(&#x27;toggle&#x27;,()=&gt;{if(details.open) log.help(index,details.dataset.help);}));
   }
-  root.LearningFeedback = {create, esc, reasonField, readReason, watchHelp};
+  root.LearningFeedback = {create, esc, reasonField, readReason, watchHelp, watchDraft, history, courses, installMathBridge, get storageError(){return storageError;}};
   if (typeof module !== &#x27;undefined&#x27; &amp;&amp; module.exports) module.exports = root.LearningFeedback;
 })(typeof window !== &#x27;undefined&#x27; ? window : globalThis);
 
 function createPractice(root, config) {
   &#x27;use strict&#x27;;
   root.classList.add(&#x27;practice-lab&#x27;);
-  let run=null, picked=-1, unlocked=false, log=null;
+  let run=null, picked=-1, unlocked=false;
+  let log=LearningFeedback.create(config.math?&#x27;圆，遇上正方形&#x27;:&#x27;六年级语文 · 句式转换&#x27;,config.questions);
   const esc=LearningFeedback.esc;
   const button=(action,label,primary=false)=&gt;`&lt;button type=&quot;button&quot; data-action=&quot;${action}&quot; class=&quot;${primary?&#x27;pl-primary&#x27;:&#x27;&#x27;}&quot;&gt;${esc(label)}&lt;/button&gt;`;
   const find=s=&gt;root.querySelector(s);
@@ -1913,7 +2164,7 @@ function createPractice(root, config) {
   function home(focus=false) {
     render(`&lt;p class=&quot;pl-tag&quot;&gt;强化小练 · 固定 5 题&lt;/p&gt;&lt;h2&gt;换五个角度，看看会不会。&lt;/h2&gt;&lt;p&gt;${esc(config.intro)}&lt;/p&gt;&lt;p class=&quot;pl-small&quot;&gt;先自己试，再看提示或解析。做完 5 题，自动生成本次学习反馈。&lt;/p&gt;&lt;div class=&quot;pl-actions&quot;&gt;${button(&#x27;start&#x27;,&#x27;开始强化小练&#x27;,true)}&lt;/div&gt;&lt;details&gt;&lt;summary&gt;给陪练的大人&lt;/summary&gt;&lt;p&gt;${esc(config.parent)}&lt;/p&gt;&lt;/details&gt;&lt;details&gt;&lt;summary&gt;课外动手任务（另选时间）&lt;/summary&gt;&lt;p&gt;想把知识用到生活里时，再来试这个任务。&lt;/p&gt;${button(&#x27;project&#x27;,config.project.button)}&lt;/details&gt;`,focus);
   }
-  function start(){run={pos:0};log=LearningFeedback.create(config.math?&#x27;圆，遇上正方形&#x27;:&#x27;六年级语文 · 句式转换&#x27;,config.questions);question();}
+  function start(){run={pos:0};log=LearningFeedback.create(config.math?&#x27;圆，遇上正方形&#x27;:&#x27;六年级语文 · 句式转换&#x27;,config.questions,true);log.save();question();}
   function diagram(d){
     if(!d)return &#x27;&#x27;;
     let s=&#x27;&#x27;;
@@ -1931,6 +2182,9 @@ function createPractice(root, config) {
     const q=qNow(), writing=q.type===&#x27;writing&#x27;, final=run.pos===4;
     const body=writing?&#x27;&lt;label for=&quot;pl-writing&quot;&gt;先写自己的转述句&lt;/label&gt;&lt;textarea id=&quot;pl-writing&quot; maxlength=&quot;500&quot; rows=&quot;3&quot; placeholder=&quot;先留自己的句子，再看参考。&quot;&gt;&lt;/textarea&gt;&#x27;:q.options?`&lt;div class=&quot;pl-options&quot; role=&quot;radiogroup&quot; aria-labelledby=&quot;pl-title&quot;&gt;${q.options.map((o,i)=&gt;`&lt;label class=&quot;pl-option&quot;&gt;&lt;input type=&quot;radio&quot; name=&quot;pl-answer&quot; value=&quot;${i}&quot;&gt;&lt;span&gt;${esc(o)}&lt;/span&gt;&lt;/label&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;`:`&lt;label class=&quot;pl-small&quot; for=&quot;pl-number&quot;&gt;填数值，单位已写好&lt;/label&gt;&lt;div class=&quot;pl-number&quot;&gt;&lt;input type=&quot;text&quot; id=&quot;pl-number&quot; inputmode=&quot;decimal&quot; autocomplete=&quot;off&quot; aria-label=&quot;答案数值&quot;&gt;&lt;span&gt;${esc(q.unit)}&lt;/span&gt;&lt;/div&gt;`;
     render(`&lt;p class=&quot;pl-tag&quot;&gt;强化小练 · ${run.pos+1} / 5&lt;/p&gt;&lt;div class=&quot;pl-dots&quot; aria-hidden=&quot;true&quot;&gt;${config.questions.map((_,i)=&gt;`&lt;i class=&quot;pl-dot ${i&lt;run.pos?&#x27;done&#x27;:i===run.pos?&#x27;now&#x27;:&#x27;&#x27;}&quot;&gt;&lt;/i&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;&lt;p class=&quot;pl-small&quot;&gt;${esc(q.dimension)} · ${esc(q.skill)}${config.math?&#x27; · 计算取 π≈3.14&#x27;:&#x27;&#x27;}&lt;/p&gt;&lt;h3 id=&quot;pl-title&quot;&gt;${esc(q.title)}&lt;/h3&gt;${q.source?`&lt;p class=&quot;pl-source&quot;&gt;${esc(q.source)}&lt;/p&gt;`:&#x27;&#x27;}${diagram(q.diagram)}${q.task?`&lt;p&gt;${esc(q.task)}&lt;/p&gt;`:&#x27;&#x27;}${body}${final?LearningFeedback.reasonField(writing?&#x27;用几个字说明，你主要改了哪里？&#x27;:&#x27;用一句话或一个算式，说明为什么这样变。&#x27;):&#x27;&#x27;}&lt;div class=&quot;pl-hint&quot; hidden&gt;&lt;/div&gt;&lt;div class=&quot;pl-feedback&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;先试自己的想法；首次提交会保留。&lt;/div&gt;&lt;div class=&quot;pl-actions&quot;&gt;${button(&#x27;check&#x27;,writing?&#x27;保存原话，再对照&#x27;:&#x27;检查&#x27;,true)}${button(&#x27;hint&#x27;,&#x27;给我一点提示&#x27;)}${writing?&#x27;&#x27;:button(&#x27;solution&#x27;,&#x27;看解法&#x27;)}&lt;button type=&quot;button&quot; class=&quot;pl-primary&quot; data-action=&quot;next&quot; hidden&gt;${final?&#x27;查看学习反馈&#x27;:&#x27;下一题&#x27;}&lt;/button&gt;&lt;/div&gt;&lt;div id=&quot;pl-review&quot; hidden&gt;&lt;/div&gt;`,true);
+    LearningFeedback.watchDraft(root,log,run.pos);
+    picked=Number(log.records[run.pos].draft?.[&#x27;$radio:pl-answer&#x27;] ?? -1);
+    if(run.pos===4 &amp;&amp; log.records[run.pos].attempts.at(-1)?.correct!==false &amp;&amp; log.records[run.pos].first)selfReview(q,true);
   }
   function feedback(message,kind=&#x27;&#x27;){find(&#x27;.pl-feedback&#x27;).textContent=message;find(&#x27;.pl-feedback&#x27;).dataset.kind=kind;}
   function unlock(){
@@ -1939,12 +2193,12 @@ function createPractice(root, config) {
     [&#x27;check&#x27;,&#x27;hint&#x27;,&#x27;solution&#x27;].forEach(a=&gt;{const b=find(`[data-action=&quot;${a}&quot;]`);if(b)b.hidden=true;});
     find(&#x27;[data-action=&quot;next&quot;]&#x27;).hidden=false;
   }
-  function selfReview(q){
+  function selfReview(q,restoring=false){
     root.querySelectorAll(&#x27;input,textarea&#x27;).forEach(el=&gt;el.disabled=true);
     [&#x27;check&#x27;,&#x27;hint&#x27;,&#x27;solution&#x27;].forEach(a=&gt;{const b=find(`[data-action=&quot;${a}&quot;]`);if(b)b.hidden=true;});
     const review=find(&#x27;#pl-review&#x27;);review.hidden=false;
     review.innerHTML=`&lt;div class=&quot;evidence-review&quot;&gt;&lt;b&gt;参考思路，写法不必相同&lt;/b&gt;&lt;p&gt;${esc(q.reference||q.why)}&lt;/p&gt;${q.checks?`&lt;ul&gt;${q.checks.map(c=&gt;`&lt;li&gt;${esc(c)}&lt;/li&gt;`).join(&#x27;&#x27;)}&lt;/ul&gt;`:&#x27;&#x27;}&lt;p&gt;对照自己的原话：关系和理由说清了吗？&lt;/p&gt;&lt;div class=&quot;evidence-self&quot;&gt;${button(&#x27;self-clear&#x27;,&#x27;我已对照，说清了&#x27;)}${button(&#x27;self-help&#x27;,&#x27;我还需要帮助&#x27;)}&lt;/div&gt;&lt;/div&gt;`;
-    log.help(run.pos,&#x27;参考思路（提交后）&#x27;);
+    if(!restoring)log.help(run.pos,&#x27;参考思路（提交后）&#x27;);
   }
   function check(){
     if(unlocked)return;
@@ -1992,8 +2246,8 @@ function createPractice(root, config) {
     else if(a===&#x27;next&#x27;&amp;&amp;unlocked){run.pos++;if(run.pos===5)end();else question();}
     else if(a===&#x27;project&#x27;)project();
   });
-  home();
-  return {home,review(){if(run&amp;&amp;run.pos&lt;5)log.help(run.pos,&#x27;回看讲解或演示&#x27;);}};
+  if(log.active){run={pos:log.index};if(run.pos===5)end();else question();}else home();
+  return {home,active:log.active,review(){if(run&amp;&amp;run.pos&lt;5)log.help(run.pos,&#x27;回看讲解或演示&#x27;);}};
 }
 
 (() =&gt; {
@@ -2223,6 +2477,7 @@ function createPractice(root, config) {
   });
   applySaved(window.openai?.widgetState);
   const practice=createPractice(document.getElementById(&#x27;math-practice&#x27;),{&quot;math&quot;:true,&quot;parent&quot;:&quot;五题依次检查公式与单位、方包圆、圆包方的反向推导、半圆边界和变化规律。既看答案，也听孩子解释为什么这样算。&quot;,&quot;project&quot;:{&quot;button&quot;:&quot;小任务：轮子大一倍，会怎样？&quot;,&quot;title&quot;:&quot;同样滚一圈，谁走得远？&quot;,&quot;intro&quot;:&quot;准备两个直径约 4 cm 和 8 cm 的圆纸片、一张纸和尺子。先预测，再用测量检验。&quot;,&quot;steps&quot;:[&quot;先猜：大圆纸片滚一圈的路程，是小圆的几倍？如果比较面积，又是几倍？把理由说出来。&quot;,&quot;给圆纸片边缘各标一个起点，在纸上立着滚一圈；尽量不打滑。标出终点，用尺子量路程。&quot;,&quot;用“路程÷直径”算两次，看看是否都接近 3.14。若差得多，检查圆画得准不准、有没有打滑，再试一次。&quot;],&quot;reflect&quot;:&quot;滚一圈走的路程是周长。直径变成 2 倍，周长变成 2 倍，面积变成 4 倍。你的测量能支持哪个判断？&quot;},&quot;questions&quot;:[{&quot;title&quot;:&quot;圆的直径是 6 cm，周长和面积分别是多少？&quot;,&quot;options&quot;:[&quot;18.84 cm；28.26 cm²&quot;,&quot;37.68 cm；113.04 cm²&quot;,&quot;18.84 cm；9.42 cm²&quot;],&quot;answer&quot;:0,&quot;hint&quot;:&quot;先把直径除以 2，得到半径。周长用 2πr，面积用 πr²。&quot;,&quot;why&quot;:&quot;r=6÷2=3；周长≈2×3.14×3=18.84 cm；面积≈3.14×3×3=28.26 cm²。注意长度和面积的单位不同。&quot;,&quot;skill&quot;:&quot;周长与面积&quot;,&quot;source&quot;:null,&quot;task&quot;:null,&quot;diagram&quot;:{&quot;kind&quot;:&quot;circle&quot;,&quot;label&quot;:&quot;直径 d = 6 cm&quot;},&quot;wrong&quot;:[&quot;&quot;,&quot;这把直径当成了半径。先算 6÷2，再分别求周长和面积。&quot;,&quot;周长对了；面积需要半径乘自己，不能只算 πr。&quot;],&quot;dimension&quot;:&quot;基础理解&quot;},{&quot;title&quot;:&quot;方包圆：边长 10 cm，圆外的阴影面积是多少？&quot;,&quot;value&quot;:21.5,&quot;unit&quot;:&quot;cm²&quot;,&quot;hint&quot;:&quot;先求半径，再用“正方形面积−圆面积”。&quot;,&quot;why&quot;:&quot;r=10÷2=5；阴影≈10×10−3.14×5×5=21.5 cm²。&quot;,&quot;skill&quot;:&quot;阴影面积&quot;,&quot;diagram&quot;:{&quot;kind&quot;:&quot;outside&quot;,&quot;label&quot;:&quot;外方边长 10 cm；浅黄色是阴影&quot;},&quot;dimension&quot;:&quot;图形关系&quot;},{&quot;title&quot;:&quot;圆包方：正方形面积 36 cm²，圆的面积是多少？&quot;,&quot;value&quot;:56.52,&quot;unit&quot;:&quot;cm²&quot;,&quot;hint&quot;:&quot;先用正方形面积=2r²，求 r²；不用求出 r。&quot;,&quot;why&quot;:&quot;r²=36÷2=18；圆面积≈3.14×18=56.52 cm²。&quot;,&quot;skill&quot;:&quot;圆包方&quot;,&quot;diagram&quot;:{&quot;kind&quot;:&quot;inside&quot;,&quot;label&quot;:&quot;内方面积 36 cm²&quot;},&quot;dimension&quot;:&quot;反向推导&quot;},{&quot;title&quot;:&quot;半圆直径 10 cm，沿完整边界走一圈有多长？&quot;,&quot;value&quot;:25.7,&quot;unit&quot;:&quot;cm&quot;,&quot;hint&quot;:&quot;弯弯的半圆弧走完，还要沿直径走回去。&quot;,&quot;why&quot;:&quot;r=5；半圆周长≈3.14×5+10=25.7 cm。15.7 cm 只是弧长。&quot;,&quot;skill&quot;:&quot;半圆边界&quot;,&quot;diagram&quot;:{&quot;kind&quot;:&quot;semi&quot;,&quot;label&quot;:&quot;直径 10 cm；边界含直线&quot;},&quot;dimension&quot;:&quot;易错辨析&quot;},{&quot;title&quot;:&quot;半径变成原来的 2 倍，周长和面积怎样变？&quot;,&quot;options&quot;:[&quot;周长 2 倍，面积 2 倍&quot;,&quot;周长 4 倍，面积 4 倍&quot;,&quot;周长 2 倍，面积 4 倍&quot;],&quot;answer&quot;:2,&quot;hint&quot;:&quot;周长公式有一个 r，面积公式有两个 r。&quot;,&quot;why&quot;:&quot;2π×(2r) 是原周长的 2 倍；π×(2r)×(2r) 是原面积的 4 倍。&quot;,&quot;skill&quot;:&quot;比较变化&quot;,&quot;source&quot;:null,&quot;task&quot;:null,&quot;diagram&quot;:null,&quot;wrong&quot;:null,&quot;dimension&quot;:&quot;变式迁移&quot;}],&quot;intro&quot;:&quot;从认清半径，到看懂两种包法，再试试半圆和大小变化。&quot;});
+  if(practice.active)go(5);
   new ResizeObserver(entries=&gt;{width=Math.max(280,Math.round(entries[0].contentRect.width));draw();}).observe(root);
   refresh();
 })();
@@ -3056,7 +3311,7 @@ function createPractice(root, config) {
     { once: true },
   );
   // Match the trusted bootstrap element, not the same text in an authored title.
-  const frameHtml = srcdoc.replace(
+  let frameHtml = srcdoc.replace(
     '<script type="application/json" id="codex-visualization-widget-state">__CODEX_VISUALIZATION_WIDGET_STATE__<\/script>',
     () =>
       '<script type="application/json" id="codex-visualization-widget-state">' +
@@ -3091,6 +3346,9 @@ function createPractice(root, config) {
       // Ignore missing or invalid cache entries and measure the live frame.
     }
   }
+  LearningFeedback.installMathBridge(frame);
+  const learningSeed={sessions:LearningFeedback.history().filter(s=>s.courseId==='math')};
+  frameHtml=frameHtml.replace('<head>','<head><script>window.__learningSeed='+JSON.stringify(learningSeed).replace(/</g,'\\u003c')+';<\/script>');
   frame.srcdoc = frameHtml;
   delete frame.dataset.srcdoc;
 })();

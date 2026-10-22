@@ -22,3 +22,5 @@
 .school-grid .balance-card{grid-column:1/-1;border-top-color:#9bae78}.balance-card .card-sketch svg{max-width:100%}
 @media(min-width:621px){.school-grid .balance-card{position:relative;padding:23px 25px 17px}.school-grid .balance-card .card-sketch{position:absolute;right:30px;top:37px;width:150px;height:115px}.school-grid .balance-card h3{margin-top:26px;font-size:24px;max-width:calc(100% - 170px)}.school-grid .balance-card p{max-width:calc(100% - 170px)}}
 @media(min-width:621px){.school-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.school-grid .card-foot{flex-direction:row;align-items:center}}
+
+.records-entry{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 21px;border:1px solid #d5dfce;border-radius:15px;background:#edf1e6;margin:0 0 30px;color:#20574b}.records-entry strong{font-size:17px;font-weight:650}.records-entry small{display:block;color:#74806c;font-size:12px;margin-top:7px}.records-entry>span:last-child{font-size:25px}

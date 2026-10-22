@@ -40,7 +40,7 @@ let selectedFirst=null, firstLocked=false, questionIndex=1;
 function showPanel(id) {
   const nav=$(`[data-panel="${id}"]`);
   if(nav.disabled) return;
-  if(id==='lab' && !$('#practice').hidden && questionIndex<5 && !records[questionIndex].correct) records[questionIndex].review=true;
+  if(id==='lab' && !$('#practice').hidden && questionIndex<5 && !records[questionIndex].correct) {records[questionIndex].review=true;feedbackLog.help(questionIndex,'回看坐标轴实验');}
   document.querySelectorAll('.rocket-panel').forEach(panel=>panel.hidden=panel.id!==id);
   document.querySelectorAll('[data-panel]').forEach(button=>{
     const current=button.dataset.panel===id;
@@ -49,6 +49,7 @@ function showPanel(id) {
   });
   $(`#${id} h2`).focus({preventScroll:true});
   $('.rocket-tabs').scrollIntoView({block:'start'});
+  saveCharts();
 }
 document.querySelectorAll('[data-panel]').forEach(button=>button.onclick=()=>showPanel(button.dataset.panel));
 document.querySelectorAll('[data-first]').forEach(button=>button.onclick=()=>{
@@ -56,19 +57,21 @@ document.querySelectorAll('[data-first]').forEach(button=>button.onclick=()=>{
   selectedFirst=Number(button.dataset.first);
   document.querySelectorAll('[data-first]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
   $('#start-lab').disabled=false;
+  saveCharts();
   $('#first-feedback').textContent='已选好。去改变坐标轴，看看证据是否支持你的判断。';
 });
 $('#start-lab').onclick=()=>{
   if(selectedFirst===null) return;
   if(!firstLocked) {
     records[0]={first:$(`[data-first="${selectedFirst}"]`).textContent,attempts:1,hint:false,review:false,correct:selectedFirst===1};
+    feedbackLog.submit(0,records[0].first,records[0].correct);feedbackLog.finish(0);
     firstLocked=true;
     document.querySelectorAll('[data-first]').forEach(button=>button.disabled=true);
     $('#first-feedback').textContent='第一次判断已保留。你可以用实验检查它。';
     $('#start-lab').textContent='回到坐标轴实验 →';
   }
   $('[data-panel="lab"]').disabled=false;
-  showPanel('lab');
+  showPanel('lab');saveCharts();
 };
 
 function changeStart(start, touched=false) {
@@ -92,6 +95,7 @@ function changeStart(start, touched=false) {
     $('#first-review').hidden=false;
     $('#first-review').innerHTML=`<strong>回看第 1 题</strong><p>你最初选：${escapeText(records[0].first)}</p><p>${records[0].correct?'你的判断有数据支持。':selectedFirst===3?'现在可以作出有依据的判断：':'现在可以修正判断：'}实际多跑 4 公里。图上柱高的 5 倍，不能当成续航的 5 倍。变化是否重要，还需要任务背景。</p>`;
   }
+  if(touched){if(start===0||start===79)feedbackLog.note(0,`实验中把纵轴起点调到 ${start} 公里。`);if(seenStarts.size===2)feedbackLog.help(0,'提交后对照实验解析');saveCharts();}
 }
 $('#axis-start').oninput=event=>changeStart(Number(event.target.value),true);
 document.querySelectorAll('[data-axis]').forEach(button=>button.onclick=()=>changeStart(Number(button.dataset.axis),true));
@@ -105,16 +109,21 @@ const questions=[
   {skill:'换情境，修复图表',title:'两次各投 40 球：进了 30 球和 33 球。',context:'给队友做一张柱状图，让柱长公平比较两次命中数。请你拖动纵轴起点，再提交这个图表方案。',type:'chart',hint:'柱长要代表完整命中数，应该从哪里开始画？先找到完整数量的起点。',answer:0,explanation:'从 0 开始，柱长才对应完整的 30 和 33。后一次多进 3 球，命中数是前一次的 1.1 倍；两次都是投 40 球。'},
   {skill:'用证据写结论',title:'多出的 4 公里，对一次任务有用吗？',context:'旧款续航 80 公里，新款 84 公里。这次任务全程 82 公里，中途不能充电。只按这些教学数据比较续航，其他条件相同。',type:'writing'}
 ];
+let feedbackLog=LearningFeedback.create('两张图都没造假，为什么结论相反？',[{title:'读图判断',context:'同一组 80 和 84 公里的数据，两张图给出的印象不同。'},...questions.slice(1)]);
+function saveCharts() {feedbackLog.point({charts:{records,selectedFirst,firstLocked,questionIndex,seenStarts:[...seenStarts],axis:Number($('#axis-start').value),panel:document.querySelector('[data-panel].current')?.dataset.panel||'judge'}});}
 const box=$('#chart-question');
 function feedback(message, error=false) {
   $('#question-feedback').textContent=message;
   $('#question-feedback').classList.toggle('error',error);
 }
-function attempt(answer, correct) {
+function attempt(answer, correct,restoring=false) {
   const record=records[questionIndex];
+  if(!restoring){
+  feedbackLog.submit(questionIndex,answer,correct);if(correct)feedbackLog.finish(questionIndex);
   if(record.first===null) {record.first=answer;record.firstCorrect=correct;}
   record.attempts++;
-  record.correct=correct;
+  record.correct=correct;saveCharts();
+  }
   const q=questions[questionIndex];
   feedback(correct?q.explanation:'再检查一下比较的起点和数量关系。可以修改，也可以打开提示。',!correct);
   if(correct) {
@@ -131,9 +140,10 @@ function renderQuestion(focus=true) {
   if(q.type==='chart') body='<div class="chart-poster transfer-chart"><div id="transfer-chart"></div></div><div class="axis-controls transfer-controls"><label for="transfer-start">这张图的纵轴起点 <output id="transfer-value" for="transfer-start">29 球</output></label><input id="transfer-start" type="range" min="0" max="29" step="1" value="29"><div class="range-ends"><span>0</span><span>29</span></div><p>手指拖动；键盘可用方向键或 Home / End 调整。</p><button class="secondary" id="check-answer">提交我的图表方案</button></div>';
   if(q.type==='writing') body='<div class="chart-writing"><label for="my-conclusion">给海报写一句结论：说清真实变化，以及它对这次任务意味着什么。</label><textarea id="my-conclusion" maxlength="300" placeholder="先写自己的判断，再对照参考。"></textarea><p class="small-note">用自己的话就好，不按字数或关键词自动判对。</p><button class="primary" id="submit-conclusion">保存我的结论，再看参考</button></div><div id="writing-review" hidden></div>';
   box.innerHTML=`<div class="rocket-question"><div class="quiz-meta"><span>第 ${questionIndex+1} / 5 题 · ${q.skill}</span><span class="quiz-dots" aria-hidden="true">${Array.from({length:5},(_,i)=>`<i class="${i<=questionIndex?'active':''}"></i>`).join('')}</span></div><h3 id="question-heading" tabindex="-1">${q.title}</h3><p class="question-context">${q.context}</p>${body}<div class="rocket-feedback" role="status" id="question-feedback"></div>${q.hint?`<details class="quiz-help" id="question-hint"><summary>给我一点提示</summary><p>${q.hint}</p></details>`:''}${q.type==='writing'?'':`<button class="text-button return-lab" id="review-lab">回看坐标轴实验</button><div class="quiz-next"><span>可以修改答案，首次作答会保留。</span><button class="primary" id="next-question" disabled>下一题 →</button></div>`}</div>`;
+  LearningFeedback.watchDraft(box,feedbackLog,questionIndex);
   const hint=$('#question-hint');
   const record=records[questionIndex];
-  if(hint) hint.ontoggle=()=>{if(hint.open && !record.correct) record.hint=true;};
+  if(hint) hint.ontoggle=()=>{if(hint.open && !record.correct) {record.hint=true;feedbackLog.help(questionIndex,'题目提示');saveCharts();}};
   if(q.type==='number') {
     const check=()=>{
       const raw=$('#percent-answer').value;
@@ -156,32 +166,44 @@ function renderQuestion(focus=true) {
     $('#check-answer').onclick=()=>attempt(`纵轴起点 ${input.value} 球`,Number(input.value)===q.answer);
     draw();
   }
-  if(q.type==='writing') $('#submit-conclusion').onclick=()=>{
+  function saveConclusion(restoring=false){
     const answer=$('#my-conclusion').value.trim();
     if(!answer) {feedback('先留下一句自己的结论，再来对照。',true);return;}
-    records[4].first=answer;
-    records[4].attempts=1;
+    if(!restoring){feedbackLog.submit(4,answer,null);feedbackLog.help(4,'参考思路（提交后）');records[4].first=answer;records[4].attempts=1;saveCharts();}
     $('#my-conclusion').readOnly=true;
     $('#submit-conclusion').disabled=true;
     feedback('原话已保留。下面只做自检，不自动判断你的表达是否正确。');
     $('#writing-review').hidden=false;
     $('#writing-review').innerHTML='<div class="reference-answer"><strong>参考思路，不要求一字不差</strong><p>新款从 80 公里增加到 84 公里，多 4 公里（增加 5%）。这使它能完成全程 82 公里的任务，旧款不够。因此，这个变化对这次任务有用，但续航并没有变成 5 倍。</p><p>检查自己的结论：数据比较准确吗？是否用 82 公里的要求说明了判断？真实任务还要考虑路况与电量余量，本题只练给定条件下的判断。</p></div><div class="self-actions"><button class="secondary" data-self="clear">我已对照，两点都说清了</button><button class="secondary" data-self="help">这题我还需要帮助</button></div>';
-    box.querySelectorAll('[data-self]').forEach(button=>button.onclick=()=>{records[4].self=button.dataset.self;questionIndex=5;showFinish();});
+    box.querySelectorAll('[data-self]').forEach(button=>button.onclick=()=>{records[4].self=button.dataset.self;feedbackLog.finish(4,button.dataset.self==='clear'?'已说清（自评，未自动判分）':'还需要帮助');questionIndex=5;saveCharts();showFinish();});
   };
+  if(q.type==='writing'){ $('#submit-conclusion').onclick=()=>saveConclusion();if(record.first)saveConclusion(true);}
+  else if(record.first!==null)attempt(record.first,record.correct,true);
   if($('#review-lab')) $('#review-lab').onclick=()=>{if(!record.correct) record.review=true;showPanel('lab');};
-  if($('#next-question')) $('#next-question').onclick=()=>{questionIndex++;renderQuestion();};
+  if($('#next-question')) $('#next-question').onclick=()=>{questionIndex++;saveCharts();renderQuestion();};
   if(focus) {$('#question-heading').focus({preventScroll:true});$('.rocket-tabs').scrollIntoView({block:'start'});}
 }
 function showFinish() {
   const independent=records.slice(0,4).filter((record,i)=>(i===0?record.correct:record.firstCorrect) && !record.hint && !record.review).length;
   const labels=['读图判断','计算增幅','辨别推理错误','迁移并修复图表','独立表达与自检'];
-  box.innerHTML=`<div class="finish-star" aria-hidden="true">✳</div><h3 class="finish-title" tabindex="-1">5 题到站，今天可以收工。</h3><p class="question-context">前 4 题中，首次作答且未使用提示或回看就答对：<b>${independent} / 4</b>。第 5 题保留你的原话，由你自检，未自动判分。</p><div class="takeaway chart-explanation"><strong>带走三个检查动作</strong><p>读数值和单位 → 查坐标起点 → 用真实数量与任务要求判断。</p></div><details class="quiz-help"><summary>查看本次 5 题记录，方便截图交流</summary><ol class="result-list">${records.map((record,i)=>{
-    const status=i===4?(record.self==='clear'?'自评已说清，未自动判分':'自评仍需帮助'):i===0?(record.correct?'首答正确':selectedFirst===3?'首次保留判断，已看实验解析':'首答未选中有数据支持的结论，已看实验解析'):record.firstCorrect&&!record.hint&&!record.review?'首次独立答对':record.hint||record.review?'使用提示或回看后完成':'重试后完成';
-    return `<li><strong>${i+1}. ${labels[i]} · ${status}</strong><p class="own-answer">最初作答：${escapeText(record.first)}</p>${i>0&&i<4?`<p>提交 ${record.attempts} 次；${record.hint?'用过提示':'未用提示'}；${record.review?'回看过实验':'未回看实验'}。</p>`:''}</li>`;
-  }).join('')}</ol><p>本次记录保留在当前页面，刷新会重新开始；需要时先截图。没有上传作答内容。</p></details><div class="finish-actions"><a href="./">回到小站</a><button class="text-button" id="restart-charts">重新开始这 5 题</button></div>`;
-  $('#restart-charts').onclick=()=>window.location.reload();
+  box.innerHTML=`<div class="finish-star" aria-hidden="true">✳</div><h3 class="finish-title" tabindex="-1">5 题到站，今天可以收工。</h3><p class="question-context">前 4 题中，首次作答且未使用提示或回看就答对：<b>${independent} / 4</b>。第 5 题保留你的原话，由你自检，未自动判分。</p><div class="takeaway chart-explanation"><strong>带走三个检查动作</strong><p>读数值和单位 → 查坐标起点 → 用真实数量与任务要求判断。</p></div>${feedbackLog.html()}<div class="finish-actions"><a href="./">回到小站</a><button class="text-button" id="restart-charts">重新开始这 5 题</button></div>`;
+  $('#restart-charts').onclick=()=>{feedbackLog=LearningFeedback.create('两张图都没造假，为什么结论相反？',[{title:'读图判断',context:'同一组 80 和 84 公里的数据，两张图给出的印象不同。'},...questions.slice(1)],true);feedbackLog.save();window.location.reload();};
   box.querySelector('h3').focus({preventScroll:true});
   $('.rocket-tabs').scrollIntoView({block:'start'});
   $('#continue-practice').textContent='查看本次学习小结 →';
+}
+const savedCharts=feedbackLog.checkpoint.charts;
+if(savedCharts) {
+  records.splice(0,5,...savedCharts.records);
+  selectedFirst=savedCharts.selectedFirst;firstLocked=savedCharts.firstLocked;questionIndex=savedCharts.questionIndex;
+  savedCharts.seenStarts.forEach(v=>seenStarts.add(v));
+  document.querySelectorAll('[data-first]').forEach(button=>{button.disabled=firstLocked;button.setAttribute('aria-pressed',String(Number(button.dataset.first)===selectedFirst));});
+  $('#start-lab').disabled=selectedFirst===null;
+  if(firstLocked){$('[data-panel="lab"]').disabled=false;$('#start-lab').textContent='回到坐标轴实验 →';$('#first-feedback').textContent='上次的首次判断已恢复，继续检查证据。';}
+  changeStart(savedCharts.axis);
+  const panel=savedCharts.panel;
+  // Restore navigation without counting a new help event.
+  document.querySelectorAll('.rocket-panel').forEach(el=>el.hidden=el.id!==panel);
+  document.querySelectorAll('[data-panel]').forEach(button=>{const current=button.dataset.panel===panel;button.classList.toggle('current',current);if(current)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');});
 }
 renderQuestion(false);

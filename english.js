@@ -1,12 +1,12 @@
 'use strict';
 const stage = document.querySelector('#exercise');
 const labels = ['听懂意思','词组应用','表达选择','解决麻烦','换个场景'];
-const feedbackLog=LearningFeedback.create('英语 · 机器狗，还是一只真狗？',labels.map((title,i)=>({title,context:['听示范后判断说话者的选择与理由。','I need to ____ my dog every day.','Would you rather have a robot dog or a real dog? Why?','Your robot dog runs out of power in the park. What would you do?','Would you rather play a sport or play a video game this weekend? Why?'][i]})));
+let feedbackLog=LearningFeedback.create('英语 · 机器狗，还是一只真狗？',labels.map((title,i)=>({title,context:['听示范后判断说话者的选择与理由。','I need to ____ my dog every day.','Would you rather have a robot dog or a real dog? Why?','Your robot dog runs out of power in the park. What would you do?','Would you rather play a sport or play a video game this weekend? Why?'][i]})));
 const firstRecordings=Array(5).fill(null);
-const recordedFirst=Array(5).fill(false);
-let audioPlays=0;
+const recordedFirst=feedbackLog.records.map(r=>r.attempts.some(a=>a.answer.includes('录音')));
+let audioPlays=feedbackLog.checkpoint.audioPlays||0;
 const scriptText = "I would rather have a robot dog. I could take care of it, and it could explore with me. But what if it runs out of power?";
-let step = 0;
+let step = feedbackLog.index;
 let selected = null;
 let recorder = null;
 let stream = null;
@@ -54,7 +54,7 @@ function renderChoice() {
   const choices = first ? ['他更想要机器狗，还想和它一起探索。','他喜欢真狗，因为不需要照顾它。','他不喜欢宠物，只想买一块电池。'] : ['run out of','take care of','would rather'];
   stage.innerHTML = `<p class="task-kicker">${first ? '01 / LISTEN' : '02 / WORDS IN ACTION'}</p><h2 id="task-title" tabindex="-1">${first ? '先听听他的想法' : '照顾它，用哪个词组？'}</h2><p class="task-intro">${first ? '先不看文字，听一遍。抓住“选什么”和“为什么”就够了。' : '把词组放进句子里，再大声读出完整的一句。'}</p>${first ? `<div class="audio-block"><label for="model-audio">英文示范 · 可重复播放</label><audio id="model-audio" controls preload="metadata" src="assets/audio/robot-dog.m4a" aria-label="机器狗话题英语示范"></audio><p class="audio-fallback" id="audio-error" hidden>音频暂时无法播放。可以先看原文，试着读出来。</p></div><details data-help="英文原文"><summary>需要时，再看英文原文</summary><p lang="en">${scriptText}</p></details><p class="task-intro">哪一句最接近他的意思？</p>` : `<details data-help="词组卡与释义"><summary>需要时，看看词组卡</summary>${words()}</details><p class="english-prompt" lang="en">I need to <span class="blank">_____</span> my dog every day.</p><p class="tip">我每天都需要照顾我的狗。</p>`}<div class="answers" role="group" aria-label="选择答案">${choices.map((choice,i)=>`<button class="answer" data-choice="${i}" aria-pressed="false">${String.fromCharCode(65+i)}. ${esc(choice)}</button>`).join('')}</div><p class="feedback" id="feedback" role="status"></p>${footer('继续',true)}`;
   LearningFeedback.watchHelp(stage,feedbackLog,step);
-  stage.querySelector('#model-audio')?.addEventListener('play',()=>{audioPlays++;});
+  stage.querySelector('#model-audio')?.addEventListener('play',()=>{audioPlays++;feedbackLog.point({audioPlays});});
   stage.querySelector('#model-audio')?.addEventListener('error', () => {document.querySelector('#audio-error').hidden = false;});
   stage.querySelectorAll('[data-choice]').forEach(button => button.addEventListener('click', () => {
     selected = Number(button.dataset.choice);
@@ -80,17 +80,19 @@ function renderSpeaking() {
   LearningFeedback.watchHelp(stage,feedbackLog,step);
   stage.querySelector('#record').onclick=record;
   stage.querySelector('#erase').onclick=()=>erase();
-  stage.querySelector('#save-speech').onclick=()=>{
+  function saveSpeech(restoring=false){
     const own=LearningFeedback.readReason(stage);
     if(step===4&&!own){stage.querySelector('#speech-status').textContent='留下一句刚才的原话，方便回看；暂时说不清也可以如实勾选。';return;}
-    if(!feedbackLog.records[step].first)feedbackLog.submit(step,own||'自报已口述；未保留文字或录音',null);
-    else if(own)feedbackLog.note(step,'口述补记（自己填写，未自动核对录音）：'+own);
+    if(!restoring&&!feedbackLog.records[step].first)feedbackLog.submit(step,own||'自报已口述；未保留文字或录音',null);
+    else if(!restoring&&own)feedbackLog.note(step,'口述补记（自己填写，未自动核对录音）：'+own);
     stage.querySelectorAll('#record,#erase,#my-reason,#reason-unsure,#save-speech').forEach(el=>el.disabled=true);
     const review=stage.querySelector('#speech-review');review.hidden=false;
     review.innerHTML=`<div class="evidence-review"><b>一种示范，答案可以不同</b><p lang="en">${task.sample}</p><ul>${task.checks.map(c=>`<li>${c}</li>`).join('')}</ul><p>对照刚才的表达，自己判断；没有自动语音评分。</p><div class="evidence-self"><button data-self="能说清（自评）">我能说清</button><button data-self="还需要帮助">我还需要帮助</button></div></div>`;
-    feedbackLog.help(step,'示范表达（提交后）');
+    if(!restoring){feedbackLog.help(step,'示范表达（提交后）');feedbackLog.point({speechReview:step});}
     review.querySelectorAll('[data-self]').forEach(button=>button.onclick=()=>{feedbackLog.finish(step,button.dataset.self);review.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));stage.querySelector('#next').disabled=false;});
   };
+  stage.querySelector('#save-speech').onclick=()=>saveSpeech();
+  if(feedbackLog.checkpoint.speechReview===step)saveSpeech(true);
   if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
     stage.querySelector('#record').disabled = true;
     stage.querySelector('#record-status').textContent = '当前浏览器无法录音。直接说或留一句文字，一样可以完成。';
@@ -148,7 +150,7 @@ async function record() {
         const blob = new Blob(chunks,{type:active.mimeType || chunks[0].type});
         const url = URL.createObjectURL(blob); recordings.push(url); playback.src = url; playback.hidden = false;
         if(!recordedFirst[step]){firstRecordings[step]=url;recordedFirst[step]=true;}
-        feedbackLog.submit(step,recordedFirst[step]&&firstRecordings[step]===url?'首次录音（反馈页可回听，未自动转写）':'重新录音（首次内容仍保留）',null);
+        feedbackLog.submit(step,recordedFirst[step]&&firstRecordings[step]===url?'首次录音（只在当次页面回听，未保存音频或自动转写）':'重新录音（录音只在当次页面可回听）',null);
         stage.querySelector('#erase').hidden = false;
         status.textContent = '录好了。点播放回听：别人能听清你的意思吗？';
       } else {status.textContent = '这次没有录到声音，可以重新试试，或直接开口说。';}
@@ -178,7 +180,8 @@ async function record() {
 function renderFinish() {
   recordings.filter(url=>!firstRecordings.includes(url)).forEach(url=>URL.revokeObjectURL(url));
   recordings=recordings.filter(url=>firstRecordings.includes(url));
-  stage.innerHTML=`<div class="finish-emoji" aria-hidden="true">✳</div><p class="task-kicker">5 / 5 · TODAY’S EXPLORATION</p><h2 class="finish-title" id="task-title" tabindex="-1">5 个任务完成，今天到这里。</h2><p class="task-intro">前两题核对意思与词组；后三题保留表达与自评，不自动判断口语是否正确。</p>${feedbackLog.html()}<p class="tip">截图能保留文字和提示记录，不能代替听录音；未留文字的口述只能作为自报完成，不能据此判断表达质量。</p><div class="finish-actions"><a class="primary" href="./">回到小站</a><button class="text-button" id="review-words">再看一眼三个词组</button></div><div id="word-review" hidden>${words()}</div>`;
+  stage.innerHTML=`<div class="finish-emoji" aria-hidden="true">✳</div><p class="task-kicker">5 / 5 · TODAY’S EXPLORATION</p><h2 class="finish-title" id="task-title" tabindex="-1">5 个任务完成，今天到这里。</h2><p class="task-intro">前两题核对意思与词组；后三题保留表达与自评，不自动判断口语是否正确。</p>${feedbackLog.html()}<p class="tip">截图能保留文字和提示记录，不能代替听录音；未留文字的口述只能作为自报完成，不能据此判断表达质量。</p><div class="finish-actions"><a class="primary" href="./">回到小站</a><button class="text-button" id="restart-english">重做这 5 题</button><button class="text-button" id="review-words">再看一眼三个词组</button></div><div id="word-review" hidden>${words()}</div>`;
+  stage.querySelector('#restart-english').onclick=()=>{feedbackLog=LearningFeedback.create('英语 · 机器狗，还是一只真狗？',feedbackLog.records.map(r=>({title:r.title,context:r.context})),true);feedbackLog.save();window.location.reload();};
   firstRecordings.forEach((url,i)=>{if(url){const audio=document.createElement('audio');audio.controls=true;audio.src=url;audio.setAttribute('aria-label',`第 ${i+1} 题首次录音`);stage.querySelectorAll('.report-list>li')[i].append(audio);}});
   stage.querySelector('#review-words').onclick=()=>{const review=stage.querySelector('#word-review');review.hidden=!review.hidden;};
 }
