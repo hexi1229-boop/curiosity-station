@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'division',name:'细胞变多了，分工就会自动出现吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['细胞','生长','分裂','分化','组织','遗传信息'],description:'切换细胞变化模型，区分变大、变多和分工，再解释一份新的培养记录。',icon:'1→2',time:'8–12 分钟',fresh:true},
+    {id:'power',name:'3⁴是12吗？把乘方拆开看',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','乘方','底数','指数','括号','幂'],description:'展开因子卡，看清负号是否属于底数，再破解探测器复制游戏。',icon:'aⁿ',time:'8–12 分钟',fresh:true},
+    {id:'division',name:'细胞变多了，分工就会自动出现吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['细胞','生长','分裂','分化','组织','遗传信息'],description:'切换细胞变化模型，区分变大、变多和分工，再解释一份新的培养记录。',icon:'1→2',time:'8–12 分钟'},
     {id:'grid',name:'只差一个字母，地点能跑到哪儿？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['经纬网','纬度','经度','定位','赤道','方向'],description:'拖动探测点，分清N/S和E/W，再到一张新的局部图中寻找站点。',icon:'N/E',time:'8–12 分钟'},
     {id:'forces',name:'两个力一样大，就会互相抵消吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['力','受力对象','相互作用','二力平衡','合力','运动状态'],description:'把力按受力者分组，调节拉力，再解释书与无人机怎样平衡。',icon:'⇄',time:'8–12 分钟'},
     {id:'multiply',name:'负数乘负数，为什么是正数？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','乘法','分配律','负数','小数','零'],description:'改变两个因子，用分配律推理，再把负号放回潜水器的时间与方向。',icon:'×',time:'8–12 分钟'},
