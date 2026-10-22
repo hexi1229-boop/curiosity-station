@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'cell',name:'没有叶绿体，就不是植物细胞吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['细胞','细胞壁','细胞膜','细胞核','叶绿体','结构与功能'],description:'切换三种细胞样本，找到共同结构，再用证据解释差异。',icon:'◉',time:'8–12 分钟',fresh:true},
+    {id:'subtract',name:'减去负数，为什么反而变大？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','减法','负数','相反数','数轴','变化'],description:'切换求差与加相反数两种数轴表示，看清变大不等于变成正数。',icon:'−(−)',time:'8–12 分钟',fresh:true},
+    {id:'cell',name:'没有叶绿体，就不是植物细胞吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['细胞','细胞壁','细胞膜','细胞核','叶绿体','结构与功能'],description:'切换三种细胞样本，找到共同结构，再用证据解释差异。',icon:'◉',time:'8–12 分钟'},
     {id:'contour',name:'两条上山路，哪条更陡？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['等高线','等高距','海拔','相对高度','比例尺','陡缓'],description:'联动等高线和侧面图，用升高的高度与水平距离解释陡缓。',icon:'△',time:'8–12 分钟'},
     {id:'density',name:'更重的积木，材料就更“密”吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['密度','质量','体积','比值','材料'],description:'把两块材料调成相同体积，看清总质量与每单位体积质量的区别。',icon:'ρ',time:'8–12 分钟'},
     {id:'negative',name:'零下8℃和零下3℃，哪里更暖？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['负数','数轴','绝对值','相反数','比较'],description:'调节温度计与数轴，分清数更大和离零更远，再迁移到海面下的位置。',icon:'−3',time:'8–12 分钟'},
