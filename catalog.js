@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'elements',name:'只有一种元素，就一定是纯净物吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['元素','单质','化合物','物质分类','质子数','化学式','纯净物','混合物'],description:'切换氧气、臭氧和水的样品，分开数元素与物质，再给新的碳氧样品分类。',icon:'O₂/O₃',time:'8–12 分钟',fresh:true},
+    {id:'addition',name:'加上一个数，结果一定变大吗？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','加法','正负数','绝对值','相反数','分数','交换律','路程'],description:'让正负计分片配对，分清剩余的符号，再解释机器人回到原点为什么仍走了路。',icon:'＋/−',time:'8–12 分钟',fresh:true},
+    {id:'elements',name:'只有一种元素，就一定是纯净物吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['元素','单质','化合物','物质分类','质子数','化学式','纯净物','混合物'],description:'切换氧气、臭氧和水的样品，分开数元素与物质，再给新的碳氧样品分类。',icon:'O₂/O₃',time:'8–12 分钟'},
     {id:'pressure',name:'大脚板，为什么不容易陷下去？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['压强','压力','受力面积','帕','单位换算','控制变量','生活应用'],description:'改变压力和接触格数，比较每份面积承担多少，再解释雪地靴与窄刃口的不同设计。',icon:'F/S',time:'8–12 分钟'},
     {id:'character',name:'手在发抖，就一定胆小吗？',subject:'语文',group:'school',stages:['初中衔接','七年级'],tags:['人物分析','文学阅读','动作描写','语言描写','证据','情境'],description:'切换人物证据透镜，分清一时情绪与面对任务的选择，再独立分析新的海报故事。',icon:'人·证',time:'8–12 分钟'},
     {id:'hangar',name:'机库里有，就代表我有吗？',subject:'英语',group:'school',stages:['初中衔接','七年级'],tags:['there be','have','has','存现句','单复数','听力','口语','词汇'],description:'移动无人机、切换归属，看清位置与拥有，再用英语介绍一个新的补给站。',icon:'有？',time:'8–12 分钟'},
