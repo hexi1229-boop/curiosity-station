@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'curiosity-station-v3';
+const CACHE = 'curiosity-station-v5';
 const FILES = ['./','index.html','style.css','app.js','english.html','english.css','english.js','lesson.html','lessons/math.html','lessons/chinese.html','app.webmanifest','assets/icon.svg','assets/icon-180.png','assets/icon-192.png','assets/icon-512.png','assets/audio/robot-dog.m4a'];
 const urls = FILES.map(file=>new URL(file,self.location).href);
 self.addEventListener('install', event => {
