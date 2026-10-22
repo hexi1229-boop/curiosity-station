@@ -1,6 +1,6 @@
 'use strict';
-const CACHE = 'curiosity-station-v22';
-const FILES = ['./','index.html','style.css','app.js','learning-feedback.js','learning-feedback.css','records.html','records.css','records.js','learning-backup.js','catalog.js','catalog.css','courses.html','courses.js','reading.html','reading.css','reading-content.js','reading.js','english.html','english.css','english.js','rocket.html','rocket.css','rocket.js','scale.html','scale.css','scale.js','balance.html','balance.css','balance.js','balance-logic.mjs','charts.html','charts.css','charts.js','chart-logic.mjs','lesson.html','lessons/math.html','lessons/chinese.html','app.webmanifest','assets/icon.svg','assets/icon-180.png','assets/icon-192.png','assets/icon-512.png','assets/audio/robot-dog.m4a'];
+const CACHE = 'curiosity-station-v23';
+const FILES = ['./','index.html','style.css','app.js','learning-feedback.js','learning-feedback.css','records.html','records.css','records.js','learning-backup.js','catalog.js','catalog.css','courses.html','courses.js','reading.html','reading.css','equation.html','equation.css','equation-content.js','equation.js','reading-content.js','reading.js','english.html','english.css','english.js','rocket.html','rocket.css','rocket.js','scale.html','scale.css','scale.js','balance.html','balance.css','balance.js','balance-logic.mjs','charts.html','charts.css','charts.js','chart-logic.mjs','lesson.html','lessons/math.html','lessons/chinese.html','app.webmanifest','assets/icon.svg','assets/icon-180.png','assets/icon-192.png','assets/icon-512.png','assets/audio/robot-dog.m4a'];
 const urls = FILES.map(file=>new URL(file,self.location).href);
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
