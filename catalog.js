@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'density',name:'更重的积木，材料就更“密”吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['密度','质量','体积','比值','材料'],description:'把两块材料调成相同体积，看清总质量与每单位体积质量的区别。',icon:'ρ',time:'8–12 分钟',fresh:true},
+    {id:'contour',name:'两条上山路，哪条更陡？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['等高线','等高距','海拔','相对高度','比例尺','陡缓'],description:'联动等高线和侧面图，用升高的高度与水平距离解释陡缓。',icon:'△',time:'8–12 分钟',fresh:true},
+    {id:'density',name:'更重的积木，材料就更“密”吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['密度','质量','体积','比值','材料'],description:'把两块材料调成相同体积，看清总质量与每单位体积质量的区别。',icon:'ρ',time:'8–12 分钟'},
     {id:'negative',name:'零下8℃和零下3℃，哪里更暖？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['负数','数轴','绝对值','相反数','比较'],description:'调节温度计与数轴，分清数更大和离零更远，再迁移到海面下的位置。',icon:'−3',time:'8–12 分钟'},
     {id:'now',name:'平时常做，还是此刻正在做？',subject:'英语',group:'school',stages:['六年级','初中衔接','七年级'],tags:['一般现在时','现在进行时','语法','口语','词汇','习惯'],description:'切换日常周历与此刻镜头，再用英语说出自己的习惯和正在做的事。',icon:'am',time:'8–12 分钟'},
     {id:'tomato',name:'一颗番茄，是组织还是器官？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['结构层次','细胞','组织','器官','系统','植物'],description:'从整株番茄看到一个细胞，亲手排列层次，再用组成和功能说明理由。',icon:'◎',time:'8–12 分钟'},
