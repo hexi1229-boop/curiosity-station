@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'character',name:'手在发抖，就一定胆小吗？',subject:'语文',group:'school',stages:['初中衔接','七年级'],tags:['人物分析','文学阅读','动作描写','语言描写','证据','情境'],description:'切换人物证据透镜，分清一时情绪与面对任务的选择，再独立分析新的海报故事。',icon:'人·证',time:'8–12 分钟',fresh:true},
+    {id:'pressure',name:'大脚板，为什么不容易陷下去？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['压强','压力','受力面积','帕','单位换算','控制变量','生活应用'],description:'改变压力和接触格数，比较每份面积承担多少，再解释雪地靴与窄刃口的不同设计。',icon:'F/S',time:'8–12 分钟',fresh:true},
+    {id:'character',name:'手在发抖，就一定胆小吗？',subject:'语文',group:'school',stages:['初中衔接','七年级'],tags:['人物分析','文学阅读','动作描写','语言描写','证据','情境'],description:'切换人物证据透镜，分清一时情绪与面对任务的选择，再独立分析新的海报故事。',icon:'人·证',time:'8–12 分钟'},
     {id:'hangar',name:'机库里有，就代表我有吗？',subject:'英语',group:'school',stages:['初中衔接','七年级'],tags:['there be','have','has','存现句','单复数','听力','口语','词汇'],description:'移动无人机、切换归属，看清位置与拥有，再用英语介绍一个新的补给站。',icon:'有？',time:'8–12 分钟'},
     {id:'photosynthesis',name:'植物的糖，是从土里吸来的吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['光合作用','原料','产物','叶绿体','能量','有机物','水培'],description:'切换光照与原料，比较土培和水培，再辨清叶片中的淀粉是原来就有，还是现在新造。',icon:'光→糖',time:'8–12 分钟'},
     {id:'quotient',name:'分装小站：除法到底在找什么？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','除法','倒数','分数','零','反例','逆运算'],description:'分装6升水，用乘法检查商，辨清负号和0，再反求潜水器到达目标的时间。',icon:'÷',time:'8–12 分钟'},
