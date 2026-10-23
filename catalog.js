@@ -2,7 +2,8 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'parachute',name:'降落伞越大，就一定越好吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['降落伞','空气阻力','控制变量','工程设计','权衡','月球'],description:'亲手选伞、看落点，再接一份月球任务。用证据决定，而不只追求更大。',icon:'↘',time:'约 8–10 分钟',tasks:3,fresh:true},
+    {id:'glacier',name:'冰河时代调查局：这片没有冰的山谷，曾经有冰川吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['冰河时代','冰川','地貌','证据','科学推理','地理'],description:'先判断山谷，再让冰携带碎石走一遍；最后换地点查档案，看相似痕迹是否来自同一过程。',icon:'冰·证',time:'约 8–10 分钟',tasks:3,fresh:true},
+    {id:'parachute',name:'降落伞越大，就一定越好吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['降落伞','空气阻力','控制变量','工程设计','权衡','月球'],description:'亲手选伞、看落点，再接一份月球任务。用证据决定，而不只追求更大。',icon:'↘',time:'约 8–10 分钟',tasks:3},
     {id:'addition',name:'加上一个数，结果一定变大吗？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','加法','正负数','绝对值','相反数','分数','交换律','路程'],description:'让正负计分片配对，分清剩余的符号，再解释机器人回到原点为什么仍走了路。',icon:'＋/−',time:'8–12 分钟',fresh:true},
     {id:'elements',name:'只有一种元素，就一定是纯净物吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['元素','单质','化合物','物质分类','质子数','化学式','纯净物','混合物'],description:'切换氧气、臭氧和水的样品，分开数元素与物质，再给新的碳氧样品分类。',icon:'O₂/O₃',time:'8–12 分钟'},
     {id:'pressure',name:'大脚板，为什么不容易陷下去？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['压强','压力','受力面积','帕','单位换算','控制变量','生活应用'],description:'改变压力和接触格数，比较每份面积承担多少，再解释雪地靴与窄刃口的不同设计。',icon:'F/S',time:'8–12 分钟'},
