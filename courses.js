@@ -2,13 +2,14 @@
 const courseLink=c=>LearningFeedback.courses.find(row=>row[0]===c.id)[2];
 function courseCard(course,progress){
   const saved=progress[course.id],done=saved?.records.filter(r=>r.done).length;
-  const status=!saved?'未开始':done===5?'已完成 5 题练习':`进行中 · ${done} / 5 题`;
-  return `<a class="catalog-card ${course.group}" href="${courseLink(course)}"><div class="catalog-card-top"><span>${course.subject} · ${course.tags[0]}</span>${course.fresh?'<span class="fresh-label">新课</span>':''}</div><div class="catalog-symbol" aria-hidden="true">${course.icon}</div><h3>${course.name}</h3><p>${course.description}</p><div class="catalog-card-foot"><span>${course.time} · 固定 5 题</span><span>${status} ↗</span></div></a>`;
+  const total=saved?.records.length||course.tasks||5,unit=course.tasks?'环节':'题';
+  const status=!saved?'未开始':done===total?`已完成 ${total} ${unit}`:`进行中 · ${done} / ${total} ${unit}`;
+  return `<a class="catalog-card ${course.group}" href="${courseLink(course)}"><div class="catalog-card-top"><span>${course.subject} · ${course.tags[0]}</span>${course.fresh?'<span class="fresh-label">新课</span>':''}</div><div class="catalog-symbol" aria-hidden="true">${course.icon}</div><h3>${course.name}</h3><p>${course.description}</p><div class="catalog-card-foot"><span>${course.time} · ${course.tasks?`${course.tasks} 个探索环节`:'固定 5 题'}</span><span>${status} ↗</span></div></a>`;
 }
 function renderHome(){
   const result=CourseCatalog.home(LearningFeedback.history()),c=result.featured;
   const saved=result.progress[c.id],index=saved?.records.findIndex(r=>!r.done);
-  document.querySelector('#continue-card').innerHTML=`<div class="continue-copy"><p class="eyebrow">${result.continuing?'继续上次':saved?.records.every(r=>r.done)?'回顾一课':c.fresh?'从这里开始 · 新课':'接着学一点'}</p><h2>${c.name}</h2><p>${result.continuing?`第 ${index+1} / 5 题 · 之前的答案与草稿都在`:(c.id==='reading'?'先试一次，再看讲解。今天选一课就好。':'一次一课，固定 5 题。按自己的节奏来。')}</p><a class="start-link" href="${courseLink(c)}">${result.continuing?'继续学习':saved?.records.every(r=>r.done)?'回到这门课':'开始这一课'} <span aria-hidden="true">→</span></a></div><div class="continue-art" aria-hidden="true">${c.id==='reading'?'<span>题目</span><i>↓</i><span>证据</span><i>↓</i><span>结论</span>':`<span class="continue-symbol">${c.icon}</span>`}</div>`;
+  document.querySelector('#continue-card').innerHTML=`<div class="continue-copy"><p class="eyebrow">${result.continuing?'继续上次':saved?.records.every(r=>r.done)?'回顾一课':c.fresh?'从这里开始 · 新课':'接着学一点'}</p><h2>${c.name}</h2><p>${result.continuing?`第 ${index+1} / ${saved.records.length} ${c.tasks?'环节':'题'} · 之前的答案与草稿都在`:(c.id==='reading'?'先试一次，再看讲解。今天选一课就好。':c.tasks?'判断、动手验证、独立迁移。按自己的节奏来。':'一次一课，固定 5 题。按自己的节奏来。')}</p><a class="start-link" href="${courseLink(c)}">${result.continuing?'继续学习':saved?.records.every(r=>r.done)?'回到这门课':'开始这一课'} <span aria-hidden="true">→</span></a></div><div class="continue-art" aria-hidden="true">${c.id==='reading'?'<span>题目</span><i>↓</i><span>证据</span><i>↓</i><span>结论</span>':`<span class="continue-symbol">${c.icon}</span>`}</div>`;
   document.querySelector('#home-school').innerHTML=result.school.map(c=>courseCard(c,result.progress)).join('');
   document.querySelector('#home-explore').innerHTML=courseCard(result.explore,result.progress);
   if(LearningFeedback.storageError)document.querySelector('#home-local-note').textContent='暂时无法读取本机进度，仍可从课程库选课。';

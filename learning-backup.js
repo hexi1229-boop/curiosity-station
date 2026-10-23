@@ -20,12 +20,14 @@
     }
   }
   const attempt=a=>plain(a)&&text(a.answer)&&text(a.explanation)&&[true,false,null].includes(a.correct)&&typeof a.helped==='boolean';
+  const draftScalar=v=>text(v)||typeof v==='boolean'||Number.isFinite(v);
+  const draftValue=v=>draftScalar(v)||(Array.isArray(v)&&v.length<=100&&v.every(item=>item===null||draftScalar(item)));
   function record(r) {
     return plain(r)&&text(r.title)&&text(r.context)&&typeof r.done==='boolean'&&text(r.self)&&
       Array.isArray(r.attempts)&&r.attempts.every(attempt)&&
       (r.first===null?r.attempts.length===0:attempt(r.first)&&canonical(r.first)===canonical(r.attempts[0]))&&
       Array.isArray(r.helps)&&r.helps.every(h=>plain(h)&&text(h.label)&&['首答前','首答后','完成后回看'].includes(h.phase))&&
-      Array.isArray(r.notes)&&r.notes.every(text)&&maybe(r.draft,d=>plain(d)&&Object.values(d).every(v=>text(v)||typeof v==='boolean'||Number.isFinite(v)));
+      Array.isArray(r.notes)&&r.notes.every(text)&&maybe(r.draft,d=>plain(d)&&Object.values(d).every(draftValue));
   }
   const fruitList=v=>Array.isArray(v)&&v.every(n=>integer(n,1,9))&&new Set(v).size===v.length;
   function checkpoint(c,course) {
@@ -54,11 +56,12 @@
     s=root.LearningFeedback.resolveCourse?.(s) || s;
     const course=root.LearningFeedback.courses.find(c=>c[0]===s?.courseId);
     if(!plain(s)||s.version!==1||!id(s.id)||!course||course[1]!==s.title||!time(s.startedAt)||!time(s.updatedAt)||!maybe(s.completedAt,time)||!integer(s.revision)||
-      !maybe(s.backupOriginId,id)||!Array.isArray(s.records)||s.records.length!==5||!s.records.every(record)||!checkpoint(s.checkpoint,s.courseId))throw Error('备份中的课程记录不完整或版本不兼容，未导入任何记录。请保留原文件。');
+      !maybe(s.backupOriginId,id)||!root.LearningFeedback.validTaskCount(s)||!s.records.every(record)||!checkpoint(s.checkpoint,s.courseId))throw Error('备份中的课程记录不完整或版本不兼容，未导入任何记录。请保留原文件。');
     return s;
   }
   function readLocal() {
     const sessions=[];
+    let readingTitle='';
     try {
       const storage=root.localStorage;
       if(!storage)throw Error('unavailable');
@@ -66,11 +69,12 @@
         const key=storage.key(i);
         if(!key?.startsWith(prefix))continue;
         let session=JSON.parse(storage.getItem(key));
+        readingTitle=typeof session?.title==='string'?session.title:'无法识别的记录';
         safeTree(session);session=validate(session);
         if(key!==prefix+session.id)throw Error('mismatched key');
         sessions.push(session);
       }
-    } catch(_) {throw Error('未能完整读取本机记录，导出或导入未继续。请保留已有记录，可先截图备份。');}
+    } catch(_) {throw Error(`未能完整读取本机记录${readingTitle?'（'+readingTitle+'）':''}，导出或导入未继续。请保留已有记录，可先截图备份。`);}
     return sessions.sort((a,b)=>b.updatedAt-a.updatedAt);
   }
   function exportText() {
