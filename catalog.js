@@ -2,6 +2,7 @@
 (function(root){
   'use strict';
   const items=[
+    {id:'briefing',name:'任务单收起来，你能给队友讲清楚吗？',subject:'英语',group:'school',stages:['六年级','初中衔接','七年级'],tags:['口语','听力','转述','词块','任务沟通','澄清','通知'],description:'听原创任务音频，收起任务单自己说；再处理变更、追问缺口，用新出行表格独立回复队友。',icon:'Say it',time:'12–15 分钟',fresh:true},
     {id:'causal',name:'这句话是在讲原因，还是只说现象？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['原因','现象','因果','证据','说明性阅读','结论范围'],description:'读模型车日志，拼运输证据，再独立审查一份有对照组却仍归因过头的报道。',icon:'因·果',time:'12–15 分钟',fresh:true},
     {id:'discount',name:'打折再加运费，为什么不能一起乘？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['百分数','基数','整体','折扣','费用','配方','单位1'],description:'先留判断，再拖动优惠范围看哪笔钱被打折；换规则与配方表，自己认清整体和部分。',icon:'80%',time:'10–15 分钟',fresh:true},
     {id:'glacier',name:'冰河时代调查局：这片没有冰的山谷，曾经有冰川吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['冰河时代','冰川','地貌','证据','科学推理','地理'],description:'先判断山谷，再让冰携带碎石走一遍；最后换地点查档案，看相似痕迹是否来自同一过程。',icon:'冰·证',time:'约 8–10 分钟',tasks:3,fresh:true},

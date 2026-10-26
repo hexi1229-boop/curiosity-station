@@ -21,7 +21,8 @@
   task.innerHTML=`<div class="lesson-layout"><article class="lesson-scene">${q.scene||`<p>${esc(q.context)}</p>`}<p class="source-note">${esc(q.origin||L.origin||'原创教学材料')}</p></article><section class="reading-work"><p class="skill-label">${esc(q.skill)}</p><h2 id="lesson-question" tabindex="-1">${esc(q.title)}</h2><p class="lesson-context">${esc(q.instruction||'根据左侧材料作答；小屏幕上材料在题目上方。')}</p>${entry}<button class="primary" id="lesson-submit">${open?'先保存我的想法':'确认我的判断'}</button><div class="reading-message" id="lesson-message" role="status" aria-live="polite"></div><details class="reading-hint" data-help="本题提示"><summary>给我一点提示</summary><p>${esc(q.hint)}</p></details>${!open?'<button class="text-button" id="lesson-method">暂时不会，看看方法</button>':''}<div id="lesson-review" hidden></div><div id="lesson-lab"></div><div class="reading-next"><p>首答会保留。<br>不计时，不排名。</p><button class="primary" id="lesson-next" disabled>${n===Q.length-1?'看看学习反馈':'下一题'} →</button></div></section></div>`;
   const message=task.querySelector('#lesson-message'),submit=task.querySelector('#lesson-submit'),next=task.querySelector('#lesson-next');
   function say(s,error=false){message.textContent=s;message.dataset.error=String(error);}
-  function lab(){if(!L.lab||!L.labAt.includes(n)||task.querySelector('#lesson-lab').children.length)return;const stop=L.lab(task.querySelector('#lesson-lab'),current,n);if(typeof stop==='function')cleanup=stop;}
+  if(L.bindScene){const stopScene=L.bindScene(task.querySelector('.lesson-scene'),current,n);if(typeof stopScene==='function')cleanup=stopScene;}
+  function lab(){if(!L.lab||!L.labAt.includes(n)||task.querySelector('#lesson-lab').children.length)return;const stop=L.lab(task.querySelector('#lesson-lab'),current,n);if(typeof stop==='function'){const previous=cleanup;cleanup=()=>{previous();stop();};}}
   function lock(){task.querySelectorAll('[data-choice],[data-card],#lesson-number,#lesson-submit,#lesson-method').forEach(e=>e.disabled=true);say(q.explanation);next.disabled=false;lab();}
   function answer(){const text=task.querySelector('#lesson-answer').value.trim();if(!text&&!task.querySelector('#lesson-unsure').checked){say('先留一点自己的想法；暂时说不清也可以如实记录。',true);return null;}return text||'暂时说不清';}
   function review(){
@@ -34,6 +35,7 @@
   task.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{selected=Number(b.dataset.choice);task.querySelectorAll('[data-choice]').forEach(e=>e.setAttribute('aria-pressed',String(e===b)));});
   task.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.card);if(picks.includes(i))picks=picks.filter(x=>x!==i);else if(picks.length<q.pick)picks.push(i);else{say(`最多选${q.pick}张；先取消一张再换。`,true);return;}current.draft(n,{picks:[...picks]});drawCards();});
   submit.onclick=()=>{
+   if(L.beforeSubmit){const warning=L.beforeSubmit(n,current);if(warning){say(warning,true);return;}}
    if(open){const value=answer();if(!value)return;if(value!==r.attempts.at(-1)?.answer)current.submit(n,value,null,value);review();say('先对照自己的方法，再完成本题自检。');return;}
    let value,correct;
    if(q.kind==='choice'){if(selected===null||!q.options[selected]){say('先选一个判断，再确认。',true);return;}value=q.options[selected];correct=selected===q.answer;}
