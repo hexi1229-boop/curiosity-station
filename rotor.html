@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#20574b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <title>空气被吹走了，怎么还能托起无人机？· TY敏捷课堂</title>
+  <link rel="manifest" href="app.webmanifest"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="rotor.css">
+  <script src="learning-feedback.js" defer></script><script src="forces-content.js" defer></script><script src="rotor-model.js" defer></script><script src="rotor.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header rotor-header"><a class="back-link" href="forces.html">← 返回「力与平衡」原课</a><a class="back-link" href="records.html">学习记录 ↗</a></header>
+  <main class="rotor-main">
+    <section class="rotor-intro">
+      <p class="eyebrow">原课补充动画 / 无人机为什么能悬停</p>
+      <h1>空气被吹走了，<br>怎么还能<span>托起无人机？</span></h1>
+      <p class="rotor-lead"><strong>能流走，不等于没有质量。</strong>让空气向下加速需要力；空气也同时给旋翼一个向上的力。</p>
+      <p class="rotor-small">约 3 分钟 · 不增加练习题 · 下方粗箭头表示力，蓝点表示一小团空气</p>
+    </section>
+
+    <section class="rotor-lab" aria-label="旋翼与空气互动动画">
+      <div class="rotor-toolbar"><div><p class="rotor-kicker">先按播放，再试着改变转速</p><h2>空气往下走，力可以往上</h2></div><button class="primary" id="rotor-play" aria-pressed="false">播放动画</button></div>
+      <div class="rotor-controls">
+        <label class="rotor-speed" for="rotor-rpm">相对转速 <output id="rotor-rpm-value">100%</output><input type="range" id="rotor-rpm" min="0" max="120" step="1" value="100"></label>
+        <div class="rotor-environment"><span>保持转速，改变空气</span><div role="group" aria-label="空气密度"><button data-density="1" aria-pressed="true">普通空气</button><button data-density="0.5" aria-pressed="false">一半密度</button><button data-density="0" aria-pressed="false">真空</button></div></div>
+      </div>
+      <div class="rotor-views" role="group" aria-label="画哪些力"><button data-view="pair" aria-pressed="true">看相互作用：两个物体</button><button data-view="drone" aria-pressed="false">只看无人机受到的力</button></div>
+      <div class="rotor-lab-grid">
+        <div class="rotor-flow">
+          <p class="rotor-diagram-label">侧面示意 · 所有旋翼合并成一个等效圆盘</p>
+          <svg id="rotor-scene" viewBox="0 0 640 510" role="img" aria-label="旋翼使空气向下加速，同时受到空气向上的力">
+            <defs><marker id="rotor-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#24644e"/></marker><marker id="rotor-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#ad5c2d"/></marker></defs>
+            <path class="rotor-stream" d="M250 32Q264 180 270 470M390 32Q376 180 370 470"/>
+            <g id="rotor-parcels" fill="#438da7"></g>
+            <g class="rotor-machine"><path d="M320 220V282"/><rect x="287" y="261" width="66" height="39" rx="12"/><ellipse cx="320" cy="220" rx="119" ry="10"/><path id="rotor-blade" d="M207 220H433"/><circle cx="320" cy="220" r="9"/></g>
+            <text x="320" y="337" text-anchor="middle" class="rotor-machine-label">旋翼与机身</text>
+            <g id="rotor-air-force"><path id="rotor-down-arrow" d="M132 240V355" marker-end="url(#rotor-orange)"/><text x="20" y="392">旋翼推空气 ↓</text><text x="20" y="424" id="rotor-down-value">12.0 N</text></g>
+            <g id="rotor-drone-force"><path id="rotor-up-arrow" d="M492 220V105" marker-end="url(#rotor-green)"/><text x="435" y="49">空气推旋翼 ↑</text><text x="435" y="81" id="rotor-up-value">12.0 N</text></g>
+            <text x="320" y="501" text-anchor="middle" id="rotor-flow-caption">空气被持续向下加速；不需要地面。</text>
+          </svg>
+          <p class="rotor-small">蓝点是空气团的流动示意，非单个分子的碰撞；整机位置固定用于观察，画面不模拟飞行轨迹。</p>
+        </div>
+        <aside class="rotor-force-card">
+          <p class="rotor-kicker">单独研究无人机</p><h3>这两个力，才加在它身上</h3>
+          <svg id="rotor-balance" viewBox="0 0 300 310" role="img" aria-label="无人机向上的空气力与向下的重力"><defs><marker id="balance-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#24644e"/></marker><marker id="balance-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#6b7371"/></marker></defs><path id="balance-up" d="M150 160V78" marker-end="url(#balance-green)"/><path d="M150 160V242" class="balance-weight" marker-end="url(#balance-gray)"/><rect x="126" y="145" width="48" height="30" rx="9"/><path d="M103 142H197" class="balance-rotor"/><text x="150" y="27" text-anchor="middle">空气给无人机 ↑</text><text id="balance-up-value" x="150" y="51" text-anchor="middle">12.0 N</text><text x="150" y="280" text-anchor="middle">地球给无人机 ↓ 12.0 N</text></svg>
+          <p class="rotor-net" id="rotor-net">竖直合力 0.0 N</p><p id="rotor-motion">原来静止时，可以保持悬停。</p>
+          <p class="rotor-card-note">橙色那个向下的力作用于空气，不能搬到这张图里相减。这张受力图忽略静浮力和其他阻力。</p>
+        </aside>
+      </div>
+      <div class="rotor-controls rotor-bottom-controls"><label class="rotor-slow"><input type="checkbox" id="rotor-slow">慢放，看清空气持续经过</label><button id="rotor-step">前进一小步</button><button id="rotor-reset">恢复普通空气、100%转速</button></div>
+      <p class="rotor-status" id="rotor-status" role="status">普通空气：空气受到向下的力，旋翼同时受到等大的向上力。</p>
+    </section>
+
+    <section class="rotor-explain" aria-label="分步解释"><p class="rotor-kicker">把刚才看见的事连起来</p><h2>“空气会流动”为什么不妨碍它推你？</h2>
+      <ol><li><b>空气有质量，也有惯性。</b><p>一小团空气要改变速度，就需要受力。它能流走，只说明它的运动可以改变，不说明改变运动不需要力。</p></li><li><b>相互作用同时发生。</b><p>旋翼让空气整体向下加速的同时，空气就给旋翼向上的力。不是先把空气吹走，再等它回来，也不是等气流撞地反弹。</p></li><li><b>这一团走了，下一团继续来。</b><p>电机不断转动旋翼，周围空气不断被带入并向下加速。因此无人机能持续受力；要维持悬停，也得持续消耗电能。</p></li></ol>
+      <div class="rotor-key"><b>向下的是空气的运动；向上的是空气对旋翼的力。</b><p>“空气在往哪里走”和“空气给谁、往哪边的力”，是两个不同的问题。</p></div>
+    </section>
+
+    <details class="rotor-details" data-rotor-help="查看叶片表面的压力解释"><summary>再追一层：空气究竟怎么把向上的力传到叶片？</summary><div class="rotor-details-body"><p>旋翼叶片是一片在转动的小机翼。它有形状和安装角度，转动时改变周围的气流和压力。</p><div class="rotor-pressure"><span>叶片上方：通常压力较低，对叶片向下压得较少 ↓</span><svg viewBox="0 0 500 100" role="img" aria-label="旋翼叶片截面及上下表面的压力合力示意，图形不是精确压力分布"><path d="M55 65Q120 4 245 42L449 76Q242 58 55 65Z" fill="#c6d8c9" stroke="#537e68" stroke-width="2"/><path d="M240 87V12M232 23L240 12L248 23" fill="none" stroke="#24644e" stroke-width="5"/></svg><span>叶片下方：通常压力较高，对叶片向上推得较多 ↑</span></div><p><strong>把整个叶片表面各处的压力作用合起来，得到向上的空气动力。</strong>上表面和下表面都参与，不是只有下表面拍打空气。</p><p>从空气整体看，是空气获得向下的动量；从叶片表面看，是压力作用合成向上的力。这两种描述讲的是同一件事。</p></div></details>
+    <details class="rotor-details" data-rotor-help="查看流动空气的数量解释"><summary>用一组数字看：空气不断流走，力为什么还能持续？</summary><div class="rotor-details-body"><p>普通空气、100%转速时，假设每秒有 <b>0.50 kg</b> 空气通过足够大的观察区，从远处原本平均不向下运动，到下游平均向下 <b>24.0 m/s</b>。</p><p class="rotor-equation">每秒通过的空气质量 × 向下速度的增加<br><b>0.50 × 24.0 = 12.0 N</b></p><p>旋翼持续使空气获得向下的动量，对应空气给旋翼向上的12.0 N。这不是“12 kg空气托着它”，N是力的单位。</p><p id="rotor-numbers"></p><p class="rotor-small">采用理想稳态、远处压力恢复到环境压力的简化动量账本。数值用于理解，不对应真实机型；改变转速后的真实气流需要建立过程，动画直接切换到新的稳态。</p></div></details>
+    <details class="rotor-details" data-rotor-help="查看常见疑问"><summary>那它是空气浮力吗？在高空、真空中呢？</summary><div class="rotor-details-body"><p><b>悬停主要靠旋翼的空气动力，常称旋翼推力或升力。</b>气球那样的静浮力与排开空气有关；无人机停转时仍有很小的静浮力，但通常远不足以支撑整机。</p><p><b>不用蹬着地面。</b>远离地面仍能靠加速空气产生推力。靠近地面确实会有“地面效应”，影响气流和效率；它不是产生推力的必要条件，本动画不模拟它。</p><p><b>真空里转着也没有空气推力。</b>火箭能在真空工作，是因为携带并向后喷出推进剂；无人机的普通旋翼不行。真实高空不是完全真空，空气变稀时，同样的旋翼与转速通常产生更小推力。</p></div></details>
+    <details class="rotor-details"><summary>模型边界与知识来源</summary><div class="rotor-details-body"><p>原创教学示意，忽略叶尖涡、黏性、旋转尾流、瞬态、地面效应、空气阻力与很小的静浮力。固定叶片、固定桨距，理想稳态下推力与空气密度、转速平方成正比。真实推力还受机型、桨距、气流等影响。箭头只表示受力，蓝点只表示空气团位置；用整机示意等效全部旋翼。</p><p>数值关系：总推力 = 12 × 相对密度 × 相对转速² N；空气质量流率 = 0.5 × 相对密度 × 相对转速 kg/s，下游速度增量 = 24 × 相对转速 m/s。真空没有气流，速度数值不适用。受力图只做当前竖直受力分析，不从力的方向直接推断已有速度。</p><p>核对来源：<a href="https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/bernoulli-and-newton/" target="_blank" rel="noopener">NASA · Bernoulli and Newton</a>、<a href="https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/momentum-effects/" target="_blank" rel="noopener">NASA · Momentum Effects</a>、<a href="https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/what-is-lift/" target="_blank" rel="noopener">NASA · What is Lift?</a>。</p></div></details>
+    <div class="rotor-return"><p>看完后回原题，重新分清：哪两个力作用于无人机，哪两个力分属无人机与空气。</p><a class="primary" href="forces.html">回原课继续 →</a><p class="rotor-small">操作自动记在原课第5题的帮助与补充观察里；不新增题目、不替你判定“已经会了”。</p></div>
+    <noscript><p>请启用 JavaScript 使用互动动画。上方分步解释仍可阅读。</p></noscript>
+  </main>
+  <footer class="site-footer"><span>空气有质量。流动，也能传递力。</span><span id="offline-status" role="status">操作只保存在本机</span></footer>
+</body></html>

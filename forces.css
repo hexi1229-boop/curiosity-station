@@ -4,3 +4,5 @@
 @media(prefers-reduced-motion:reduce){.motion-cart.playing{animation:none;transform:translateX(120px)}}
 
 .force-task-context{font-size:14px;line-height:1.9;color:#5e7067;margin:0 0 22px}
+
+.forces-rotor-link{font-size:13px;line-height:1.9;margin-top:17px}.forces-rotor-link a{color:#24644e;text-decoration:underline;text-underline-offset:4px;display:inline-block;padding:7px 0}
