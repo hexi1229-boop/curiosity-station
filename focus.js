@@ -1,0 +1,7 @@
+'use strict';
+CurrentLesson.lab=function(slot,log,index){
+ slot.innerHTML='<details class="lesson-lab"><summary>短示例：换题目，重点段落为什么要跟着换？</summary><h3>同一段经历，三副取景框</h3><div class="lab-buttons" role="group" aria-label="切换写作题目"><button data-lens="0">《尊重》</button><button data-lens="1">《取舍》</button><button data-lens="2">《善意》</button></div><p id="lens-question" class="lab-result"></p><div id="lens-moments"></div><p id="lens-reason"></p><p id="lens-gap" class="lab-note"></p><p class="lab-note">亮起的片段建议展开，其余可压缩；这是对素材与题目关系的解释，不是统一段落模板。</p></details>';
+ const d=slot.querySelector('details');let i=Number.isInteger(log.checkpoint.writingLens)&&log.checkpoint.writingLens>=0&&log.checkpoint.writingLens<=2?log.checkpoint.writingLens:0;
+ function draw(){const l=CurrentLesson.lens(i);d.querySelectorAll('[data-lens]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.lens)===i)));d.querySelector('#lens-question').textContent=l.question;d.querySelector('#lens-moments').innerHTML=CurrentLesson.moments.map((s,n)=>`<p class="lens-moment ${l.keep.includes(n)?'keep':''}"><span>${l.keep.includes(n)?'展开':'压缩'}</span>${LearningFeedback.esc(s)}</p>`).join('');d.querySelector('#lens-reason').textContent=l.reason;d.querySelector('#lens-gap').textContent=l.gap;}
+ d.querySelectorAll('[data-lens]').forEach(b=>b.onclick=()=>{i=Number(b.dataset.lens);log.point({writingLens:i});log.help(index,'切换题目比较选材重点');draw();});d.addEventListener('toggle',()=>{if(d.open)log.help(index,'查看写作取景短示例');});draw();
+};

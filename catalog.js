@@ -2,6 +2,7 @@
 (function(root){
   'use strict';
   const items=[
+    {id:'focus',name:'写了一堆好事，为什么还是没扣住题？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['作文','审题','选材','扣题','细节描写','尊重','取舍','善意'],description:'切换题目看素材重点，区分好意与扣题；最后从聊天记录独立写一个有理由、有代价的选择。',icon:'题·事',time:'12–18 分钟',fresh:true},
     {id:'fairtest',name:'只改一个条件，结论就一定可信吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['实验设计','控制变量','测量','重复','证据','化学','生物'],description:'从试降报告找测量缺口，拖出完整记录看波动，最后自己修一份保温比较方案。',icon:'测·证',time:'12–15 分钟',fresh:true},
     {id:'briefing',name:'任务单收起来，你能给队友讲清楚吗？',subject:'英语',group:'school',stages:['六年级','初中衔接','七年级'],tags:['口语','听力','转述','词块','任务沟通','澄清','通知'],description:'听原创任务音频，收起任务单自己说；再处理变更、追问缺口，用新出行表格独立回复队友。',icon:'Say it',time:'12–15 分钟',fresh:true},
     {id:'causal',name:'这句话是在讲原因，还是只说现象？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['原因','现象','因果','证据','说明性阅读','结论范围'],description:'读模型车日志，拼运输证据，再独立审查一份有对照组却仍归因过头的报道。',icon:'因·果',time:'12–15 分钟',fresh:true},
