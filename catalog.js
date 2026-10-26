@@ -2,6 +2,7 @@
 (function(root){
   'use strict';
   const items=[
+    {id:'causal',name:'这句话是在讲原因，还是只说现象？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['原因','现象','因果','证据','说明性阅读','结论范围'],description:'读模型车日志，拼运输证据，再独立审查一份有对照组却仍归因过头的报道。',icon:'因·果',time:'12–15 分钟',fresh:true},
     {id:'discount',name:'打折再加运费，为什么不能一起乘？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['百分数','基数','整体','折扣','费用','配方','单位1'],description:'先留判断，再拖动优惠范围看哪笔钱被打折；换规则与配方表，自己认清整体和部分。',icon:'80%',time:'10–15 分钟',fresh:true},
     {id:'glacier',name:'冰河时代调查局：这片没有冰的山谷，曾经有冰川吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['冰河时代','冰川','地貌','证据','科学推理','地理'],description:'先判断山谷，再让冰携带碎石走一遍；最后换地点查档案，看相似痕迹是否来自同一过程。',icon:'冰·证',time:'约 8–10 分钟',tasks:3,fresh:true},
     {id:'parachute',name:'降落伞越大，就一定越好吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['降落伞','空气阻力','控制变量','工程设计','权衡','月球'],description:'亲手选伞、看落点，再接一份月球任务。用证据决定，而不只追求更大。',icon:'↘',time:'约 8–10 分钟',tasks:3},
