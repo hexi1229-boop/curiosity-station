@@ -4,12 +4,36 @@
  // The new route may open while a previous offline registry is still active.
  if(!F.courses.some(c=>c[0]===L.id))F.courses.unshift([L.id,L.title,'beiying.html']);
  let log=F.create(L.title,L.tasks),motion=0;
- $('article-text').innerHTML=L.paragraphs.map((p,i)=>`<p id="paragraph-${i+1}" data-paragraph="${i+1}"><span class="paragraph-number" aria-hidden="true">${i+1}</span>${esc(p)}</p>`).join('');
+ $('article-text').innerHTML=L.paragraphs.map((p,i)=>{
+  let html='',cursor=0;
+  L.annotations.forEach((a,k)=>{if(a.paragraph!==i+1)return;const at=p.indexOf(a.text,cursor);if(at<0)return;html+=esc(p.slice(cursor,at))+`<button type="button" class="annotated-word" data-annotation="${k}" aria-haspopup="dialog" aria-expanded="false" aria-controls="reading-annotation">${esc(a.text)}</button>`;cursor=at+a.text.length;});
+  return `<p id="paragraph-${i+1}" data-paragraph="${i+1}"><span class="paragraph-number" aria-hidden="true">${i+1}</span>${html+esc(p.slice(cursor))}</p>`;
+ }).join('');
  $('word-list').innerHTML=L.words.map(([w,s])=>`<div><dt>${esc(w)}</dt><dd>${esc(s)}</dd></div>`).join('');
  $('motion-quote').textContent=L.quotes[0].text;
  $('motion-buttons').innerHTML=L.motions.map((m,i)=>`<button type="button" data-motion="${i}" aria-pressed="${i===0}">${m.word}</button>`).join('');
  function drawMotion(){const m=L.motions[motion];$('motion-comment').innerHTML=`<strong>${esc(m.quote)}</strong><br>${esc(m.comment)}`;document.querySelectorAll('[data-motion]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.motion)===motion)));}
  function drawReport(){$('reading-report').innerHTML=log.active?log.html():'<p class="empty-work">这里可以先空着。阅读的位置、挑出的句子和便笺，会在你使用时自动留下。</p>';}
+ const annotation=$('reading-annotation');let wordButton=null;
+ function closeAnnotation(restoreFocus=false){const previous=wordButton;annotation.hidden=true;if(previous)previous.setAttribute('aria-expanded','false');wordButton=null;if(restoreFocus&&previous)previous.focus({preventScroll:true});}
+ function placeAnnotation(){
+  const r=wordButton.getBoundingClientRect(),v=window.visualViewport,left=v?v.offsetLeft:0,top=v?v.offsetTop:0,width=v?v.width:window.innerWidth,height=v?v.height:window.innerHeight;
+  annotation.style.maxWidth=(width-24)+'px';annotation.style.maxHeight=(height-24)+'px';const h=annotation.offsetHeight;
+  annotation.style.left=Math.max(left+12,Math.min(r.left,left+width-annotation.offsetWidth-12))+'px';
+  annotation.style.top=Math.max(top+12,Math.min(r.bottom+8+h<=top+height-12?r.bottom+8:r.top-h-8,top+height-h-12))+'px';
+ }
+ document.querySelectorAll('[data-annotation]').forEach(b=>b.onclick=()=>{
+  if(wordButton===b){closeAnnotation();return;}
+  closeAnnotation();wordButton=b;const a=L.annotations[Number(b.dataset.annotation)];
+  $('annotation-title').textContent=a.text;$('annotation-text').textContent=a.note;annotation.hidden=false;b.setAttribute('aria-expanded','true');placeAnnotation();annotation.focus({preventScroll:true});
+  log.note(0,'点读词句：'+a.text+'（阅读支持，不计作答求助，不代表已经理解）。');drawReport();
+ });
+ $('close-annotation').onclick=()=>closeAnnotation(true);
+ document.addEventListener('pointerdown',e=>{if(wordButton&&!annotation.contains(e.target)&&!e.target.closest('[data-annotation]'))closeAnnotation();});
+ document.addEventListener('keydown',e=>{if(wordButton&&e.key==='Escape'){e.preventDefault();closeAnnotation(true);}});
+ document.addEventListener('focusin',e=>{if(wordButton&&!annotation.contains(e.target)&&e.target!==wordButton)closeAnnotation();});
+ window.addEventListener('scroll',()=>closeAnnotation(),{passive:true});window.addEventListener('resize',()=>closeAnnotation());
+ if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>closeAnnotation());window.visualViewport.addEventListener('scroll',()=>closeAnnotation());}
  function drawQuoteChoices(){document.querySelectorAll('[data-keep]').forEach(b=>{const kept=$('kept-quote').value.trim()===L.quotes[Number(b.dataset.keep)].text;b.textContent=kept?'这句已带走 ✓':'把这句带走 ↗';b.setAttribute('aria-pressed',String(kept));});}
  function drawResume(){const p=L.paragraph(log.records[0].draft?.$paragraph),link=$('resume-reading');link.hidden=!p;if(p){link.href='#paragraph-'+p;link.textContent='从上次停留的第'+p+'段继续读 →';}}
  function draft(){log.draft(0,{quote:$('kept-quote').value,note:$('reading-note').value});$('note-status').textContent=F.storageError?'本机保存未成功，请复制或截图保留。':'便笺已自动保存在本机，下次可以接着读。';drawQuoteChoices();drawReport();}

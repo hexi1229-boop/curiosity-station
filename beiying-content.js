@@ -20,6 +20,28 @@
   ['举箸 · jǔ zhù、大去','举箸：拿起筷子；大去：这里指去世。末段引用了父亲来信中的话。'],
   ['底本中的旧写法','“二年馀”的“馀”指多出的部分；“狠轻松”的“狠”在这里相当于“很”。保留底本用字，不当作今天写作的规范示范。']
  ];
+ const annotations=[
+  {paragraph:1,text:'二年馀',note:'两年多。“馀”在这里与“余”意思相同，表示多出来的零头。'},
+  {paragraph:1,text:'差使也交卸了',note:'父亲原先的职务已经卸下，也就是失去了那份工作。“差使”在这里指职务。'},
+  {paragraph:1,text:'满院狼藉',note:'院子里乱七八糟。“狼藉”读 láng jí，形容杂乱的样子。'},
+  {paragraph:2,text:'变卖典质',note:'把家里的东西卖掉，或典当、抵押来换钱。“典质”指典当、抵押。'},
+  {paragraph:2,text:'父亲赋闲',note:'父亲失去了工作，闲居在家。“赋闲”在这里说的是没有工作的处境。'},
+  {paragraph:3,text:'勾留了一日',note:'在南京停留了一天。“勾留”在这里就是逗留。'},
+  {paragraph:3,text:'熟识的茶房',note:'认识的服务人员。“茶房”在这里指旅馆里做供应茶水等杂务的人。'},
+  {paragraph:3,text:'颇踌躇了一会',note:'犹豫了一会，拿不定主意。“颇”表示程度；“踌躇”读 chóu chú。'},
+  {paragraph:4,text:'暗笑他的迂',note:'“迂”（yū）指拘泥、不合时宜。这里是儿子当时觉得父亲的嘱托多余，还要接着读他后来的自省。'},
+  {paragraph:5,text:'蹒跚地走',note:'“蹒跚”（pán shān）形容走路缓慢、摇晃不稳。这里写父亲行走吃力。'},
+  {paragraph:5,text:'望回走',note:'往回走，朝儿子所在的这一边回来。“望”是底本保留的旧写法。'},
+  {paragraph:5,text:'狠轻松',note:'很轻松。“狠”在这里相当于“很”，保留原文底本的用字。'},
+  {paragraph:6,text:'如此颓唐',note:'“颓唐”（tuí táng）指精神萎靡、意气消沉。这里写父亲晚年的低落状态。'},
+  {paragraph:6,text:'情不能自已',note:'情绪激动，无法控制自己。“已”读 yǐ，这里有控制、止住的意思。'},
+  {paragraph:6,text:'情郁于中',note:'忧愁、气愤等积在心里。“中”指内心，后面的“发之于外”指把情绪表现出来。'},
+  {paragraph:6,text:'家庭琐屑',note:'家中细小而琐碎的事情。“琐屑”读 suǒ xiè。'},
+  {paragraph:6,text:'我北来后',note:'我来到北方（北京）以后。作者写作时在北京，“来”以自己所在的地方为立足点。'},
+  {paragraph:6,text:'膀子疼痛利害',note:'胳膊疼得厉害。“膀子”指胳膊；底本的“利害”在这里相当于今天的“厉害”。'},
+  {paragraph:6,text:'举箸提笔',note:'拿起筷子、提起笔。“箸”（zhù）就是筷子；父亲在说吃饭、写字都不方便。'},
+  {paragraph:6,text:'大去之期',note:'委婉地说去世的日子。这是父亲在信中担心自己离世的日子不远了。'}
+ ];
  const motions=[
   {word:'攀',quote:'他用两手攀着上面',comment:'手先抓住上面，给身体找一个着力处。一个“攀”字，让读者看见爬上去之前的吃力。'},
   {word:'缩',quote:'两脚再向上缩',comment:'“再”接着手的动作，脚往上收。写的不是一步跨上去，而是身体一点一点往上挪。'},
@@ -32,6 +54,6 @@
  ];
  function paragraph(value){return Number.isInteger(value)&&value>=1&&value<=paragraphs.length?value:null;}
  function compose(quote,note){return [String(quote||'').trim()?`摘句：${String(quote).trim()}`:'',String(note||'').trim()?`想法或疑问：${String(note).trim()}`:''].filter(Boolean).join('\n');}
- const lesson={id:'beiying',title,format:'readalong',paragraphs,words,motions,quotes,paragraph,compose,source:'https://zh.wikisource.org/w/index.php?title=背影&oldid=2570094',scan:'https://commons.wikimedia.org/wiki/File:SSID-11381220_背影.pdf',tasks:[{title:'我的共读便笺：一句话与一点想法',context:'朱自清《背影》全文共读。可自选一句，留下感受、解释或疑问；保存阅读位置与讨论轨迹，不自动判分，不强制写读后感。'}]};
+ const lesson={id:'beiying',title,format:'readalong',paragraphs,words,annotations,motions,quotes,paragraph,compose,source:'https://zh.wikisource.org/w/index.php?title=背影&oldid=2570094',scan:'https://commons.wikimedia.org/wiki/File:SSID-11381220_背影.pdf',tasks:[{title:'我的共读便笺：一句话与一点想法',context:'朱自清《背影》全文共读。可自选一句，留下感受、解释或疑问；保存阅读位置与讨论轨迹，不自动判分，不强制写读后感。'}]};
  root.ReadalongLesson=lesson;if(typeof module!=='undefined'&&module.exports)module.exports=lesson;
 })(typeof window!=='undefined'?window:globalThis);
