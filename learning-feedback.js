@@ -99,6 +99,7 @@
       save();
     }
     function finish(index, self = '') { records[index].done = true; records[index].self = self; save(); }
+    function reopen(index) { records[index].done = false; records[index].self = ''; delete session.completedAt; save(); }
     function status(r) {
       if (!r.first) return '未提交答案';
       if (r.first.correct === null) return '表达 / 自检，未自动判分';
@@ -106,6 +107,11 @@
       return r.attempts.some(a=>a.correct) ? '首答未通过，重试后通过' : '首答未通过，已查看方法或仍需帮助';
     }
     function html() {
+      if (title===courses.find(c=>c[0]==='focus')?.[1] && records.length===1) {
+        const r=records[0],first=r.first,last=r.attempts[r.attempts.length-1],draft=r.draft?.text;
+        const phases={'首答前':'初稿前','首答后':'留住初稿后','完成后回看':'收好后回看'};
+        return `<section class="learning-report" aria-label="本次写作过程"><h3>作品回看 · ${r.done?'已收好':'可继续写与改'}</h3><p class="report-course">${esc(title)}</p>${storageError?'<p class="report-status">本机保存未成功，请先截图保留这次文字。</p>':''}<p class="report-note">保留作品与表达选择，不自动判分，也不据此认定长期掌握。</p><ol class="report-list"><li><h4>${esc(r.title)}</h4><p><b>初稿：</b><span class="report-words">${esc(first?.answer||'还没有留住初稿，可以先读、先写。')}</span></p>${r.attempts.length>1?`<p><b>最近留稿：</b><span class="report-words">${esc(last.answer)}</span></p>`:''}${last?.explanation?`<p><b>这次修改的理由：</b><span class="report-words">${esc(last.explanation)}</span></p>`:''}${!r.done&&draft&&draft!==last?.answer?`<p><b>自动保存的草稿：</b><span class="report-words">${esc(draft)}</span></p>`:''}${!r.done&&r.draft?.reason&&r.draft.reason!==last?.explanation?`<p><b>草稿中的修改说明：</b>${esc(r.draft.reason)}</p>`:''}<p><b>写作提示：</b>${r.helps.length?r.helps.map(h=>`${esc(phases[h.phase]||h.phase)}·${esc(h.label)}`).join('；'):'未打开写作小提示（正常共读、品词句不计求助）'}</p><p>已留 ${r.attempts.length} 版文字${r.done?'；这次先收好，以后可继续改。':'；随时可回来接着写。'}</p>${r.notes.map(n=>`<p class="report-note">${esc(n)}</p>`).join('')}</li></ol><p class="report-note">记录仅保存在当前设备的浏览器／桌面入口，不上传。外部帮助无法自动识别。学习记录中的导出可用来备份、转移或交给家长分析。</p></section>`;
+      }
       return `<section class="learning-report" aria-label="本次学习反馈"><h3>本次学习反馈 · ${records.filter(r=>r.done).length} / ${records.length} ${records.length===5?'题':'环节'}完成</h3><p class="report-course">${esc(title)}</p>${storageError?'<p class="report-status">本机保存未成功，请先截图保留这次记录。</p>':''}<p class="report-note">记录按作答过程保留，随时可以截图给家长；首答与求助记录帮助发现下一步，不等于已经长期掌握。</p><ol class="report-list">${records.map((r,i)=>{
         const first = r.first;
         const last = r.attempts[r.attempts.length-1];
@@ -113,7 +119,7 @@
         return `<li><h4>${i+1}. ${esc(r.title)}</h4>${r.context?`<p class="report-context">${esc(r.context)}</p>`:''}<p class="report-status">${esc(status(r))}</p><p><b>首次答案：</b><span class="report-words">${esc(first?.answer || (r.done?'未提交，直接查看方法':'尚未提交'))}</span></p>${first?.explanation&&first.explanation!==first.answer?`<p><b>首次解释：</b><span class="report-words">${esc(first.explanation)}</span></p>`:''}${last && last !== first && r.attempts.length>1?`<p><b>最后提交：</b>${esc(last.answer)}</p>`:''}${laterExplanation?`<p><b>修改后解释：</b>${esc(last.explanation)}</p>`:''}<p><b>帮助：</b>${r.helps.length?r.helps.map(h=>`${esc(h.phase)}·${esc(h.label)}`).join('；'):'未打开提示或回看'}</p><p>有效提交 ${r.attempts.length} 次${r.self?`；自评：${esc(r.self)}`:''}。</p>${!r.done&&Object.entries(r.draft||{}).some(([k,v])=>typeof v==='string'&&v.trim()&&!k.startsWith('$'))?`<p><b>未提交草稿：</b><span class="report-words">${Object.entries(r.draft).filter(([k,v])=>typeof v==='string'&&v.trim()&&!k.startsWith('$')).map(([k,v])=>esc(v)).join('；')}</span></p>`:''}${r.notes.map(n=>`<p class="report-note">${esc(n)}</p>`).join('')}</li>`;
       }).join('')}</ol><p class="report-note">文字与操作记录自动保存在当前浏览器／桌面入口，不上传。纸上演算、外部求助无法自动识别；录音只在本次页面回听，不保存音频。</p></section>`;
     }
-    return {records, help, submit, note, finish, html, save, point, draft, checkpoint:session.checkpoint, get active(){return active;}, get index(){const i=records.findIndex(r=>!r.done);return i<0?records.length:i;}};
+    return {records, help, submit, note, finish, reopen, html, save, point, draft, checkpoint:session.checkpoint, get active(){return active;}, get index(){const i=records.findIndex(r=>!r.done);return i<0?records.length:i;}};
   }
   function reasonField(label = '留一句自己的理由', placeholder = '一句话或一个算式就好，也可用键盘上的语音输入。') {
     return `<div class="evidence-reason"><label for="my-reason">${esc(label)}</label><textarea id="my-reason" maxlength="500" rows="2" placeholder="${esc(placeholder)}"></textarea><label class="reason-unsure"><input type="checkbox" id="reason-unsure">我暂时说不清，先记下来</label><p class="report-note">这是本题的一部分，不另加题；先留自己的想法，再看参考。</p></div>`;
