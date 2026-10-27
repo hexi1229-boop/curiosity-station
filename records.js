@@ -22,9 +22,9 @@ function renderRecords() {
     const report=LearningFeedback.create(s.title,s.records.map(r=>({title:r.title})),true);
     report.records.splice(0,report.records.length,...s.records);
     const completed=s.records.filter(r=>r.done).length,total=s.records.length,unit=total===5?'题':'环节';
-    const workshop=s.courseId==='focus'&&total===1;
-    const progress=workshop?(completed?'作品已留存 · 可再修改':s.records[0].draft?.text?'有草稿，可续写':'共读记录 · 可继续写'):completed===total?`已完成 ${total} ${unit}`:`进行中 · ${completed} / ${total} ${unit}完成`;
-    return `<details class="saved-session" ${i===0?'open':''}><summary><span class="session-heading"><span class="session-date">${escapeRecord(date(s.startedAt))}${s.backupOriginId?' · 备份恢复':''}</span><strong>${escapeRecord(s.title)}</strong><span class="session-progress">${progress}</span></span><span class="session-toggle" aria-hidden="true">展开 / 收起</span></summary><div class="saved-body"><p class="saved-time">最后保存：${escapeRecord(date(s.updatedAt))}${s.completedAt?` · ${workshop?'收好':'完成'}：${escapeRecord(date(s.completedAt))}`:''}</p>${report.html()}${course?`<a class="secondary continue-lesson" href="${course[2]}">${workshop?'回到读写工坊':completed===total?'回到课程':'继续这门课的最近一次练习'} →</a>`:''}</div></details>`;
+    const workshop=s.courseId==='focus'&&total===1,readalong=s.courseId==='beiying'&&total===1;
+    const progress=readalong?(completed?'这次共读已收好':s.records[0].draft?.quote||s.records[0].draft?.note?'留了共读便笺':s.records[0].draft?.$paragraph?'阅读位置已保留':'有共读记录'):workshop?(completed?'作品已留存 · 可再修改':s.records[0].draft?.text?'有草稿，可续写':'共读记录 · 可继续写'):completed===total?`已完成 ${total} ${unit}`:`进行中 · ${completed} / ${total} ${unit}完成`;
+    return `<details class="saved-session" ${i===0?'open':''}><summary><span class="session-heading"><span class="session-date">${escapeRecord(date(s.startedAt))}${s.backupOriginId?' · 备份恢复':''}</span><strong>${escapeRecord(s.title)}</strong><span class="session-progress">${progress}</span></span><span class="session-toggle" aria-hidden="true">展开 / 收起</span></summary><div class="saved-body"><p class="saved-time">最后保存：${escapeRecord(date(s.updatedAt))}${s.completedAt?` · ${workshop||readalong?'收好':'完成'}：${escapeRecord(date(s.completedAt))}`:''}</p>${report.html()}${course?`<a class="secondary continue-lesson" href="${course[2]}">${readalong?'回到共读课':workshop?'回到读写工坊':completed===total?'回到课程':'继续这门课的最近一次练习'} →</a>`:''}</div></details>`;
   }).join('');
 }
 filter.onchange=renderRecords;
