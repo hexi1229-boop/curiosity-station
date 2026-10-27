@@ -3,7 +3,7 @@
   'use strict';
   const items=[
     {id:'repair',name:'错题修复①：数量、语境与判断',subject:'数学 · 语文 · 英语',subjects:['数学','语文','英语'],group:'school',stages:['六年级','初中衔接'],tags:['错题修复','倒数','工程问题','工作量','单位','多音字','词块','课文顺序'],description:'先逐题讲清关系，再用缩印图、制作进度表、营地日志等新任务检验；本轮固定5题，交卷后看反馈。',icon:'修复①',time:'讲解可分次 · 本轮约10分钟',format:'repair',fresh:true},
-    {id:'repair-words',name:'错题修复②：词句与表达',subject:'语文',group:'school',stages:['六年级','初中衔接'],tags:['错题修复','字形','名句','比喻','排比','分条表达','语境','阅读'],description:'辨词写字、按意思提取名句，再换到球场和图书馆比较表达；本轮固定5题，不追加作文。',icon:'修复②',time:'讲解可分次 · 本轮约10分钟',format:'repair',fresh:true},
+    {id:'repair-words',name:'错题修复②：词句与表达',subject:'语文',group:'school',stages:['六年级','初中衔接'],tags:['错题修复','字形','悬','悬停','名句','比喻','排比','分条表达','语境','阅读'],description:'辨词写字、按意思提取名句，再换到球场和图书馆比较表达；本轮固定5题，不追加作文。',icon:'修复②',time:'讲解可分次 · 本轮约10分钟',format:'repair',fresh:true},
     {id:'baicao',name:'共读《从百草园到三味书屋》：小园子里，藏着多少趣味？',readingTitle:'从百草园到三味书屋',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','鲁迅','百草园','三味书屋','词汇','句式','拟人','比喻','动作描写','阅读','北大'],description:'从北大游览认识鲁迅，读绍兴童年的草木、虫声和书屋。全文可分两次，点读词句、品句式和人物，不安排练笔。',icon:'共读',time:'可分两次 · 每次10—15分钟',format:'readalong',tasks:1,fresh:true},
     {id:'beiying',readingTitle:'背影',name:'共读《背影》：那个背影，为什么留在记忆里？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级','八年级'],tags:['共读课','朱自清','背影','散文','词汇','动作描写','叙述视角','语气','阅读'],description:'完整读一篇经典，挑一处聊动作、语气与前后看法；带走一句或一个疑问，阅读位置与便笺自动留存。',icon:'共读',time:'15—20分钟 · 可分次',format:'readalong',tasks:1,fresh:true},
     {id:'weighted',name:'两组平均数都有了，为什么不能再除以2？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['平均数','加权平均','总量','份数','统计','平均速度','逆推'],description:'改人数，看整体均值怎样移动；换成时间检验平均速度，最后从总量差额还原未知试飞次数。',icon:'总/份',time:'12–18 分钟',fresh:true},

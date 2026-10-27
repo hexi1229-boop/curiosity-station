@@ -4,6 +4,14 @@
  for(const round of L.rounds)if(!F.courses.some(c=>c[0]===round.id))F.courses.unshift([round.id,round.title,round.route]);
  const round=L.rounds[new URLSearchParams(location.search).get('round')==='2'?1:0];
  let log=F.create(round.title,round.questions),timer=null;
+ // A replaced question must not reinterpret a saved answer to the old question.
+ const carried=L.carryRecords(log.records,round.questions);
+ if(log.active&&carried.some(record=>record===null)){
+  const previous={...log.checkpoint};log=F.create(round.title,round.questions,true);
+  carried.forEach((record,i)=>{if(record){log.records[i]=record;log.note(i,'沿用更新前同一道题的已有记录，本次未要求重做已完成部分。');}});
+  log.point({...previous,mode:'study',examStarted:false,lessonIndex:4});
+  log.note(0,'本题已换为“悬”字新语境；更新前的整轮原记录另存保留，不将原题答案改判为新题答案。');
+ }
  const study=document.querySelector('#study-panel'),exam=document.querySelector('#exam-panel'),panel=document.querySelector('#exam-content'),article=document.querySelector('#explanation');
  document.querySelector(round.id==='repair'?'#round-one':'#round-two').setAttribute('aria-current','page');
  document.title=round.title+' · TY敏捷课堂';
@@ -31,7 +39,8 @@
  }
  function showStudy(){setMode('study');renderLesson(Number.isInteger(log.checkpoint.lessonIndex)?log.checkpoint.lessonIndex:0);}
  function renderWelcome(){
-  panel.innerHTML=`<section class="exam-welcome"><p class="eyebrow">${esc(round.label)}</p><h2>换了材料，还能自己用吗？</h2><p>本轮只有5题。先保留自己的答案，整轮交卷后再对照方法；不用赶时间，草稿会自动保存。</p><p class="small-note">可以返回讲解或打开提示，页面会记录回看情况。前面学过的讲解也会单独记下；这是讲解后的练习，不能当成从未接触知识的测评。</p><button class="primary" id="start-exam">开始本轮5题</button></section>`;
+  const remaining=log.records.filter(r=>!r.done).length;
+  panel.innerHTML=`<section class="exam-welcome"><p class="eyebrow">${esc(round.label)}</p><h2>换了材料，还能自己用吗？</h2><p>${remaining<5?`本轮仍是5题，已完成的${5-remaining}题沿用原记录，只需补${remaining}题。`:'本轮只有5题。'}先保留自己的答案，整轮交卷后再对照方法；不用赶时间，草稿会自动保存。</p><p class="small-note">可以返回讲解或打开提示，页面会记录回看情况。前面学过的讲解也会单独记下；这是讲解后的练习，不能当成从未接触知识的测评。</p><button class="primary" id="start-exam">${remaining<5?`继续本轮（补${remaining}题）`:'开始本轮5题'}</button></section>`;
   panel.querySelector('#start-exam').onclick=()=>{
    const seen=[...new Set(F.history().filter(s=>L.rounds.some(r=>r.id===s.courseId)).flatMap(s=>s.checkpoint.studySeen||[]))];
    round.questions.forEach((q,i)=>{const titles=L.lessons.filter(l=>seen.includes(l.id)&&q.sources.includes(l.id)).map(l=>l.title);log.note(i,titles.length?'本轮开始前，本专题页面展示过对应讲解：'+titles.join('；')+'。展示记录不是学会证明。':'本轮开始前没有本专题对应讲解的展示记录；不代表从未学过或没有外部帮助。');});
