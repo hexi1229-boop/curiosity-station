@@ -7,10 +7,11 @@
  // A replaced question must not reinterpret a saved answer to the old question.
  const carried=L.carryRecords(log.records,round.questions);
  if(log.active&&carried.some(record=>record===null)){
+  const changed=carried.map((record,i)=>record===null?i:-1).filter(i=>i>=0);
   const previous={...log.checkpoint};log=F.create(round.title,round.questions,true);
   carried.forEach((record,i)=>{if(record){log.records[i]=record;log.note(i,'沿用更新前同一道题的已有记录，本次未要求重做已完成部分。');}});
-  log.point({...previous,mode:'study',examStarted:false,lessonIndex:4});
-  log.note(0,'本题已换为“悬”字新语境；更新前的整轮原记录另存保留，不将原题答案改判为新题答案。');
+  log.point({...previous,mode:'study',examStarted:false,lessonIndex:L.lessons.findIndex(l=>l.id===round.questions[changed[0]].sources[0])});
+  changed.forEach(i=>log.note(i,'本题内容已更新；更新前的整轮原记录另存保留，不将原题答案改判为新题答案。'));
  }
  const study=document.querySelector('#study-panel'),exam=document.querySelector('#exam-panel'),panel=document.querySelector('#exam-content'),article=document.querySelector('#explanation');
  document.querySelector(round.id==='repair'?'#round-one':'#round-two').setAttribute('aria-current','page');
