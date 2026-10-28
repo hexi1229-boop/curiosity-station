@@ -3,6 +3,7 @@
   'use strict';
   const items=[
     {id:'repair',name:'错题修复站',subject:'数学 · 语文 · 英语',subjects:['数学','语文','英语'],group:'school',stages:['六年级','初中衔接'],tags:['错题修复','倒数','工程问题','工作量','单位','多音字','词块','课文顺序','字形','悬','悬停','名句','比喻','排比','分条表达','句式','标点','语境','阅读','动作描写'],description:'按薄弱点选择讲解与对应练习；9个讲解、10道变式可分次选，之前的答案与草稿都保留。',icon:'修复',time:'按需复习 · 可分次',format:'repair',sessionIds:['repair','repair-words']},
+    {id:'journey',name:'人停了，图上的线为什么还在？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['读图','时间','路程','分段关系','坐标','累计','变化量','函数入门'],description:'让人物移动与描点同步，切换离家距离和累计路程；再独立读机器人行程与水箱记录，分清图能说明什么。',icon:'读图',time:'10–15 分钟',tasks:4,fresh:true},
     {id:'baicao',name:'共读《从百草园到三味书屋》：小园子里，藏着多少趣味？',readingTitle:'从百草园到三味书屋',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','鲁迅','百草园','三味书屋','词汇','句式','拟人','比喻','动作描写','阅读','北大'],description:'从北大游览认识鲁迅，读绍兴童年的草木、虫声和书屋。全文可分两次，点读词句、品句式和人物，不安排练笔。',icon:'共读',time:'可分两次 · 每次10—15分钟',format:'readalong',tasks:1,fresh:true},
     {id:'beiying',readingTitle:'背影',name:'共读《背影》：那个背影，为什么留在记忆里？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级','八年级'],tags:['共读课','朱自清','背影','散文','词汇','动作描写','叙述视角','语气','阅读'],description:'完整读一篇经典，挑一处聊动作、语气与前后看法；带走一句或一个疑问，阅读位置与便笺自动留存。',icon:'共读',time:'15—20分钟 · 可分次',format:'readalong',tasks:1,fresh:true},
     {id:'weighted',name:'两组平均数都有了，为什么不能再除以2？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['平均数','加权平均','总量','份数','统计','平均速度','逆推'],description:'改人数，看整体均值怎样移动；换成时间检验平均速度，最后从总量差额还原未知试飞次数。',icon:'总/份',time:'12–18 分钟',fresh:true},
