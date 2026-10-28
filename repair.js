@@ -2,8 +2,21 @@
 (function(){
  const L=RepairLesson,F=LearningFeedback,esc=F.esc;
  for(const round of L.rounds)if(!F.courses.some(c=>c[0]===round.id))F.courses.unshift([round.id,round.title,round.route]);
- const round=L.rounds[new URLSearchParams(location.search).get('round')==='2'?1:0];
+ const params=new URLSearchParams(location.search),round=L.rounds[params.get('round')==='2'?1:0];
+ function route(r,key,value){return 'repair.html?round='+(L.rounds.indexOf(r)+1)+(key?'&'+key+'='+encodeURIComponent(value):'');}
+ function related(id){return L.rounds.flatMap(r=>r.questions.map((q,i)=>({r,q,i}))).filter(x=>x.q.sources.includes(id));}
+ function label(r){return r.id==='repair'?'数量、语境与判断':'词句与表达';}
+ function renderHub(){
+  const hub=document.querySelector('#repair-hub'),history=F.history(),latest=L.rounds.map(r=>({r,s:history.find(s=>s.courseId===r.id)}));
+  const recent=latest.filter(x=>x.s).sort((a,b)=>b.s.updatedAt-a.s.updatedAt)[0];
+  hub.hidden=false;
+  hub.innerHTML=`<div class="repair-hub-heading"><h2>今天想弄懂哪一点？</h2><p>看讲解或直接练都可以；同一道练习的首答只保留一份，回来能接着做。</p>${recent?`<a class="repair-resume" href="${route(recent.r,'resume','1')}">继续上次 · ${esc(label(recent.r))} →</a>`:''}</div>${['数学','英语','语文'].map(subject=>`<section class="repair-subject"><h3>${subject}</h3><div class="repair-topic-grid">${L.lessons.filter(l=>l.subject===subject).map(l=>{const links=related(l.id);return `<article class="repair-topic"><h4>${esc(l.title)}</h4><p>${esc(l.focus)}</p><a class="repair-study-link" href="${route(links[0].r,'lesson',l.id)}">看讲解 →</a><div class="repair-practice-links"><span>对应变式</span>${links.map(({r,q,i})=>{const record=latest.find(x=>x.r===r)?.s?.records[i],current=record?.title===q.title&&record.context===[q.context,q.source,q.task].filter(Boolean).join(' '),status=current&&record.done?'已作答 · 看反馈':current&&(record.draft?.answer||Number.isInteger(record.draft?.choice)&&record.draft.choice>=0)?'有草稿 · 继续':'练一练';return `<a href="${route(r,'practice',q.id)}"><b>${esc(q.title)}</b><small>${status} ↗</small></a>`;}).join('')}</div></article>`;}).join('')}</div></section>`).join('')}<p class="small-note">关联到多个知识点的同一道题只记一次。已有首答、提示、订正与草稿仍在<a href="records.html">学习记录</a>里；这里的已作答不等于已经掌握。</p>`;
+ }
+ if(!params.has('round')&&!params.has('lesson')&&!params.has('practice')&&!params.has('resume')){renderHub();return;}
+ document.querySelector('#repair-workspace').hidden=false;
  let log=F.create(round.title,round.questions),timer=null;
+ let practiceIndex=round.questions.findIndex(q=>q.id===params.get('practice'));
+ if(practiceIndex<0)practiceIndex=Number.isInteger(log.checkpoint.practiceIndex)&&log.checkpoint.practiceIndex>=0&&log.checkpoint.practiceIndex<round.questions.length?log.checkpoint.practiceIndex:null;
  // A replaced question must not reinterpret a saved answer to the old question.
  const carried=L.carryRecords(log.records,round.questions);
  if(log.active&&carried.some(record=>record===null)){
@@ -45,8 +58,7 @@
  document.addEventListener('focusin',event=>{if(wordButton&&!readingNote.contains(event.target)&&event.target!==wordButton)closeReadingNote();});
  window.addEventListener('scroll',()=>closeReadingNote(),{passive:true});window.addEventListener('resize',()=>closeReadingNote());
  if(window.visualViewport){window.visualViewport.addEventListener('scroll',()=>closeReadingNote());window.visualViewport.addEventListener('resize',()=>closeReadingNote());}
- document.querySelector(round.id==='repair'?'#round-one':'#round-two').setAttribute('aria-current','page');
- document.title=round.title+' · TY敏捷课堂';
+ document.title='错题修复站 · TY敏捷课堂';
  function stopModel(){if(timer!==null){clearInterval(timer);timer=null;}}
  function setMode(mode){stopModel();closeReadingNote();study.hidden=mode!=='study';exam.hidden=mode==='study';document.querySelector('#study-tab').setAttribute('aria-pressed',String(mode==='study'));document.querySelector('#exam-tab').setAttribute('aria-pressed',String(mode!=='study'));log.point({mode});}
  function focusPanel(el){el.focus({preventScroll:true});el.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
@@ -61,34 +73,35 @@
  }
  function renderLesson(index,focus=false){
   stopModel();closeReadingNote();index=Math.max(0,Math.min(L.lessons.length-1,index));const item=L.lessons[index];
-  if(log.checkpoint.examStarted)round.questions.forEach((q,i)=>{if(q.sources.includes(item.id)&&!log.records[i].done)log.help(i,'考试中回看讲解：'+item.title);});
+  if(log.checkpoint.examStarted)round.questions.forEach((q,i)=>{const record=log.records[i],started=practiceIndex===null||record.notes.some(n=>n.startsWith('本题开始前'));if(started&&q.sources.includes(item.id)&&!record.done)log.help(i,'答题中回看讲解：'+item.title);});
   const seen=[...new Set([...(log.checkpoint.studySeen||[]),item.id])];log.point({lessonIndex:index,studySeen:seen});
   document.querySelector('#lesson-list').innerHTML=L.lessons.map((l,i)=>`<button data-lesson="${i}" aria-current="${i===index}"><span>${i+1} · ${esc(l.subject)}</span>${esc(l.title)}</button>`).join('');
   document.querySelectorAll('[data-lesson]').forEach(button=>button.onclick=()=>renderLesson(Number(button.dataset.lesson),true));
   article.innerHTML=`<p class="eyebrow">讲解 ${index+1} / ${L.lessons.length} · ${esc(item.subject)}</p><h2>${esc(item.title)}</h2><p class="focus-line">${esc(item.focus)}</p><div class="source-question"><small>原题要解决的问题</small>${esc(item.source)}</div>${item.body}<p class="takeaway"><b>带走这一点：</b>${esc(item.takeaway)}</p>`;
+  article.querySelector('.focus-line').insertAdjacentHTML('afterend',`<div class="lesson-practice-links"><span>想检验一下？</span>${related(item.id).map(({r,q})=>`<a href="${route(r,'practice',q.id)}">${esc(q.title)} →</a>`).join('')}</div>`);
   addReadingNotes();
   article.querySelectorAll('[data-close-reading]').forEach(button=>button.onclick=()=>{
    const reading=button.closest('details'),summary=reading.querySelector('summary');reading.open=false;summary.focus({preventScroll:true});summary.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   });
-  const previous=document.querySelector('#previous-lesson'),next=document.querySelector('#next-lesson');previous.disabled=index===0;previous.onclick=()=>renderLesson(index-1,true);next.textContent=index===L.lessons.length-1?'进入本轮5题':'下一个讲解';next.onclick=()=>index===L.lessons.length-1?showExam(true):renderLesson(index+1,true);
+  const previous=document.querySelector('#previous-lesson'),next=document.querySelector('#next-lesson');previous.disabled=index===0;previous.onclick=()=>renderLesson(index-1,true);next.textContent=index===L.lessons.length-1?'选择对应练习':'下一个讲解';next.onclick=()=>index===L.lessons.length-1?choosePractice():renderLesson(index+1,true);
   renderModel();if(focus)focusPanel(article);
  }
  function showStudy(){setMode('study');renderLesson(Number.isInteger(log.checkpoint.lessonIndex)?log.checkpoint.lessonIndex:0);}
  function renderWelcome(){
-  const remaining=log.records.filter(r=>!r.done).length;
-  panel.innerHTML=`<section class="exam-welcome"><p class="eyebrow">${esc(round.label)}</p><h2>换了材料，还能自己用吗？</h2><p>${remaining<5?`本轮仍是5题，已完成的${5-remaining}题沿用原记录，只需补${remaining}题。`:'本轮只有5题。'}先保留自己的答案，整轮交卷后再对照方法；不用赶时间，草稿会自动保存。</p><p class="small-note">可以返回讲解或打开提示，页面会记录回看情况。前面学过的讲解也会单独记下；这是讲解后的练习，不能当成从未接触知识的测评。</p><button class="primary" id="start-exam">${remaining<5?`继续本轮（补${remaining}题）`:'开始本轮5题'}</button></section>`;
-  panel.querySelector('#start-exam').onclick=()=>{
-   const seen=[...new Set(F.history().filter(s=>L.rounds.some(r=>r.id===s.courseId)).flatMap(s=>s.checkpoint.studySeen||[]))];
-   round.questions.forEach((q,i)=>{const titles=L.lessons.filter(l=>seen.includes(l.id)&&q.sources.includes(l.id)).map(l=>l.title);log.note(i,titles.length?'本轮开始前，本专题页面展示过对应讲解：'+titles.join('；')+'。展示记录不是学会证明。':'本轮开始前没有本专题对应讲解的展示记录；不代表从未学过或没有外部帮助。');});
-   log.point({examStarted:true});renderQuestion();focusPanel(panel);
-  };
+  const lesson=L.lessons[Number.isInteger(log.checkpoint.lessonIndex)?log.checkpoint.lessonIndex:0];
+  panel.innerHTML=`<section class="exam-welcome"><p class="eyebrow">按需练习</p><h2>选一道，看看能不能自己用。</h2><p>对应讲解：${esc(lesson.title)}</p><div class="lesson-practice-links">${related(lesson.id).map(({r,q})=>`<a href="${route(r,'practice',q.id)}">${esc(q.title)} →</a>`).join('')}</div><p class="small-note">首答提交后再看这道题的参考。做完可以停下，不会要求做完一整组。原有题目和记录都保留。</p><a class="secondary" href="repair.html">查看其他薄弱点</a></section>`;
+ }
+ function choosePractice(){setMode('exam');renderWelcome();focusPanel(panel);}
+ function noteTeaching(index){
+  const q=round.questions[index],seen=[...new Set(F.history().filter(s=>L.rounds.some(r=>r.id===s.courseId)).flatMap(s=>s.checkpoint.studySeen||[]))],titles=L.lessons.filter(l=>seen.includes(l.id)&&q.sources.includes(l.id)).map(l=>l.title);
+  if(!log.records[index].first&&!log.records[index].notes.some(n=>n.startsWith('本题开始前')))log.note(index,titles.length?'本题开始前，本专题页面展示过对应讲解：'+titles.join('；')+'。展示记录不是学会证明。':'本题开始前没有本专题对应讲解的展示记录；不代表从未学过或没有外部帮助。');
  }
  function answerValue(q){if(q.kind==='choice'){const checked=panel.querySelector('input[name="exam-choice"]:checked');return checked?Number(checked.value):null;}return panel.querySelector('#exam-answer').value.trim();}
  function renderQuestion(){
-  const index=log.index;if(index>=round.questions.length){renderReport();return;}const q=round.questions[index],record=log.records[index],draft=record.draft;
+  const index=practiceIndex===null?log.index:practiceIndex;if(index>=round.questions.length){renderReport();return;}if(practiceIndex!==null)log.point({practiceIndex,lessonIndex:L.lessons.findIndex(l=>l.id===round.questions[index].sources[0])});if(log.records[index].done){renderReport(index);return;}noteTeaching(index);log.point({examStarted:true,practiceIndex,mode:'exam'});const q=round.questions[index],record=log.records[index],draft=record.draft;
   const options=q.kind==='choice'?`<div class="exam-options">${q.options.map((text,i)=>`<label><input type="radio" name="exam-choice" value="${i}" ${draft.choice===i?'checked':''}><span>${String.fromCharCode(65+i)}. ${esc(text)}</span></label>`).join('')}</div>`:q.kind==='open'?`<label class="reason-label" for="exam-answer">先留自己的回答；可以使用键盘语音输入。</label><textarea id="exam-answer" maxlength="1000" rows="4">${esc(draft.answer||'')}</textarea>`:`<label class="reason-label" for="exam-answer">${q.kind==='fraction'?'分数用 / 输入，例如3/2。':q.kind==='character'?'填一个汉字；手写准确性需要另看纸笔。':'填数字，单位已在输入框旁。'}</label><div class="answer-input"><input id="exam-answer" type="text" inputmode="${q.kind==='number'?'decimal':'text'}" maxlength="60" autocomplete="off" value="${esc(draft.answer||'')}"><span>${esc(q.unit||'')}</span></div>`;
   const table=q.table?`<table><thead><tr>${q.table[0].map(cell=>`<th scope="col">${esc(cell)}</th>`).join('')}</tr></thead><tbody>${q.table.slice(1).map(row=>`<tr>${row.map(cell=>`<td>${esc(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table>`:'';
-  panel.innerHTML=`<section class="exam-card"><div class="exam-progress"><span>${esc(round.label)} · 第 ${index+1} / 5 题</span><button class="text-button" id="exam-to-study">回看讲解（会记录）</button></div><h2>${esc(q.title)}</h2><p class="exam-context">${esc(q.context)}</p>${table}<p class="exam-task">${esc(q.task)}</p>${options}<label class="reason-label" for="exam-reason">${q.kind==='open'?'补充说明（可选）':'留一句自己的理由（可选，可写算式或语音输入）'}</label><textarea id="exam-reason" maxlength="500" rows="2">${esc(draft.reason||'')}</textarea><details class="exam-help"><summary>需要一点提示（会记录）</summary><p>${esc(q.hint)}</p></details><p class="small-note">想不出也能先记下来；“暂时不会”会保留为首答，不会被后来的订正覆盖。答案与参考暂不显示。</p><p id="exam-message" class="exam-message" role="status"></p><div class="exam-actions"><button class="secondary" id="unsure-answer">暂时不会，记下再继续</button><button class="primary" id="commit-answer">${index===4?'交卷，查看反馈':'保留本题，下一题'}</button></div></section>`;
+  panel.innerHTML=`<section class="exam-card"><div class="exam-progress"><span>${practiceIndex===null?esc(label(round))+' · 第 '+(index+1)+' / 5 题':'本次选择 · 一道变式'}</span><button class="text-button" id="exam-to-study">回看讲解（会记录）</button></div><h2>${esc(q.title)}</h2><p class="exam-context">${esc(q.context)}</p>${table}<p class="exam-task">${esc(q.task)}</p>${options}<label class="reason-label" for="exam-reason">${q.kind==='open'?'补充说明（可选）':'留一句自己的理由（可选，可写算式或语音输入）'}</label><textarea id="exam-reason" maxlength="500" rows="2">${esc(draft.reason||'')}</textarea><details class="exam-help"><summary>需要一点提示（会记录）</summary><p>${esc(q.hint)}</p></details><p class="small-note">想不出也能先记下来；“暂时不会”会保留为首答，不会被后来的订正覆盖。提交后才显示本题参考。</p><p id="exam-message" class="exam-message" role="status"></p><div class="exam-actions"><button class="secondary" id="unsure-answer">暂时不会，记下再继续</button><button class="primary" id="commit-answer">${practiceIndex!==null?'保留首答，查看本题反馈':index===4?'交卷，查看反馈':'保留本题，下一题'}</button></div></section>`;
   const reason=panel.querySelector('#exam-reason');
   function saveDraft(){const value=answerValue(q),fields={reason:reason.value};if(q.kind==='choice')fields.choice=value===null?-1:value;else fields.answer=value;log.draft(index,fields);}
   panel.querySelectorAll('input,textarea').forEach(field=>field.addEventListener(field.type==='radio'?'change':'input',saveDraft));
@@ -97,18 +110,20 @@
   function commit(unsure){
    const value=answerValue(q);if(!unsure&&(value===null||value==='')){panel.querySelector('#exam-message').textContent='先选一个答案或留一句话；也可以用“暂时不会”保留这次尝试。';return;}
    const answer=unsure?'暂时不会':q.kind==='choice'?`${String.fromCharCode(65+value)}. ${q.options[value]}`:String(value),result=unsure?q.kind==='open'?null:false:L.grade(q,value);
-   log.submit(index,answer,result,reason.value);log.finish(index);log.point({mode:index===4?'report':'exam'});renderQuestion();focusPanel(panel);
+   log.submit(index,answer,result,reason.value);log.finish(index);log.point({mode:practiceIndex!==null||index===4?'report':'exam'});if(practiceIndex!==null)renderReport(index);else renderQuestion();focusPanel(panel);
   }
   panel.querySelector('#commit-answer').onclick=()=>commit(false);panel.querySelector('#unsure-answer').onclick=()=>commit(true);
  }
- function renderReport(){
+ function renderReport(only=null){
   log.point({mode:'report'});
-  const objective=log.records.filter(r=>r.first?.correct!==null),right=objective.filter(r=>r.first?.correct).length,open=log.records.filter(r=>r.first?.correct===null).length;
-  round.questions.forEach((q,i)=>log.help(i,'交卷后查看参考'));
-  panel.innerHTML=`<section class="round-report"><p class="eyebrow">${esc(round.label)} · 本轮已交卷</p><h2>先看哪里卡住，再看怎么修。</h2><div class="round-summary"><span>客观题首答 ${right} / ${objective.length}</span><span>${open}题开放表达，待对照</span><span>5份首答已保留</span></div><p class="small-note">这是讲解后的当次表现，不等于长期掌握。客观题只核对结果；理由是否成立，还要结合原话。以下“订正”不会覆盖首答。</p>${round.questions.map((q,i)=>{const r=log.records[i],last=r.attempts[r.attempts.length-1];return `<section class="answer-review"><h3>${i+1}. ${esc(q.title)}</h3><span class="review-label ${r.first.correct===false?'needs':''}">${r.first.correct===null?'开放表达 · 不自动判分':r.first.correct?'首答结果正确':'首答需再核对'}</span><p><b>首次答案：</b>${esc(r.first.answer)}</p>${r.first.explanation?`<p><b>首次理由：</b>${esc(r.first.explanation)}</p>`:''}<p class="small-note">答前回看：${r.first.helped?'有，请在过程记录里查看':'未打开本题帮助；前置讲解另有记录'}</p><div class="reference"><p><b>对照方法：</b>${esc(q.reference)}</p><ul>${q.checks.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></div>${r.attempts.length>1?`<p><b>最近订正：</b>${esc(last.answer)}</p>${last.explanation?`<p><b>订正理由：</b>${esc(last.explanation)}</p>`:''}`:''}<details class="correction" data-correction="${i}"><summary>我想订正，留住新答案和理由</summary><label class="reason-label" for="correction-answer-${i}">订正后的答案</label><textarea id="correction-answer-${i}" maxlength="1000" rows="2">${esc(r.draft.correctionAnswer||'')}</textarea><label class="reason-label" for="correction-reason-${i}">哪里改变了？一句话即可。</label><textarea id="correction-reason-${i}" maxlength="500" rows="2">${esc(r.draft.correctionReason||'')}</textarea><button class="secondary" data-save-correction="${i}">留住这次订正</button><p class="small-note" role="status"></p></details></section>`;}).join('')}<div class="exam-actions"><a class="secondary" href="${round.id==='repair'?L.rounds[1].route:L.rounds[0].route}">${round.id==='repair'?'另一轮5题，可以下次再做 →':'回到第一轮 →'}</a><a class="secondary" href="records.html">查看学习记录与导出 →</a></div><details class="report-evidence"><summary>完整过程记录（方便截图）</summary><div id="round-evidence">${log.html()}</div></details></section>`;
-  panel.querySelectorAll('[data-correction]').forEach(details=>{const i=Number(details.dataset.correction),a=details.querySelector('textarea'),b=details.querySelectorAll('textarea')[1];for(const el of [a,b])el.oninput=()=>log.draft(i,{correctionAnswer:a.value,correctionReason:b.value});details.querySelector('button').onclick=()=>{if(!a.value.trim()){details.querySelector('[role=status]').textContent='先留一个新答案，原来的首答会保留。';return;}log.reopen(i);log.help(i,'订正前已看参考');log.submit(i,a.value,null,b.value);log.finish(i,'对照参考后订正，未再作独立验证');renderReport();};});
+  const selected=round.questions.map((q,i)=>({q,i})).filter(x=>log.records[x.i].done&&(only===null||x.i===only)),records=selected.map(x=>log.records[x.i]);
+  const objective=records.filter(r=>r.first&&r.first.correct!==null),right=objective.filter(r=>r.first?.correct).length,open=records.filter(r=>r.first?.correct===null).length;
+  selected.forEach(({i})=>log.help(i,'提交后查看本题参考'));
+  panel.innerHTML=`<section class="round-report"><p class="eyebrow">${only===null?esc(label(round))+' · 作答回看':'这道题先收好'}</p><h2>先看哪里卡住，再看怎么修。</h2><div class="round-summary">${objective.length?`<span>客观题首答 ${right} / ${objective.length}</span>`:''}<span>${open}题开放表达，待对照</span><span>${records.length}份首答已保留</span></div><p class="small-note">这是本次作答的表现，不等于长期掌握。客观题只核对结果；理由是否成立，还要结合原话。以下“订正”不会覆盖首答。</p>${selected.map(({q,i})=>{const r=log.records[i],last=r.attempts[r.attempts.length-1];return `<section class="answer-review"><h3>${only===null?(i+1)+'. ':''}${esc(q.title)}</h3><span class="review-label ${r.first.correct===false?'needs':''}">${r.first.correct===null?'开放表达 · 不自动判分':r.first.correct?'首答结果正确':'首答需再核对'}</span><p><b>首次答案：</b>${esc(r.first.answer)}</p>${r.first.explanation?`<p><b>首次理由：</b>${esc(r.first.explanation)}</p>`:''}<p class="small-note">答前回看：${r.first.helped?'有，请在过程记录里查看':'未打开本题帮助；前置讲解另有记录'}</p><div class="reference"><p><b>对照方法：</b>${esc(q.reference)}</p><ul>${q.checks.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></div>${r.attempts.length>1?`<p><b>最近订正：</b>${esc(last.answer)}</p>${last.explanation?`<p><b>订正理由：</b>${esc(last.explanation)}</p>`:''}`:''}<details class="correction" data-correction="${i}"><summary>我想订正，留住新答案和理由</summary><label class="reason-label" for="correction-answer-${i}">订正后的答案</label><textarea id="correction-answer-${i}" maxlength="1000" rows="2">${esc(r.draft.correctionAnswer||'')}</textarea><label class="reason-label" for="correction-reason-${i}">哪里改变了？一句话即可。</label><textarea id="correction-reason-${i}" maxlength="500" rows="2">${esc(r.draft.correctionReason||'')}</textarea><button class="secondary" data-save-correction="${i}">留住这次订正</button><p class="small-note" role="status"></p></details></section>`;}).join('')}<div class="exam-actions"><a class="secondary" href="repair.html">这次先到这里，回到修复站 →</a><a class="secondary" href="records.html">查看学习记录与导出 →</a></div><details class="report-evidence"><summary>完整过程记录（方便截图）</summary><div id="round-evidence">${log.html()}</div></details></section>`;
+  panel.querySelectorAll('[data-correction]').forEach(details=>{const i=Number(details.dataset.correction),a=details.querySelector('textarea'),b=details.querySelectorAll('textarea')[1];for(const el of [a,b])el.oninput=()=>log.draft(i,{correctionAnswer:a.value,correctionReason:b.value});details.querySelector('button').onclick=()=>{if(!a.value.trim()){details.querySelector('[role=status]').textContent='先留一个新答案，原来的首答会保留。';return;}log.reopen(i);log.help(i,'订正前已看参考');log.submit(i,a.value,null,b.value);log.finish(i,'对照参考后订正，未再作独立验证');renderReport(only);};});
  }
- function showExam(focus=false){setMode('exam');if(log.records.every(r=>r.done))renderReport();else if(log.checkpoint.examStarted)renderQuestion();else renderWelcome();if(focus)focusPanel(panel);}
- document.querySelector('#study-tab').onclick=showStudy;document.querySelector('#exam-tab').onclick=()=>showExam(true);window.addEventListener('pagehide',stopModel);
- if(['exam','report'].includes(log.checkpoint.mode))showExam();else showStudy();
+ function showExam(focus=false){setMode('exam');if(practiceIndex!==null)renderQuestion();else if(log.records.every(r=>r.done))renderReport();else if(log.checkpoint.examStarted)renderQuestion();else renderWelcome();if(focus)focusPanel(panel);}
+ document.querySelector('#study-tab').onclick=showStudy;document.querySelector('#exam-tab').onclick=choosePractice;window.addEventListener('pagehide',stopModel);
+ const lessonIndex=L.lessons.findIndex(l=>l.id===params.get('lesson'));
+ if(params.has('practice')&&practiceIndex!==null)showExam();else if(lessonIndex>=0){setMode('study');renderLesson(lessonIndex);}else if(['exam','report'].includes(log.checkpoint.mode))showExam();else showStudy();
 })();

@@ -2,8 +2,7 @@
 (function(root){
   'use strict';
   const items=[
-    {id:'repair',name:'错题修复①：数量、语境与判断',subject:'数学 · 语文 · 英语',subjects:['数学','语文','英语'],group:'school',stages:['六年级','初中衔接'],tags:['错题修复','倒数','工程问题','工作量','单位','多音字','词块','课文顺序'],description:'先逐题讲清关系，再用缩印图、制作进度表、营地日志等新任务检验；本轮固定5题，交卷后看反馈。',icon:'修复①',time:'讲解可分次 · 本轮约10分钟',format:'repair',fresh:true},
-    {id:'repair-words',name:'错题修复②：词句与表达',subject:'语文',group:'school',stages:['六年级','初中衔接'],tags:['错题修复','字形','悬','悬停','名句','比喻','排比','分条表达','句式','标点','语境','阅读'],description:'辨词写字、按意思提取名句，比较球场描写，再把表格写成分条说明；本轮固定5题，不追加作文。',icon:'修复②',time:'讲解可分次 · 本轮约10分钟',format:'repair',fresh:true},
+    {id:'repair',name:'错题修复站',subject:'数学 · 语文 · 英语',subjects:['数学','语文','英语'],group:'school',stages:['六年级','初中衔接'],tags:['错题修复','倒数','工程问题','工作量','单位','多音字','词块','课文顺序','字形','悬','悬停','名句','比喻','排比','分条表达','句式','标点','语境','阅读','动作描写'],description:'按薄弱点选择讲解与对应练习；9个讲解、10道变式可分次选，之前的答案与草稿都保留。',icon:'修复',time:'按需复习 · 可分次',format:'repair',sessionIds:['repair','repair-words']},
     {id:'baicao',name:'共读《从百草园到三味书屋》：小园子里，藏着多少趣味？',readingTitle:'从百草园到三味书屋',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','鲁迅','百草园','三味书屋','词汇','句式','拟人','比喻','动作描写','阅读','北大'],description:'从北大游览认识鲁迅，读绍兴童年的草木、虫声和书屋。全文可分两次，点读词句、品句式和人物，不安排练笔。',icon:'共读',time:'可分两次 · 每次10—15分钟',format:'readalong',tasks:1,fresh:true},
     {id:'beiying',readingTitle:'背影',name:'共读《背影》：那个背影，为什么留在记忆里？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级','八年级'],tags:['共读课','朱自清','背影','散文','词汇','动作描写','叙述视角','语气','阅读'],description:'完整读一篇经典，挑一处聊动作、语气与前后看法；带走一句或一个疑问，阅读位置与便笺自动留存。',icon:'共读',time:'15—20分钟 · 可分次',format:'readalong',tasks:1,fresh:true},
     {id:'weighted',name:'两组平均数都有了，为什么不能再除以2？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['平均数','加权平均','总量','份数','统计','平均速度','逆推'],description:'改人数，看整体均值怎样移动；换成时间检验平均速度，最后从总量差额还原未知试飞次数。',icon:'总/份',time:'12–18 分钟',fresh:true},
@@ -57,7 +56,17 @@
   ];
   function latest(sessions){const byCourse={};for(const s of [...sessions].sort((a,b)=>b.updatedAt-a.updatedAt))if(!byCourse[s.courseId])byCourse[s.courseId]=s;return byCourse;}
   function select({group='all',subject='all',stage='all',query=''}={}){const words=query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);return items.filter(c=>(group==='all'||c.group===group)&&(subject==='all'||(c.subjects||[c.subject]).includes(subject))&&(stage==='all'||c.stages.includes(stage))&&words.every(w=>[c.name,c.subject,...c.tags,...c.stages].join(' ').toLocaleLowerCase().includes(w)));}
-  function home(sessions){const progress=latest(sessions);const continuing=items.filter(c=>progress[c.id]?.records.some(r=>!r.done)).sort((a,b)=>progress[b.id].updatedAt-progress[a.id].updatedAt)[0];const featured=continuing||items.find(c=>c.group==='school'&&!progress[c.id]?.records.every(r=>r.done))||items[0];const candidates=items.filter(c=>c.group==='school'&&c!==featured);candidates.sort((a,b)=>Number(!!progress[a.id]?.records.every(r=>r.done))-Number(!!progress[b.id]?.records.every(r=>r.done)));return {continuing,featured,school:candidates.slice(0,2),explore:items.find(c=>c.group==='explore'&&c.fresh)||items.find(c=>c.group==='explore'),progress};}
-  root.CourseCatalog={items,latest,select,home};
+  function sessionsFor(course,progress){return (course.sessionIds||[course.id]).map(id=>progress[id]).filter(Boolean);}
+  function home(sessions){
+    const progress=latest(sessions),saved=c=>sessionsFor(c,progress);
+    const complete=c=>saved(c).length===(c.sessionIds||[c.id]).length&&saved(c).every(s=>s.records.every(r=>r.done));
+    const updated=c=>Math.max(0,...saved(c).map(s=>s.updatedAt));
+    const continuing=items.filter(c=>saved(c).some(s=>s.records.some(r=>!r.done))).sort((a,b)=>updated(b)-updated(a))[0];
+    const featured=continuing||items.find(c=>c.group==='school'&&!complete(c))||items[0];
+    const candidates=items.filter(c=>c.group==='school'&&c!==featured);
+    candidates.sort((a,b)=>Number(complete(a))-Number(complete(b)));
+    return {continuing,featured,school:candidates.slice(0,2),explore:items.find(c=>c.group==='explore'&&c.fresh)||items.find(c=>c.group==='explore'),progress};
+  }
+  root.CourseCatalog={items,latest,sessionsFor,select,home};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.CourseCatalog;
 })(typeof window!=='undefined'?window:globalThis);
