@@ -12,6 +12,7 @@
     {id:'briefing',name:'任务单收起来，你能给队友讲清楚吗？',subject:'英语',group:'school',stages:['六年级','初中衔接','七年级'],tags:['口语','听力','转述','词块','任务沟通','澄清','通知'],description:'听原创任务音频，收起任务单自己说；再处理变更、追问缺口，用新出行表格独立回复队友。',icon:'Say it',time:'12–15 分钟',fresh:true},
     {id:'causal',name:'这句话是在讲原因，还是只说现象？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['原因','现象','因果','证据','说明性阅读','结论范围'],description:'读模型车日志，拼运输证据，再独立审查一份有对照组却仍归因过头的报道。',icon:'因·果',time:'12–15 分钟',fresh:true},
     {id:'discount',name:'打折再加运费，为什么不能一起乘？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['百分数','基数','整体','折扣','费用','配方','单位1'],description:'先留判断，再拖动优惠范围看哪笔钱被打折；换规则与配方表，自己认清整体和部分。',icon:'80%',time:'10–15 分钟',fresh:true},
+    {id:'angle180',name:'180°从哪里来？角到底在量什么？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['角','角度','平角','邻补角','对顶角','证明','相交线','几何'],description:'分别改变边长、朝向和开口，亲手找到角真正度量的量；再从两组平角搭出第一条几何证明链。',icon:'180°',time:'12–15 分钟',tasks:3,fresh:true},
     {id:'buoyancy',name:'钢会沉，钢造的轮船为什么能浮？',subject:'科学',group:'explore',stages:['六年级','初中衔接','八年级'],tags:['轮船','浮力','排水量','密度','总质量','潜水器','控制变量'],description:'同一团黏土换船形、加货物，看水线与排水读数一起变化，再用设备卡决定潜水器怎样留在水中。',icon:'船·浮',time:'约 8–12 分钟',tasks:3,fresh:true},
     {id:'glacier',name:'冰河时代调查局：这片没有冰的山谷，曾经有冰川吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['冰河时代','冰川','地貌','证据','科学推理','地理'],description:'先判断山谷，再让冰携带碎石走一遍；最后换地点查档案，看相似痕迹是否来自同一过程。',icon:'冰·证',time:'约 8–10 分钟',tasks:3,fresh:true},
     {id:'parachute',name:'降落伞越大，就一定越好吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['降落伞','空气阻力','控制变量','工程设计','权衡','月球'],description:'亲手选伞、看落点，再接一份月球任务。用证据决定，而不只追求更大。',icon:'↘',time:'约 8–10 分钟',tasks:3},
@@ -57,7 +58,7 @@
   ];
   const recommendedOrder=[
     'repair',
-    'discount','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'discount','angle180','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
     'rocket','charts','parachute','glacier','buoyancy'
   ];
