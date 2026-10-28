@@ -55,6 +55,14 @@
     {id:'charts',name:'两张图都没造假，为什么结论相反？',subject:'数学',group:'explore',stages:['六年级','初中衔接'],tags:['统计图','坐标轴','数据','百分比'],description:'先判断，再拖动坐标轴，看看数字怎样影响印象。',icon:'▥',time:'8–10 分钟'},
     {id:'rocket',name:'火箭为什么要回收？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['火箭','回收','成本','决策','太空'],description:'看一级助推器回来，再算算什么时候更划算。',icon:'↗',time:'8–10 分钟'}
   ];
+  const recommendedOrder=[
+    'repair',
+    'discount','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
+    'rocket','charts','parachute','glacier','buoyancy'
+  ];
+  const orderIndex=new Map(recommendedOrder.map((id,index)=>[id,index]));
+  items.sort((a,b)=>(orderIndex.get(a.id)??Number.MAX_SAFE_INTEGER)-(orderIndex.get(b.id)??Number.MAX_SAFE_INTEGER));
   function latest(sessions){const byCourse={};for(const s of [...sessions].sort((a,b)=>b.updatedAt-a.updatedAt))if(!byCourse[s.courseId])byCourse[s.courseId]=s;return byCourse;}
   function select({group='all',subject='all',stage='all',query=''}={}){const words=query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);return items.filter(c=>(group==='all'||c.group===group)&&(subject==='all'||(c.subjects||[c.subject]).includes(subject))&&(stage==='all'||c.stages.includes(stage))&&words.every(w=>[c.name,c.subject,...c.tags,...c.stages].join(' ').toLocaleLowerCase().includes(w)));}
   function sessionsFor(course,progress){return (course.sessionIds||[course.id]).map(id=>progress[id]).filter(Boolean);}
@@ -62,11 +70,12 @@
     const progress=latest(sessions),saved=c=>sessionsFor(c,progress);
     const complete=c=>saved(c).length===(c.sessionIds||[c.id]).length&&saved(c).every(s=>s.records.every(r=>r.done));
     const updated=c=>Math.max(0,...saved(c).map(s=>s.updatedAt));
-    const continuing=items.filter(c=>saved(c).some(s=>s.records.some(r=>!r.done))).sort((a,b)=>updated(b)-updated(a))[0];
-    const featured=continuing||items.find(c=>c.group==='school'&&!complete(c))||items[0];
-    const candidates=items.filter(c=>c.group==='school'&&c!==featured);
+    const continuing=items.filter(c=>c.format!=='repair'&&saved(c).some(s=>s.records.some(r=>!r.done))).sort((a,b)=>updated(b)-updated(a))[0];
+    const mainline=items.filter(c=>c.group==='school'&&c.format!=='repair');
+    const featured=continuing||mainline.find(c=>!complete(c))||mainline[0];
+    const candidates=mainline.filter(c=>c!==featured);
     candidates.sort((a,b)=>Number(complete(a))-Number(complete(b)));
-    return {continuing,featured,school:candidates.slice(0,2),explore:items.find(c=>c.group==='explore'&&c.fresh)||items.find(c=>c.group==='explore'),progress};
+    return {continuing,featured,school:candidates.slice(0,2),explore:items.find(c=>c.group==='explore'&&!complete(c))||items.find(c=>c.group==='explore'),progress};
   }
   root.CourseCatalog={items,latest,sessionsFor,select,home};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.CourseCatalog;
