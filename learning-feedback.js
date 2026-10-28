@@ -8,7 +8,8 @@
   courses.splice(courses.findIndex(course=>course[0]==='persuade')+1,0,['parallel','不拿量角器，怎么把一个角搬过去？','parallel.html']);
   courses.unshift(['repair','错题修复①：数量、语境与判断','repair.html'],['repair-words','错题修复②：词句与表达','repair.html?round=2']);
   courses.unshift(['journey','人停了，图上的线为什么还在？','journey.html']);
-  const readalongs={beiying:6,baicao:24};
+  const readalongs={beiying:6,baicao:24,chun:10};
+  courses.unshift(['chun','共读《春》：一句话怎样让画面动起来？','chun.html']);
   const clone=value=>JSON.parse(JSON.stringify(value));
   const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
   let storageError=false;
