@@ -35,6 +35,9 @@
   document.querySelector('#lesson-list').innerHTML=L.lessons.map((l,i)=>`<button data-lesson="${i}" aria-current="${i===index}"><span>${i+1} · ${esc(l.subject)}</span>${esc(l.title)}</button>`).join('');
   document.querySelectorAll('[data-lesson]').forEach(button=>button.onclick=()=>renderLesson(Number(button.dataset.lesson),true));
   article.innerHTML=`<p class="eyebrow">讲解 ${index+1} / ${L.lessons.length} · ${esc(item.subject)}</p><h2>${esc(item.title)}</h2><p class="focus-line">${esc(item.focus)}</p><div class="source-question"><small>原题要解决的问题</small>${esc(item.source)}</div>${item.body}<p class="takeaway"><b>带走这一点：</b>${esc(item.takeaway)}</p>`;
+  article.querySelectorAll('[data-close-reading]').forEach(button=>button.onclick=()=>{
+   const reading=button.closest('details'),summary=reading.querySelector('summary');reading.open=false;summary.focus({preventScroll:true});summary.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  });
   const previous=document.querySelector('#previous-lesson'),next=document.querySelector('#next-lesson');previous.disabled=index===0;previous.onclick=()=>renderLesson(index-1,true);next.textContent=index===L.lessons.length-1?'进入本轮5题':'下一个讲解';next.onclick=()=>index===L.lessons.length-1?showExam(true):renderLesson(index+1,true);
   renderModel();if(focus)focusPanel(article);
  }
