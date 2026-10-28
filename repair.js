@@ -14,10 +14,41 @@
   changed.forEach(i=>log.note(i,'本题内容已更新；更新前的整轮原记录另存保留，不将原题答案改判为新题答案。'));
  }
  const study=document.querySelector('#study-panel'),exam=document.querySelector('#exam-panel'),panel=document.querySelector('#exam-content'),article=document.querySelector('#explanation');
+ document.body.insertAdjacentHTML('beforeend','<aside id="repair-reading-note" role="dialog" aria-modal="false" aria-labelledby="reading-note-title" aria-describedby="reading-note-text" tabindex="-1" hidden><div class="reading-note-heading"><span>词句小注 · 本站释义</span><button type="button" id="close-reading-note" aria-label="收起词句注释">收起 ×</button></div><h3 id="reading-note-title"></h3><p id="reading-note-text"></p><small>点正文空白处，或继续滚动，也会收起。</small></aside>');
+ const readingNote=document.querySelector('#repair-reading-note');let wordButton=null;
+ function closeReadingNote(restoreFocus=false){const previous=wordButton;readingNote.hidden=true;if(previous)previous.setAttribute('aria-expanded','false');wordButton=null;if(restoreFocus&&previous)previous.focus({preventScroll:true});}
+ function placeReadingNote(){
+  const r=wordButton.getBoundingClientRect(),v=window.visualViewport,left=v?v.offsetLeft:0,top=v?v.offsetTop:0,width=v?v.width:window.innerWidth,height=v?v.height:window.innerHeight;
+  readingNote.style.maxWidth=(width-24)+'px';readingNote.style.maxHeight=(height-24)+'px';const h=readingNote.offsetHeight;
+  readingNote.style.left=Math.max(left+12,Math.min(r.left,left+width-readingNote.offsetWidth-12))+'px';
+  readingNote.style.top=Math.max(top+12,Math.min(r.bottom+8+h<=top+height-12?r.bottom+8:r.top-h-8,top+height-h-12))+'px';
+ }
+ function addReadingNotes(){
+  const readings=article.querySelector('.local-readings');if(!readings)return;
+  readings.querySelector('p').insertAdjacentHTML('afterend','<p class="annotation-invitation">有点线的词句可以点开看小注；读得顺，就直接往下读。</p>');
+  readings.querySelector('.repair-sources').insertAdjacentHTML('beforeend','<p>点读小注为本站结合上下文写的简短释义，不改动正文。读音核对：<a href="https://zdic.net/hans/绷" target="_blank" rel="noopener">绷</a>、<a href="https://zdic.net/hans/揳" target="_blank" rel="noopener">揳</a>、<a href="https://zdic.net/hans/魁梧" target="_blank" rel="noopener">魁梧</a>、<a href="https://zdic.net/hans/黧" target="_blank" rel="noopener">黧</a>、<a href="https://www.zdic.net/hans/畢畢剝剝" target="_blank" rel="noopener">毕毕剥剥</a>。小注随页面保存在本地，不用跳转查词。</p>');
+  readings.querySelectorAll('.local-reading').forEach(reading=>{
+   reading.querySelectorAll('.reading-prose p').forEach((p,i)=>{p.innerHTML=L.readingTokens(p.textContent,reading.id,i+1).map(token=>token.note===undefined?esc(token.text):`<button type="button" class="annotated-word" data-reading="${reading.id}" data-reading-note="${token.note}" aria-haspopup="dialog" aria-expanded="false" aria-controls="repair-reading-note">${esc(token.text)}</button>`).join('');});
+   reading.addEventListener('toggle',()=>{if(!reading.open&&wordButton&&reading.contains(wordButton))closeReadingNote();});
+  });
+  readings.querySelectorAll('[data-reading-note]').forEach(button=>button.onclick=()=>{
+   if(wordButton===button){closeReadingNote();return;}
+   closeReadingNote();wordButton=button;const note=L.readingNotes[button.dataset.reading][Number(button.dataset.readingNote)],title=button.closest('.local-reading').querySelector('summary span').textContent;
+   document.querySelector('#reading-note-title').textContent=note.text;document.querySelector('#reading-note-text').textContent=note.note;
+   readingNote.hidden=false;button.setAttribute('aria-expanded','true');placeReadingNote();readingNote.focus({preventScroll:true});
+   round.questions.forEach((q,i)=>{if(q.sources.includes('sequence'))log.note(i,'点读'+title+'：'+note.text+'（阅读支持，不计作答提示，不代表已经理解）。');});
+  });
+ }
+ document.querySelector('#close-reading-note').onclick=()=>closeReadingNote(true);
+ document.addEventListener('pointerdown',event=>{if(wordButton&&!readingNote.contains(event.target)&&!event.target.closest('[data-reading-note]'))closeReadingNote();});
+ document.addEventListener('keydown',event=>{if(wordButton&&event.key==='Escape'){event.preventDefault();closeReadingNote(true);}});
+ document.addEventListener('focusin',event=>{if(wordButton&&!readingNote.contains(event.target)&&event.target!==wordButton)closeReadingNote();});
+ window.addEventListener('scroll',()=>closeReadingNote(),{passive:true});window.addEventListener('resize',()=>closeReadingNote());
+ if(window.visualViewport){window.visualViewport.addEventListener('scroll',()=>closeReadingNote());window.visualViewport.addEventListener('resize',()=>closeReadingNote());}
  document.querySelector(round.id==='repair'?'#round-one':'#round-two').setAttribute('aria-current','page');
  document.title=round.title+' · TY敏捷课堂';
  function stopModel(){if(timer!==null){clearInterval(timer);timer=null;}}
- function setMode(mode){stopModel();study.hidden=mode!=='study';exam.hidden=mode==='study';document.querySelector('#study-tab').setAttribute('aria-pressed',String(mode==='study'));document.querySelector('#exam-tab').setAttribute('aria-pressed',String(mode!=='study'));log.point({mode});}
+ function setMode(mode){stopModel();closeReadingNote();study.hidden=mode!=='study';exam.hidden=mode==='study';document.querySelector('#study-tab').setAttribute('aria-pressed',String(mode==='study'));document.querySelector('#exam-tab').setAttribute('aria-pressed',String(mode!=='study'));log.point({mode});}
  function focusPanel(el){el.focus({preventScroll:true});el.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}
  function renderModel(){
   const slot=document.querySelector('#work-model');if(!slot)return;
@@ -29,12 +60,13 @@
   slot.querySelector('#reset-work').onclick=()=>{stopModel();slider.value='0';play.textContent='播放合作3天';draw();};draw();
  }
  function renderLesson(index,focus=false){
-  stopModel();index=Math.max(0,Math.min(L.lessons.length-1,index));const item=L.lessons[index];
+  stopModel();closeReadingNote();index=Math.max(0,Math.min(L.lessons.length-1,index));const item=L.lessons[index];
   if(log.checkpoint.examStarted)round.questions.forEach((q,i)=>{if(q.sources.includes(item.id)&&!log.records[i].done)log.help(i,'考试中回看讲解：'+item.title);});
   const seen=[...new Set([...(log.checkpoint.studySeen||[]),item.id])];log.point({lessonIndex:index,studySeen:seen});
   document.querySelector('#lesson-list').innerHTML=L.lessons.map((l,i)=>`<button data-lesson="${i}" aria-current="${i===index}"><span>${i+1} · ${esc(l.subject)}</span>${esc(l.title)}</button>`).join('');
   document.querySelectorAll('[data-lesson]').forEach(button=>button.onclick=()=>renderLesson(Number(button.dataset.lesson),true));
   article.innerHTML=`<p class="eyebrow">讲解 ${index+1} / ${L.lessons.length} · ${esc(item.subject)}</p><h2>${esc(item.title)}</h2><p class="focus-line">${esc(item.focus)}</p><div class="source-question"><small>原题要解决的问题</small>${esc(item.source)}</div>${item.body}<p class="takeaway"><b>带走这一点：</b>${esc(item.takeaway)}</p>`;
+  addReadingNotes();
   article.querySelectorAll('[data-close-reading]').forEach(button=>button.onclick=()=>{
    const reading=button.closest('details'),summary=reading.querySelector('summary');reading.open=false;summary.focus({preventScroll:true});summary.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
   });

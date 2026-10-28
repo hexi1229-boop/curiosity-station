@@ -28,9 +28,85 @@
    {id:'read-actions',sources:['rhetoric','sequence'],kind:'open',title:'三个动词，就一定是排比吗？',context:'【原创片段】他蹲下身，捡起散落的书，拍掉封面上的灰，才递给摔倒的同学。',task:'有人说：“这里动作多，所以一定用了排比。”你同意吗？用这段话的结构或表达效果说明一句。',hint:'先看这些动作是依次完成一件事，还是三个结构相似、并列铺陈的分句。动作描写也有自己的作用。',reference:'不同意。这里主要按先后顺序写同一个人的连续动作，不能只因有多个动词就判为排比。“蹲、捡、拍、递”把帮助同学的过程写具体，“拍掉灰再递”还表现出细心。合理解释不必照抄这一版。',checks:['不把“多个动词”当成排比的充分条件。','指出连续动作的先后关系，或说清其中一处动作的具体效果。','解释有文本依据，开放回答不由关键词自动判分。']}
   ]}
  ];
+ const readingNotes={
+  'reading-langya':[
+   {paragraph:1,text:'日寇',note:'kòu。“寇”指入侵者，这里指侵华日军。'},
+   {paragraph:1,text:'晋察冀',note:'jìn chá jì。“晋、察、冀”分别是山西、当时的察哈尔、河北的简称，这里是抗日根据地的名称。'},
+   {paragraph:2,text:'抡一个圈',note:'lūn。把胳膊用力挥动、转一圈，再把手榴弹扔出去。'},
+   {paragraph:2,text:'绷得紧紧的',note:'这里“绷”读běng，指板着脸、表情严肃。与“把绳子绷（bēng）紧”的意思和读音不同。'},
+   {paragraph:2,text:'崎岖',note:'qí qū。山路高低不平，很难走。'},
+   {paragraph:3,text:'棋盘陀',note:'tuó。狼牙山顶峰的地名；联系后面的“三面都是悬崖绝壁”，就能想见这条路的险峻。'},
+   {paragraph:3,text:'斩钉截铁',note:'说话或做事坚决、果断。这里用来写班长作出选择时毫不犹豫。'},
+   {paragraph:3,text:'引上绝路',note:'“绝路”指没有出路的险地。把敌人引向山顶，是为了不让追兵发现群众和连队主力。'},
+   {paragraph:4,text:'居高临下',note:'身处高处，面向低处。“临”在这里是面对；站在峰顶，便于向下观察和射击。'},
+   {paragraph:4,text:'山涧',note:'jiàn。山间的沟，常有溪水流过。'},
+   {paragraph:4,text:'雹子',note:'báo zi。冰雹。这里把砸下去的石头比作雹子，写出石头接连落下的样子和力量。'},
+   {paragraph:5,text:'嗖',note:'sōu。模拟迅速划过空气的声音，这里让“拔出手榴弹”的动作显得又快又有力。'},
+   {paragraph:6,text:'屹立',note:'yì lì。稳稳地高高站立，比一般的“站着”更显坚定。'},
+   {paragraph:6,text:'昂首挺胸',note:'áng shǒu tǐng xiōng。抬起头、挺起胸，写出战士们无所畏惧的姿态。'},
+   {paragraph:9,text:'气壮山河',note:'形容气概雄壮。这里赞美口号声里表现出的精神，并非说山河真的发生了变化。'}
+  ],
+  'reading-grassland':[
+   {paragraph:1,text:'清鲜',note:'qīng xiān。清爽、新鲜，这里形容草原的空气。'},
+   {paragraph:1,text:'一碧千里',note:'放眼望去，到处是绿色，范围十分辽阔。“千里”写广阔，不是在报精确距离。'},
+   {paragraph:1,text:'渲染',note:'xuàn rǎn。这里是绘画用语，指用水墨或色彩涂染画面；小丘像用绿色铺染出来的。'},
+   {paragraph:1,text:'勾勒',note:'gōu lè。用线条画出轮廓。“不用墨线勾勒”，是说小丘边缘柔和，没有生硬的线。'},
+   {paragraph:1,text:'翠色欲流',note:'“欲”是好像要。青绿色鲜明浓郁，好像要流动起来，让静止的草原有了动感。'},
+   {paragraph:1,text:'低吟',note:'yín。轻声吟诵。这里是轻轻读出小诗，与前面的“高歌一曲”形成不同的声音和心情。'},
+   {paragraph:1,text:'奇丽',note:'qí lì。奇特而美丽。'},
+   {paragraph:2,text:'洒脱',note:'sǎ tuō。这里写草原上开车自由、不受固定道路拘束的感觉。'},
+   {paragraph:2,text:'怎么走都可以',note:'前面有限定：“只要方向不错”。是在方向正确的前提下自由行车，并不是随意乱走。'},
+   {paragraph:2,text:'迂回',note:'yū huí。弯弯曲曲。那条明亮的“带子”，就是弯曲延伸的河。'},
+   {paragraph:2,text:'襟飘带舞',note:'jīn。“襟”是衣服胸前的部分。衣襟、衣带随风飘舞，写骑马飞驰时的样子。'},
+   {paragraph:2,text:'蒙古包',note:'měng gǔ bāo。蒙古族传统的帐篷式住房，常以毡子覆盖，便于拆装。'},
+   {paragraph:3,text:'心可是一样',note:'接着前句读：虽然语言不同，大家亲近、友好的心意却相通。“可是”在这里加强语气。'},
+   {paragraph:4,text:'拘束',note:'jū shù。因不自在而放不开；“不拘束”说明主客相处亲切自然。'},
+   {paragraph:4,text:'鄂温克',note:'è wēn kè。我国的一个民族。这里写鄂温克族姑娘给客人唱民歌。'},
+   {paragraph:4,text:'何忍别',note:'“何”是怎么，“忍”是忍心：情谊这样深，怎么舍得分别？后句写大家在夕阳下还在谈话。'}
+  ],
+  'reading-poor':[
+   {paragraph:1,text:'汹涌澎湃',note:'xiōng yǒng péng pài。海浪猛烈地翻涌、冲击，写出风暴的强烈。'},
+   {paragraph:1,text:'搁板',note:'gē bǎn。放置物品的板子或架板。'},
+   {paragraph:1,text:'心惊肉跳',note:'形容十分惊恐、不安。桑娜担心的，是风暴中出海未归的丈夫。'},
+   {paragraph:2,text:'勉强填饱肚子',note:'“勉强”读miǎn qiǎng。这里指一家人拼命干活，也仅仅够吃饱，生活很困难。'},
+   {paragraph:4,text:'寡妇',note:'guǎ fù。丈夫已经去世的妇女，这里指邻居西蒙。'},
+   {paragraph:4,text:'张罗',note:'zhāng luo。料理、操持。西蒙要独自照料两个孩子，维持一家生活。'},
+   {paragraph:7,text:'蜷缩',note:'quán suō。弯曲着、缩着身体。孩子们在阴冷的屋里靠在一起。'},
+   {paragraph:8,text:'非这样做不可',note:'“非……不可”表示一定要这样做。桑娜说不清更多理由，却觉得不能把两个孩子丢在那里。'},
+   {paragraph:9,text:'忐忑不安',note:'tǎn tè bù ān。心里慌乱、安定不下来。后面断断续续的自问，正写出桑娜的担忧。'},
+   {paragraph:9,text:'自作自受',note:'自己做的事，由自己承担后果。这里是桑娜担心丈夫责怪时的内心话，并非作者说救孩子是坏事。'},
+   {paragraph:12,text:'魁梧黧黑',note:'魁梧kuí wu（梧读轻声），指身材高大结实；黧lí，指黑中带黄。合起来写渔夫的身材和肤色。'},
+   {paragraph:19,text:'喃喃',note:'nán nán。小声、含糊地说话。'},
+   {paragraph:24,text:'总能熬过去的',note:'“熬”读áo，指忍耐、艰难地度过。渔夫知道多养两个孩子更难，仍决定把他们抱来。'},
+   {paragraph:27,text:'他们在这里啦',note:'“他们”指西蒙的两个孩子。读到这里才知道：丈夫提出抱来之前，桑娜已经把孩子安置好了。'}
+  ],
+  'reading-qiushaoyun':[
+   {paragraph:1,text:'揳入',note:'xiē rù。“揳”本指把钉子等打进去。这里比喻敌人的据点突入我军阵地，形成威胁。'},
+   {paragraph:1,text:'拔掉这颗毒牙',note:'承接前面的比喻：把危险的高地据点比作毒牙；“拔掉”就是攻下它。'},
+   {paragraph:2,text:'山坳',note:'shān ào。山间低凹的地方。'},
+   {paragraph:2,text:'潜伏',note:'qián fú。隐蔽起来等待行动。这里要等到黄昏发动突然袭击，不能提前暴露。'},
+   {paragraph:2,text:'胸墙',note:'供战斗人员隐蔽、射击的矮墙，可以遮护身体。'},
+   {paragraph:2,text:'地堡和火力点',note:'地堡是较坚固的掩体；火力点是布置武器、进行射击的位置。这里写敌方阵地离得很近。'},
+   {paragraph:2,text:'蜷一下腿',note:'quán。把腿弯曲、收缩一下。连这样细小的动作都可能暴露位置。'},
+   {paragraph:4,text:'火力警戒',note:'这里指敌人用枪炮向可能藏人的地方射击，防备和搜寻潜伏的部队。'},
+   {paragraph:5,text:'蔓延',note:'màn yán。向四周扩展、延伸，这里指火势不断扩大。'},
+   {paragraph:5,text:'毕毕剥剥',note:'bì bì bō bō。模拟接连爆裂的声音，这里是枯草燃烧时发出的声响。'},
+   {paragraph:6,text:'但是这样一来',note:'“这样”指跳出火堆扑火，或跳过去救人。转折后说明：这些动作会暴露整个潜伏部队。'},
+   {paragraph:7,text:'忍不住不看',note:'联系后面的“盼望”读：不忍看战友受苦，却又牵挂他，仍忍不住望过去，希望火突然熄灭。'},
+   {paragraph:8,text:'才渐渐地熄灭',note:'前面是“半个多钟头”。这个“才”让人感到等待很漫长，火烧得太久。'},
+   {paragraph:9,text:'歼灭',note:'jiān miè。消灭敌方的战斗力量。'},
+   {paragraph:9,text:'才二十分钟',note:'这里的“才”突出战斗结束得快。与前面烈火“才渐渐地熄灭”对照，同一个字传出了不同感受。'}
+  ]
+ };
+ function readingTokens(text,reading,paragraph){
+  const marks=(readingNotes[reading]||[]).map((note,index)=>({...note,index})).filter(note=>note.paragraph===paragraph).map(note=>({...note,at:text.indexOf(note.text)})).sort((a,b)=>a.at-b.at);
+  const tokens=[];let cursor=0;
+  for(const mark of marks){if(mark.at<cursor)throw Error('点读词句缺失或重叠：'+mark.text);if(mark.at>cursor)tokens.push({text:text.slice(cursor,mark.at)});tokens.push({text:mark.text,note:mark.index});cursor=mark.at+mark.text.length;}
+  if(cursor<text.length)tokens.push({text:text.slice(cursor)});return tokens;
+ }
  function workModel(day){if(!Number.isInteger(day)||day<0||day>3)throw Error('模型只显示合作的0至3天');return {day,total:24,yangPerDay:4,hongPerDay:3,done:7*day,left:24-7*day,fraction:[7*day,24]};}
  function fraction(value){const s=String(value).trim().replace(/倍$/,'').trim(),mixed=/^(\d+)\s*(?:又|\s)\s*(\d+)\s*\/\s*(\d+)$/.exec(s),simple=/^(\d+)\s*\/\s*(\d+)$/.exec(s);if(mixed&&+mixed[3]>0)return +mixed[1]+mixed[2]/mixed[3];if(simple&&+simple[2]>0)return simple[1]/simple[2];if(/^\d+(?:\.\d+)?$/.test(s))return Number(s);return null;}
  function grade(q,value){if(q.kind==='open')return null;if(q.kind==='choice')return Number.isInteger(value)&&value===q.expected;if(q.kind==='fraction'){const n=fraction(value);return n!==null&&Math.abs(n-q.expected[0]/q.expected[1])<1e-8;}if(q.kind==='number'){const s=String(value).trim().replace(/(?:小时|时|h)$/i,'').trim();return /^\d+(?:\.\d+)?$/.test(s)&&Number(s)===q.expected;}return [q.expected,...(q.accepted||[])].includes(String(value).trim());}
  function carryRecords(records,questions){return questions.map((q,i)=>{const r=records[i],context=[q.context,q.source,q.task].filter(Boolean).join(' ');return r?.title===q.title&&r.context===context?JSON.parse(JSON.stringify(r)):null;});}
- root.RepairLesson={lessons,rounds,workModel,grade,carryRecords};if(typeof module!=='undefined'&&module.exports)module.exports=root.RepairLesson;
+ root.RepairLesson={lessons,rounds,readingNotes,readingTokens,workModel,grade,carryRecords};if(typeof module!=='undefined'&&module.exports)module.exports=root.RepairLesson;
 })(typeof window!=='undefined'?window:globalThis);
