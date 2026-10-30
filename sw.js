@@ -1,52 +1,234 @@
 'use strict';
-const CACHE = 'curiosity-station-v142';
-const FILES = ['angle180.html','angle180-content.js','angle180.js','angle180.css','journey.html','journey-content.js','journey.js','journey.css','buoyancy.html','buoyancy-content.js','buoyancy.js','buoyancy.css','repair.html','repair-content.js','repair.js','repair.css','baicao.html','baicao-content.js','baicao.js','baicao.css','beiying.html','beiying-content.js','beiying.js','beiying.css','weighted.html','weighted-content.js','weighted.js','weighted.css','focus.html','focus-content.js','focus.js','focus.css','fairtest.html','fairtest-content.js','fairtest.js','briefing.html','briefing-content.js','briefing.js','assets/audio/briefing-team.m4a','assets/audio/briefing-update.m4a','lesson-flow.js','lesson-flow.css','causal.html','causal-content.js','causal.js','./','index.html','style.css','app.js','learning-feedback.js','learning-feedback.css','records.html','records.css','records.js','learning-backup.js','catalog.js','catalog.css','courses.html','courses.js','reading.html','reading.css','equation.html','equation.css','equation-content.js','equation.js','speed.html','speed.css','speed-content.js','speed.js','map.html','map.css','map-content.js','map.js','change.html','change.css','change-content.js','change.js','discount.html','discount.css','discount-content.js','discount.js','glacier.html','glacier.css','glacier-content.js','glacier.js','parachute.html','parachute.css','parachute-content.js','parachute.js','addition.html','addition.css','addition-content.js','addition.js','elements.html','elements.css','elements-content.js','elements.js','pressure.html','pressure.css','pressure-content.js','pressure.js','character.html','character.css','character-content.js','character.js','hangar.html','hangar.css','hangar-content.js','hangar.js','assets/audio/hangar-report.m4a','photosynthesis.html','photosynthesis.css','photosynthesis-content.js','photosynthesis.js','quotient.html','quotient.css','quotient-content.js','quotient.js','daynight.html','daynight.css','daynight-content.js','daynight.js','inertia.html','inertia.css','inertia-content.js','inertia.js','purity.html','purity.css','purity-content.js','purity.js','supplies.html','supplies.css','supplies-content.js','supplies.js','assets/audio/picnic-supplies.m4a','qualifier.html','qualifier.css','qualifier-content.js','qualifier.js','power.html','power.css','power-content.js','power.js','division.html','division.css','division-content.js','division.js','grid.html','grid.css','grid-content.js','grid.js','rotor.html','rotor.css','rotor-content.js','rotor-model.js','rotor.js','forces.html','forces.css','forces-content.js','forces.js','multiply.html','multiply.css','multiply-content.js','multiply.js','particle.html','particle.css','particle-content.js','particle.js','gist.html','gist.css','gist-content.js','gist.js','past.html','past.css','past-content.js','past.js','assets/audio/past-flight.m4a','subtract.html','subtract.css','subtract-content.js','subtract.js','cell.html','cell.css','cell-content.js','cell.js','contour.html','contour.css','contour-content.js','contour.js','density.html','density.css','density-content.js','density.js','negative.html','negative.css','negative-content.js','negative.js','now.html','now.css','now-content.js','now.js','tomato.html','tomato.css','tomato-content.js','tomato.js','reading-content.js','reading.js','english.html','english.css','english.js','rocket.html','rocket.css','rocket.js','scale.html','scale.css','scale.js','balance.html','balance.css','balance.js','balance-logic.mjs','charts.html','charts.css','charts.js','chart-logic.mjs','lesson.html','lessons/math.html','lessons/chinese.html','app.webmanifest','assets/icon.svg','assets/icon-180.png','assets/icon-192.png','assets/icon-512.png','assets/audio/robot-dog.m4a'];
-FILES.unshift('persuade.html','persuade-content.js','persuade.js','persuade.css');
-FILES.unshift('parallel.html','parallel-content.js','parallel.js','parallel.css');
-FILES.unshift('chun.html','chun-content.js','chun.js','chun.css');
-FILES.unshift('triangle180.html','triangle180-content.js','triangle180.js','triangle180.css');
-FILES.unshift('polygon360.html','polygon360-content.js','polygon360.js','polygon360.css');
-const urls = FILES.map(file=>new URL(file,self.location).href);
-async function precache(cache){
-  let cursor=0;
-  async function worker(){
-    while(cursor<urls.length){
-      const url=urls[cursor++];
-      const response=await fetch(url,{cache:'reload'});
-      if(!response.ok||response.redirected||response.type==='opaque')throw new Error('Asset not available');
-      await cache.put(url,response);
+
+const CACHE_PREFIX = 'curiosity-station-';
+const CACHE = `${CACHE_PREFIX}v143`;
+const INSTALL_CACHE = `${CACHE}-installing`;
+const CORE_FILES = [
+  './',
+  'index.html',
+  'courses.html',
+  'records.html',
+  'style.css',
+  'catalog.css',
+  'records.css',
+  'learning-feedback.css',
+  'app.js',
+  'catalog.js',
+  'courses.js',
+  'learning-feedback.js',
+  'learning-backup.js',
+  'records.js',
+  'app.webmanifest',
+  'assets/icon.svg',
+  'assets/icon-180.png',
+  'assets/icon-192.png',
+  'assets/icon-512.png'
+];
+const CORE_URLS = CORE_FILES.map(file => new URL(file, self.registration.scope).href);
+const CACHEABLE_DESTINATIONS = new Set([
+  'audio', 'document', 'font', 'image', 'manifest', 'script', 'style', 'video', 'worker'
+]);
+
+function cacheKey(input) {
+  const url = new URL(typeof input === 'string' ? input : input.url);
+  url.hash = '';
+  url.search = '';
+  return url.href;
+}
+
+function canStore(response) {
+  return response && response.status === 200 && !response.redirected && response.type !== 'opaque';
+}
+
+function isCacheable(request) {
+  if (request.method !== 'GET') return false;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin || !url.href.startsWith(self.registration.scope)) return false;
+  if (request.mode === 'navigate' || CACHEABLE_DESTINATIONS.has(request.destination)) return true;
+  return /\.(?:css|html?|ico|jpe?g|js|json|m4a|mjs|mp3|mp4|png|svg|webmanifest|webp|woff2?)$/i.test(url.pathname);
+}
+
+async function fetchAndStore(url, cacheName = CACHE) {
+  const key = cacheKey(url);
+  const request = new Request(key, {
+    cache: 'reload',
+    credentials: 'same-origin'
+  });
+  try {
+    const response = await fetch(request);
+    if (!canStore(response)) return null;
+    await (await caches.open(cacheName)).put(key, response.clone());
+    return response;
+  } catch (_) {
+    return null;
+  }
+}
+
+async function cacheCore() {
+  await caches.delete(INSTALL_CACHE);
+  const failed = [];
+  let cursor = 0;
+  async function worker() {
+    while (cursor < CORE_URLS.length) {
+      const url = CORE_URLS[cursor++];
+      const fresh = await fetchAndStore(url, INSTALL_CACHE);
+      if (!fresh) failed.push(url);
     }
   }
-  await Promise.all(Array.from({length:Math.min(12,urls.length)},()=>worker()));
+  await Promise.all(Array.from({length: Math.min(4, CORE_URLS.length)}, worker));
+  if (failed.length) {
+    await caches.delete(INSTALL_CACHE);
+    throw new Error(`Core cache incomplete: ${failed.length}`);
+  }
 }
+
+async function promoteCore() {
+  const source = await caches.open(INSTALL_CACHE);
+  const target = await caches.open(CACHE);
+  for (const url of CORE_URLS) {
+    const response = await source.match(url);
+    if (!response) throw new Error('Staged core cache incomplete');
+    await target.put(url, response);
+  }
+  await caches.delete(INSTALL_CACHE);
+}
+
+async function cacheUrls(urls, fetchMissing = true) {
+  const scoped = [...new Set(urls.map(url => {
+    try {
+      const parsed = new URL(url, self.registration.scope);
+      return parsed.origin === self.location.origin && parsed.href.startsWith(self.registration.scope)
+        ? cacheKey(parsed.href)
+        : null;
+    } catch (_) {
+      return null;
+    }
+  }).filter(Boolean))];
+  let pageCached = 0;
+  let cursor = 0;
+  async function worker() {
+    while (cursor < scoped.length) {
+      const url = scoped[cursor++];
+      const current = await (await caches.open(CACHE)).match(url);
+      if (current || (fetchMissing && await fetchAndStore(url))) pageCached += 1;
+    }
+  }
+  await Promise.all(Array.from({length: Math.min(4, scoped.length)}, worker));
+  return {pageCached, pageTotal: scoped.length, pageReady: pageCached === scoped.length};
+}
+
+async function cacheStatus() {
+  const current = await caches.open(CACHE);
+  let coreCached = 0;
+  for (const url of CORE_URLS) if (await current.match(url)) coreCached += 1;
+  return {cache: CACHE, coreCached, coreTotal: CORE_URLS.length};
+}
+
+async function currentOrNetwork(request) {
+  const key = cacheKey(request);
+  const current = await (await caches.open(CACHE)).match(key);
+  if (current) return current;
+
+  try {
+    const response = await fetch(new Request(request, {cache: 'reload'}));
+    if (canStore(response)) {
+      const copy = response.clone();
+      await (await caches.open(CACHE)).put(key, copy);
+    }
+    return response;
+  } catch (error) {
+    if (request.mode === 'navigate') return offlinePage();
+    throw error;
+  }
+}
+
+function offlinePage() {
+  const home = self.registration.scope;
+  const body = `<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#20574b"><title>这页还没保存 · 好奇心小站</title><style>body{margin:0;background:#f7f5ee;color:#173e36;font:17px/1.7 system-ui,sans-serif}main{box-sizing:border-box;max-width:40rem;margin:12vh auto;padding:2rem}h1{font-size:2rem;line-height:1.2}a{display:inline-block;margin-top:1rem;padding:.7rem 1rem;border-radius:999px;background:#20574b;color:white;text-decoration:none}</style><main><p>当前没有网络</p><h1>这门课还没保存在设备上。</h1><p>联网打开一次后，它就能在这台设备上离线使用。</p><a href="${home}">返回已保存的入口</a></main></html>`;
+  return new Response(body, {
+    status: 503,
+    headers: {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store'}
+  });
+}
+
+async function fullAudio(request) {
+  const key = cacheKey(request);
+  return (await caches.open(CACHE)).match(key);
+}
+
+async function rangeResponse(request) {
+  const full = await fullAudio(request);
+  if (!full) return fetch(request);
+
+  const bytes = await full.arrayBuffer();
+  const range = request.headers.get('Range');
+  const match = /^bytes=(\d*)-(\d*)$/.exec(range || '');
+  const invalid = () => new Response(null, {
+    status: 416,
+    headers: {'Content-Range': `bytes */${bytes.byteLength}`}
+  });
+  if (!match || (!match[1] && !match[2])) return invalid();
+
+  const start = match[1]
+    ? Number(match[1])
+    : Math.max(0, bytes.byteLength - Number(match[2]));
+  const end = match[2] && match[1]
+    ? Math.min(Number(match[2]), bytes.byteLength - 1)
+    : bytes.byteLength - 1;
+  if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start > end || start >= bytes.byteLength) {
+    return invalid();
+  }
+
+  const headers = new Headers(full.headers);
+  headers.delete('Content-Encoding');
+  headers.set('Accept-Ranges', 'bytes');
+  headers.set('Content-Length', String(end - start + 1));
+  headers.set('Content-Range', `bytes ${start}-${end}/${bytes.byteLength}`);
+  return new Response(bytes.slice(start, end + 1), {status: 206, headers});
+}
+
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
-    const cache = await caches.open(CACHE);
-    await precache(cache);
+    await cacheCore();
     await self.skipWaiting();
   })());
 });
-self.addEventListener('activate', event => event.waitUntil((async()=>{
-  for (const key of await caches.keys()) if (key.startsWith('curiosity-station-') && key !== CACHE) await caches.delete(key);
-  await self.clients.claim();
-})()));
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-  url.search = '';
-  if (event.request.method !== 'GET' || !urls.includes(url.href)) return;
-  event.respondWith((async()=>{
-    const cached = await (await caches.open(CACHE)).match(url.href);
-    if (!cached) return fetch(event.request);
-    const range = event.request.headers.get('Range');
-    if (range && url.pathname.endsWith('.m4a')) {
-      const bytes = await cached.arrayBuffer();
-      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
-      if (!match) return new Response(null,{status:416,headers:{'Content-Range':`bytes */${bytes.byteLength}`}});
-      const start = match[1] ? Number(match[1]) : Math.max(0,bytes.byteLength-Number(match[2]));
-      const end = match[1] && match[2] ? Math.min(Number(match[2]),bytes.byteLength-1) : bytes.byteLength-1;
-      if (start > end || start >= bytes.byteLength) return new Response(null,{status:416,headers:{'Content-Range':`bytes */${bytes.byteLength}`}});
-      return new Response(bytes.slice(start,end+1),{status:206,headers:{'Content-Type':'audio/mp4','Content-Range':`bytes ${start}-${end}/${bytes.byteLength}`,'Content-Length':String(end-start+1),'Accept-Ranges':'bytes'}});
-    }
-    return cached;
+
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    await promoteCore();
+    const oldCaches = (await caches.keys()).filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE);
+    await Promise.all(oldCaches.map(name => caches.delete(name)));
+    await self.clients.claim();
   })());
+});
+
+self.addEventListener('fetch', event => {
+  if (!isCacheable(event.request)) return;
+  const url = new URL(event.request.url);
+  const hasRange = event.request.headers.has('Range');
+  const isAudioRange = hasRange && /\.(?:m4a|mp3|mp4)$/i.test(url.pathname);
+  if (hasRange && !isAudioRange) return;
+  event.respondWith(isAudioRange ? rangeResponse(event.request) : currentOrNetwork(event.request));
+});
+
+self.addEventListener('message', event => {
+  const data = event.data || {};
+  const reply = payload => {
+    if (event.ports && event.ports[0]) event.ports[0].postMessage(payload);
+  };
+  if (data.type === 'CACHE_STATUS') {
+    event.waitUntil(cacheStatus().then(reply));
+    return;
+  }
+  if (data.type === 'CACHE_URLS') {
+    event.waitUntil((async () => {
+      const fetchMissing = data.fetchMissing !== false;
+      let core = await cacheStatus();
+      if (fetchMissing && core.coreCached < core.coreTotal) await cacheUrls(CORE_URLS);
+      const page = await cacheUrls(Array.isArray(data.urls) ? data.urls : [], fetchMissing);
+      if (core.coreCached < core.coreTotal) core = await cacheStatus();
+      reply({...core, ...page});
+    })());
+  }
 });
