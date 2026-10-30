@@ -17,6 +17,7 @@
     {id:'parallel',name:'不拿量角器，怎么把一个角搬过去？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['角','尺规作图','弦','全等预览','平行线','同位角','内错角','判定','性质','证明'],description:'用同半径与同弦长锁住角的开口；再把搬角变成证明工具，分清由角判平行和由平行推角。',icon:'∠→∥',time:'12–18 分钟',tasks:3,fresh:true},
     {id:'chun',readingTitle:'春',name:'共读《春》：一句话怎样让画面动起来？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','朱自清','春','写景','词汇','句式','拟人','感官','段落推进','阅读'],description:'在本页完整通读并按需点看词句小注，再让小草、春雨和晨雾动起来；从词语取证，看画面怎样获得方向、速度、声音和力量。',icon:'共读',time:'15—20分钟 · 可分次',format:'readalong',tasks:1,fresh:true},
     {id:'triangle180',name:'三角形三个角为什么正好是180°？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['三角形','内角和','180度','平行线','内错角','辅助线','证明','几何'],description:'先拖动不同三角形分清猜想与证明，再过顶点作平行线，把两个底角搬到同一个平角中；换成斜放钝角图，自己补线并排出完整证明。',icon:'△180°',time:'10–15 分钟',tasks:3,fresh:true},
+    {id:'rotor',name:'空气往下走，无人机为什么往上？',subject:'物理',group:'explore',stages:['六年级','初中衔接','八年级'],tags:['无人机','旋翼','空气','推力','动量','牛顿第三定律','受力平衡','速度','加速度','水下探测器'],description:'先判断流动空气怎样持续传力，再调转速找悬停；最后换成水下探测器并反转螺旋桨，独立迁移相互作用关系。',icon:'气流↑',time:'10–15 分钟',tasks:3,fresh:true},
     {id:'buoyancy',name:'钢会沉，钢造的轮船为什么能浮？',subject:'科学',group:'explore',stages:['六年级','初中衔接','八年级'],tags:['轮船','浮力','排水量','密度','总质量','潜水器','控制变量'],description:'同一团黏土换船形、加货物，看水线与排水读数一起变化，再用设备卡决定潜水器怎样留在水中。',icon:'船·浮',time:'约 8–12 分钟',tasks:3,fresh:true},
     {id:'glacier',name:'冰河时代调查局：这片没有冰的山谷，曾经有冰川吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['冰河时代','冰川','地貌','证据','科学推理','地理'],description:'先判断山谷，再让冰携带碎石走一遍；最后换地点查档案，看相似痕迹是否来自同一过程。',icon:'冰·证',time:'约 8–10 分钟',tasks:3,fresh:true},
     {id:'parachute',name:'降落伞越大，就一定越好吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['降落伞','空气阻力','控制变量','工程设计','权衡','月球'],description:'亲手选伞、看落点，再接一份月球任务。用证据决定，而不只追求更大。',icon:'↘',time:'约 8–10 分钟',tasks:3},
@@ -64,7 +65,7 @@
     'repair',
     'discount','angle180','persuade','parallel','chun','triangle180','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
-    'rocket','charts','parachute','glacier','buoyancy'
+    'rotor','rocket','charts','parachute','glacier','buoyancy'
   ];
   const orderIndex=new Map(recommendedOrder.map((id,index)=>[id,index]));
   items.sort((a,b)=>(orderIndex.get(a.id)??Number.MAX_SAFE_INTEGER)-(orderIndex.get(b.id)??Number.MAX_SAFE_INTEGER));
