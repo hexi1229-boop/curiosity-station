@@ -15,6 +15,7 @@
   courses.splice(courses.findIndex(course=>course[0]==='triangle180')+1,0,['polygon360','四边形为什么是360°？更多边呢？','polygon360.html']);
   courses.splice(courses.findIndex(course=>course[0]==='polygon360')+1,0,['history','同一件事，两份记录为什么不一样？','history.html']);
   courses.splice(courses.findIndex(course=>course[0]==='history')+1,0,['prexia','夏朝以前，真的叫“三皇五帝时代”吗？','prexia.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='prexia')+1,0,['erlitou','没有国名牌的都城：二里头到底是不是夏都？','erlitou.html']);
   const clone=value=>JSON.parse(JSON.stringify(value));
   const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
   let storageError=false;
