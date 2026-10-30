@@ -1,0 +1,35 @@
+.triangle-main{--parallel:#35645f;--parallel-deep:#224e4a;--parallel-pale:#e8f1ee;--parallel-warm:#bd6f3b;--parallel-line:#bfd3ce}
+.triangle-intro h1{max-width:920px}
+.triangle-model{background:var(--parallel-pale);border:1px solid #c7d9d4;border-radius:19px;padding:18px;margin:21px 0}
+.triangle-model svg,.triangle-proof-svg,.triangle-transfer-svg{display:block;width:100%;height:auto;background:#fff;border:1px solid #cfddd9;border-radius:15px}
+.triangle-model svg{touch-action:pan-y}
+.triangle-drag-handle{touch-action:none}
+.triangle-proof-svg,.triangle-transfer-svg{touch-action:pan-y}
+.triangle-model svg text,.triangle-proof-svg text,.triangle-transfer-svg text{font-family:system-ui,sans-serif}
+.triangle-model-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.triangle-model-controls label{font-size:13px;line-height:1.6;color:#526b67}
+.triangle-model-controls output{float:right;font-weight:750;color:var(--parallel-deep)}
+.triangle-model-controls input{width:100%;height:44px;accent-color:var(--parallel)}
+.triangle-readout{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:13px}
+.triangle-readout span{background:#fff;border:1px solid #cfddd9;border-radius:12px;padding:10px 8px;text-align:center;font-size:13px;line-height:1.55;color:#496661}
+.triangle-readout b{display:block;font-size:17px;color:var(--parallel-deep)}
+.triangle-observation{border-left:4px solid var(--parallel-warm);background:#fff;border-radius:4px 12px 12px 4px;padding:12px 14px;margin:13px 0 0;color:#5d706c;font-size:14px;line-height:1.75}
+.triangle-proof-stage{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.65fr);gap:16px;align-items:start;margin:20px 0}
+.triangle-step-note{background:#fff;border:1px solid #cfddd9;border-radius:14px;padding:15px;line-height:1.75;color:#566c68;font-size:14px}
+.triangle-step-note b{display:block;color:var(--parallel-deep);font-size:16px;margin-bottom:6px}
+.triangle-identity{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:17px 0}
+.triangle-identity div{border:1px solid #cfddd9;border-radius:13px;padding:12px;background:#fff;font-size:13px;line-height:1.65;color:#526a66}
+.triangle-identity b{display:block;color:#2d5a55;margin-bottom:4px}
+.triangle-identity .target{background:#f6ece3;border-color:#e3c7b4}
+.triangle-transfer-box{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(230px,.75fr);gap:17px;align-items:start;margin:20px 0}
+.triangle-transfer-copy{background:#f4f1e8;border:1px solid #ddd4bf;border-radius:15px;padding:15px;color:#6c6658;line-height:1.8}
+.triangle-formula{font-family:ui-serif,"STSong",serif;font-size:clamp(18px,3vw,24px);background:#f6eee2;border-left:4px solid var(--parallel-warm);border-radius:4px 14px 14px 4px;padding:15px 17px;line-height:1.8}
+.triangle-card-hint{font-size:13px;color:#6d7c79}
+.triangle-drag-handle{cursor:grab}
+.triangle-drag-handle:active{cursor:grabbing}
+@media(max-width:760px){
+  .triangle-model-controls,.triangle-proof-stage,.triangle-transfer-box{grid-template-columns:1fr}
+  .triangle-readout{grid-template-columns:1fr 1fr}
+  .triangle-identity{grid-template-columns:1fr}
+}
+@media(max-width:420px){.triangle-readout{grid-template-columns:1fr 1fr}.triangle-model{padding:12px}}
