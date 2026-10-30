@@ -1,19 +1,27 @@
 'use strict';
-const CACHE = 'curiosity-station-v137';
+const CACHE = 'curiosity-station-v138';
 const FILES = ['angle180.html','angle180-content.js','angle180.js','angle180.css','journey.html','journey-content.js','journey.js','journey.css','buoyancy.html','buoyancy-content.js','buoyancy.js','buoyancy.css','repair.html','repair-content.js','repair.js','repair.css','baicao.html','baicao-content.js','baicao.js','baicao.css','beiying.html','beiying-content.js','beiying.js','beiying.css','weighted.html','weighted-content.js','weighted.js','weighted.css','focus.html','focus-content.js','focus.js','focus.css','fairtest.html','fairtest-content.js','fairtest.js','briefing.html','briefing-content.js','briefing.js','assets/audio/briefing-team.m4a','assets/audio/briefing-update.m4a','lesson-flow.js','lesson-flow.css','causal.html','causal-content.js','causal.js','./','index.html','style.css','app.js','learning-feedback.js','learning-feedback.css','records.html','records.css','records.js','learning-backup.js','catalog.js','catalog.css','courses.html','courses.js','reading.html','reading.css','equation.html','equation.css','equation-content.js','equation.js','speed.html','speed.css','speed-content.js','speed.js','map.html','map.css','map-content.js','map.js','change.html','change.css','change-content.js','change.js','discount.html','discount.css','discount-content.js','discount.js','glacier.html','glacier.css','glacier-content.js','glacier.js','parachute.html','parachute.css','parachute-content.js','parachute.js','addition.html','addition.css','addition-content.js','addition.js','elements.html','elements.css','elements-content.js','elements.js','pressure.html','pressure.css','pressure-content.js','pressure.js','character.html','character.css','character-content.js','character.js','hangar.html','hangar.css','hangar-content.js','hangar.js','assets/audio/hangar-report.m4a','photosynthesis.html','photosynthesis.css','photosynthesis-content.js','photosynthesis.js','quotient.html','quotient.css','quotient-content.js','quotient.js','daynight.html','daynight.css','daynight-content.js','daynight.js','inertia.html','inertia.css','inertia-content.js','inertia.js','purity.html','purity.css','purity-content.js','purity.js','supplies.html','supplies.css','supplies-content.js','supplies.js','assets/audio/picnic-supplies.m4a','qualifier.html','qualifier.css','qualifier-content.js','qualifier.js','power.html','power.css','power-content.js','power.js','division.html','division.css','division-content.js','division.js','grid.html','grid.css','grid-content.js','grid.js','rotor.html','rotor.css','rotor-content.js','rotor-model.js','rotor.js','forces.html','forces.css','forces-content.js','forces.js','multiply.html','multiply.css','multiply-content.js','multiply.js','particle.html','particle.css','particle-content.js','particle.js','gist.html','gist.css','gist-content.js','gist.js','past.html','past.css','past-content.js','past.js','assets/audio/past-flight.m4a','subtract.html','subtract.css','subtract-content.js','subtract.js','cell.html','cell.css','cell-content.js','cell.js','contour.html','contour.css','contour-content.js','contour.js','density.html','density.css','density-content.js','density.js','negative.html','negative.css','negative-content.js','negative.js','now.html','now.css','now-content.js','now.js','tomato.html','tomato.css','tomato-content.js','tomato.js','reading-content.js','reading.js','english.html','english.css','english.js','rocket.html','rocket.css','rocket.js','scale.html','scale.css','scale.js','balance.html','balance.css','balance.js','balance-logic.mjs','charts.html','charts.css','charts.js','chart-logic.mjs','lesson.html','lessons/math.html','lessons/chinese.html','app.webmanifest','assets/icon.svg','assets/icon-180.png','assets/icon-192.png','assets/icon-512.png','assets/audio/robot-dog.m4a'];
 FILES.unshift('persuade.html','persuade-content.js','persuade.js','persuade.css');
 FILES.unshift('parallel.html','parallel-content.js','parallel.js','parallel.css');
 FILES.unshift('chun.html','chun-content.js','chun.js','chun.css');
 FILES.unshift('triangle180.html','triangle180-content.js','triangle180.js','triangle180.css');
 const urls = FILES.map(file=>new URL(file,self.location).href);
+async function precache(cache){
+  let cursor=0;
+  async function worker(){
+    while(cursor<urls.length){
+      const url=urls[cursor++];
+      const response=await fetch(url,{cache:'reload'});
+      if(!response.ok||response.redirected||response.type==='opaque')throw new Error('Asset not available');
+      await cache.put(url,response);
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(12,urls.length)},()=>worker()));
+}
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    for (const url of urls) {
-      const response = await fetch(url, {cache:'reload'});
-      if (!response.ok || response.redirected || response.type === 'opaque') throw new Error('Asset not available');
-      await cache.put(url,response);
-    }
+    await precache(cache);
     await self.skipWaiting();
   })());
 });
