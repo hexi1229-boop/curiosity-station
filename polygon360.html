@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#355f67">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <meta name="description" content="从三角形内角和出发，亲手把凸四边形、凸五边形和一般凸多边形剖分成三角形，证明多边形内角和公式。">
+  <title>四边形为什么是360°？更多边呢？ · TY敏捷课堂</title>
+  <link rel="manifest" href="app.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="learning-feedback.css">
+  <link rel="stylesheet" href="parallel.css">
+  <link rel="stylesheet" href="polygon360.css">
+  <script src="learning-feedback.js" defer></script>
+  <script src="polygon360-content.js" defer></script>
+  <script src="polygon360.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="back-link" href="courses.html?group=school">← TY敏捷课堂</a>
+    <a class="back-link" href="records.html">学习记录 ↗</a>
+  </header>
+  <main class="parallel-main polygon-main">
+    <section class="parallel-intro polygon-intro">
+      <p class="eyebrow">数学 · 几何证明 G3 · 六年级到初中衔接</p>
+      <h1>四边形为什么是360°<span>？</span><br>更多边呢<span>？</span></h1>
+      <p>不背公式。先把歪斜四边形切开，再换一张没有颜色提示的图，最后说明任意凸 n 边形为什么都能这样算。</p>
+      <div class="parallel-meta">
+        <span>约 12–18 分钟</span>
+        <span>3 个证明环节</span>
+        <span>首答、画线、提示与解释自动保存</span>
+      </div>
+    </section>
+    <ol class="parallel-nav" aria-label="学习进度">
+      <li>01 四边形切开</li>
+      <li>02 五边形换图</li>
+      <li>03 推到 n 边形</li>
+    </ol>
+    <div id="polygon360-task"></div>
+    <noscript><p>请启用 JavaScript 使用互动课程。</p></noscript>
+    <details class="parallel-sources" id="polygon360-sources">
+      <summary>课程边界、教材位置与来源</summary>
+      <p>本课把G2已经证明的“三角形三个内角的和是180°”作为前提，不再重复证明。主证明严格讨论凸的简单多边形：边不自交，并且从固定顶点向不相邻顶点作出的对角线都落在图形内部或边界上。</p>
+      <p>屏幕上的4至9边形、转动和着色只帮助看见“无重叠、无空隙”的切分关系；有限个动画不能证明所有多边形。一般证明来自同一个构造：从固定顶点作出 n−3 条对角线，恰好得到 n−2 个三角形。</p>
+      <p>凹的简单多边形也满足内角和公式，但“从任意一个顶点扇形切开”不一定能直接使用；它的一般证明需要更完整的三角剖分结论。边发生交叉的自交多边形，内部和内角的取法会产生新的约定，不在本课公式的直接范围。</p>
+      <p>内容衔接人教版初中数学“多边形及其内角和”。不同版次的年级、章节和页码可能调整，本页不写死章节位置。</p>
+      <p><a href="https://www.moe.gov.cn/srcsite/A26/s8001/202204/W020220420582346895190.pdf" target="_blank" rel="noopener">教育部《义务教育数学课程标准（2022年版）》</a>；<a href="https://www.pep.com.cn/xw/zt/xkzt/csazy/" target="_blank" rel="noopener">人教社初中数学教材与教学资源</a>。</p>
+    </details>
+  </main>
+  <footer class="site-footer">
+    <span>几何守则：动画帮助看见关系，一般构造完成证明。</span>
+    <span id="offline-status" role="status">记录自动保存在本机</span>
+  </footer>
+</body>
+</html>

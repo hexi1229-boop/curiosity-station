@@ -12,6 +12,7 @@
   const readalongs={beiying:6,baicao:24,chun:10};
   courses.unshift(['chun','共读《春》：一句话怎样让画面动起来？','chun.html']);
   courses.splice(courses.findIndex(course=>course[0]==='chun')+1,0,['triangle180','三角形三个角为什么正好是180°？','triangle180.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='triangle180')+1,0,['polygon360','四边形为什么是360°？更多边呢？','polygon360.html']);
   const clone=value=>JSON.parse(JSON.stringify(value));
   const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
   let storageError=false;
