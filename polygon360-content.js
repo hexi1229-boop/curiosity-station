@@ -7,7 +7,7 @@
   const tasks=[
     {title:'歪斜的四边形，也能切成两个三角形吗？',context:'先选方法，再亲手画一条对角线；检查两个三角形是否无重叠、无空隙地铺满原图。'},
     {title:'五边形转了方向，哪两条线才是有效对角线？',context:'从指定顶点依次选两条对角线，撤掉颜色提示后独立完成三角剖分。'},
-    {title:'n边形为什么是(n−2)×180°？',context:'从有限观察走向一般证明，并审查内部一点法、凹多边形和自交图形的适用边界。'}
+    {title:'n边形为什么是(n−2)×180°？',context:'从亲手切分和有限观察走向一般证明；内部一点法与图形边界保留为可选研究员挑战。'}
   ];
 
   const quadrilateralMethods=[
@@ -67,6 +67,13 @@
     for(let offset=2;offset<=n-2;offset++)lines.push([start,(start+offset)%n]);
     return lines;
   }
+  function isFanEndpoint(n,start,end){
+    assertSides(n);
+    if(!Number.isInteger(start)||start<0||start>=n)throw new RangeError('The start vertex must belong to the polygon');
+    if(!Number.isInteger(end)||end<0||end>=n)return false;
+    const offset=(end-start+n)%n;
+    return offset>=2&&offset<=n-2;
+  }
   function sameSet(values,answer){
     if(!Array.isArray(values)||!Array.isArray(answer))return false;
     const left=[...new Set(values)].sort(),right=[...new Set(answer)].sort();
@@ -81,12 +88,16 @@
     const encode=line=>Array.isArray(line)&&line.length===2?line.join('-'):'';
     return sameSet(lines.map(encode),fanDiagonals(n,start).map(encode));
   }
-  function validGeneralProof(generalId,centerId,scopeId){
-    return generalId==='fan'&&centerId==='full-turn'&&scopeId==='bounded';
+  function validFanEndpoints(n,start,ends){
+    if(!Array.isArray(ends))return false;
+    return sameSet(ends,fanDiagonals(n,start).map(line=>line[1]));
   }
+  function resumeGeneralPhase(value){return ['construct','observe','proof'].includes(value)?value:'construct';}
+  function validMainProof(generalId){return generalId==='fan';}
+  function validResearchChallenge(centerId,scopeId){return centerId==='full-turn'&&scopeId==='bounded';}
   function textPresent(value){return typeof value==='string'&&value.trim().length>0;}
 
-  const api={id,title,tasks,quadrilateralMethods,quadrilateralFacts,pentagonLines,patternOptions,generalOptions,centerOptions,scopeOptions,sources,countForSides,fanDiagonals,sameSet,validQuadrilateralMethod,validQuadrilateralFacts,validPentagonLines,validPattern,validFanDiagonals,validGeneralProof,textPresent};
+  const api={id,title,tasks,quadrilateralMethods,quadrilateralFacts,pentagonLines,patternOptions,generalOptions,centerOptions,scopeOptions,sources,countForSides,fanDiagonals,isFanEndpoint,sameSet,validQuadrilateralMethod,validQuadrilateralFacts,validPentagonLines,validPattern,validFanDiagonals,validFanEndpoints,resumeGeneralPhase,validMainProof,validResearchChallenge,textPresent};
   root.Polygon360Lesson=api;
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
