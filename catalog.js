@@ -19,6 +19,7 @@
     {id:'triangle180',name:'三角形三个角为什么正好是180°？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['三角形','内角和','180度','平行线','内错角','辅助线','证明','几何'],description:'先拖动不同三角形分清猜想与证明，再过顶点作平行线，把两个底角搬到同一个平角中；换成斜放钝角图，自己补线并排出完整证明。',icon:'△180°',time:'10–15 分钟',tasks:3,fresh:true},
     {id:'polygon360',name:'四边形为什么是360°？更多边呢？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['四边形','多边形','内角和','三角剖分','对角线','360度','化归','一般化','证明','几何'],description:'让三角形180°成为新工具：从四边形、五边形一路亲手拆到七边形，再用同一个构造证明凸n边形公式，体会“已有工具—构造—化归—一般化”。',icon:'□360°',time:'15–20 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'history',name:'同一件事，两份记录为什么不一样？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['史料实证','史料','时间','来源','事实','解释','互证','证据边界','天津电车','秦统一','度量衡'],description:'把1905年的电车质疑与1906年的试运营现场放回时间、来源和范围，再用秦双诏版与《史记》独立判断“颁布度量衡命令”和“实际执行”的证据边界。',icon:'史·证',time:'12–18 分钟',tasks:3,fresh:true},
+    {id:'prexia',name:'夏朝以前，真的叫“三皇五帝时代”吗？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['三皇五帝','陶寺','石峁','龙山时代','史记','考古','史料实证','传统叙事','早期国家','证据边界'],description:'乘时间舱勘察陶寺与石峁，把后世整理的传统人物线和考古材料线分层；再用虚构新遗址独立判断，避免给古城硬贴姓名。',icon:'史前',time:'15–20 分钟 · 可分两次',tasks:4,fresh:true},
     {id:'rotor',name:'空气往下走，无人机为什么往上？',subject:'物理',group:'explore',stages:['六年级','初中衔接','八年级'],tags:['无人机','旋翼','空气','推力','动量','牛顿第三定律','受力平衡','速度','加速度','水下探测器'],description:'先判断流动空气怎样持续传力，再调转速找悬停；最后换成水下探测器并反转螺旋桨，独立迁移相互作用关系。',icon:'气流↑',time:'10–15 分钟',tasks:3,fresh:true},
     {id:'buoyancy',name:'钢会沉，钢造的轮船为什么能浮？',subject:'科学',group:'explore',stages:['六年级','初中衔接','八年级'],tags:['轮船','浮力','排水量','密度','总质量','潜水器','控制变量'],description:'同一团黏土换船形、加货物，看水线与排水读数一起变化，再用设备卡决定潜水器怎样留在水中。',icon:'船·浮',time:'约 8–12 分钟',tasks:3,fresh:true},
     {id:'glacier',name:'冰河时代调查局：这片没有冰的山谷，曾经有冰川吗？',subject:'科学',group:'explore',stages:['六年级','初中衔接'],tags:['冰河时代','冰川','地貌','证据','科学推理','地理'],description:'先判断山谷，再让冰携带碎石走一遍；最后换地点查档案，看相似痕迹是否来自同一过程。',icon:'冰·证',time:'约 8–10 分钟',tasks:3,fresh:true},
@@ -65,7 +66,7 @@
   ];
   const recommendedOrder=[
     'repair',
-    'discount','angle180','persuade','parallel','chun','triangle180','polygon360','history','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'discount','angle180','persuade','parallel','chun','triangle180','polygon360','history','prexia','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
     'rotor','rocket','charts','parachute','glacier','buoyancy'
   ];
