@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'curiosity-station-';
-const CACHE = `${CACHE_PREFIX}v147`;
+const CACHE = `${CACHE_PREFIX}v148`;
 const INSTALL_CACHE = `${CACHE}-installing`;
 const CORE_FILES = [
   './',
@@ -25,9 +25,12 @@ const CORE_FILES = [
   'assets/icon-512.png'
 ];
 const CORE_URLS = CORE_FILES.map(file => new URL(file, self.registration.scope).href);
+const CORE_URL_SET = new Set(CORE_URLS);
 const CACHEABLE_DESTINATIONS = new Set([
   'audio', 'document', 'font', 'image', 'manifest', 'script', 'style', 'video', 'worker'
 ]);
+const AUDIO_REFRESHED = new Set();
+const AUDIO_REFRESHES = new Map();
 
 function cacheKey(input) {
   const url = new URL(typeof input === 'string' ? input : input.url);
@@ -93,6 +96,19 @@ async function promoteCore() {
   await caches.delete(INSTALL_CACHE);
 }
 
+async function migrateRuntimeEntries(cacheNames) {
+  const target = await caches.open(CACHE);
+  for (const name of cacheNames) {
+    const source = await caches.open(name);
+    for (const request of await source.keys()) {
+      const key = cacheKey(request);
+      if (CORE_URL_SET.has(key) || await target.match(key)) continue;
+      const response = await source.match(request);
+      if (response) await target.put(key, response);
+    }
+  }
+}
+
 async function cacheUrls(urls, fetchMissing = true) {
   const scoped = [...new Set(urls.map(url => {
     try {
@@ -110,7 +126,10 @@ async function cacheUrls(urls, fetchMissing = true) {
     while (cursor < scoped.length) {
       const url = scoped[cursor++];
       const current = await (await caches.open(CACHE)).match(url);
-      if (current || (fetchMissing && await fetchAndStore(url))) pageCached += 1;
+      let ready = !!current;
+      if (fetchMissing && /\.(?:m4a|mp3|mp4)$/i.test(new URL(url).pathname)) ready = await refreshAudio(url) || ready;
+      else if (!ready && fetchMissing) ready = !!(await fetchAndStore(url));
+      if (ready) pageCached += 1;
     }
   }
   await Promise.all(Array.from({length: Math.min(4, scoped.length)}, worker));
@@ -127,16 +146,18 @@ async function cacheStatus() {
 async function currentOrNetwork(request) {
   const key = cacheKey(request);
   const current = await (await caches.open(CACHE)).match(key);
-  if (current) return current;
+  if (current && CORE_URL_SET.has(key)) return current;
 
   try {
     const response = await fetch(new Request(request, {cache: 'reload'}));
     if (canStore(response)) {
       const copy = response.clone();
       await (await caches.open(CACHE)).put(key, copy);
+      return response;
     }
-    return response;
+    return current || response;
   } catch (error) {
+    if (current) return current;
     if (request.mode === 'navigate') return offlinePage();
     throw error;
   }
@@ -151,9 +172,29 @@ function offlinePage() {
   });
 }
 
+async function refreshAudio(key) {
+  if (AUDIO_REFRESHED.has(key)) return true;
+  if (!AUDIO_REFRESHES.has(key)) {
+    const pending = fetchAndStore(key)
+      .then(response => {
+        if (response) AUDIO_REFRESHED.add(key);
+        return !!response;
+      })
+      .finally(() => AUDIO_REFRESHES.delete(key));
+    AUDIO_REFRESHES.set(key, pending);
+  }
+  return AUDIO_REFRESHES.get(key);
+}
+
 async function fullAudio(request) {
   const key = cacheKey(request);
+  if (!AUDIO_REFRESHED.has(key)) await refreshAudio(key);
   return (await caches.open(CACHE)).match(key);
+}
+
+async function audioResponse(request) {
+  const cached = await fullAudio(request);
+  return cached || fetch(request);
 }
 
 async function rangeResponse(request) {
@@ -197,7 +238,8 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     await promoteCore();
-    const oldCaches = (await caches.keys()).filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE);
+    const oldCaches = (await caches.keys()).filter(name => /^curiosity-station-v\d+$/.test(name) && name !== CACHE);
+    await migrateRuntimeEntries(oldCaches);
     await Promise.all(oldCaches.map(name => caches.delete(name)));
     await self.clients.claim();
   })());
@@ -207,9 +249,10 @@ self.addEventListener('fetch', event => {
   if (!isCacheable(event.request)) return;
   const url = new URL(event.request.url);
   const hasRange = event.request.headers.has('Range');
-  const isAudioRange = hasRange && /\.(?:m4a|mp3|mp4)$/i.test(url.pathname);
+  const isAudio = /\.(?:m4a|mp3|mp4)$/i.test(url.pathname);
+  const isAudioRange = hasRange && isAudio;
   if (hasRange && !isAudioRange) return;
-  event.respondWith(isAudioRange ? rangeResponse(event.request) : currentOrNetwork(event.request));
+  event.respondWith(isAudioRange ? rangeResponse(event.request) : isAudio ? audioResponse(event.request) : currentOrNetwork(event.request));
 });
 
 self.addEventListener('message', event => {
