@@ -369,3 +369,4 @@
   .zhou-main *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .zhou-message-dot{transform:none!important}
 }
+.course-next{margin:22px 0}.course-next a{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:1px solid #aeb79c;border-radius:999px;background:#fff;color:#44543c;text-decoration:none;font-weight:650}

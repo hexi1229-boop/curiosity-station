@@ -9,7 +9,7 @@
   courses.splice(courses.findIndex(course=>course[0]==='persuade')+1,0,['parallel','不拿量角器，怎么把一个角搬过去？','parallel.html']);
   courses.unshift(['repair','错题修复①：数量、语境与判断','repair.html'],['repair-words','错题修复②：词句与表达','repair.html?round=2'],['repair-math-01','近期数学强化考试①：分数运算与单位“1”','repair.html?round=math-01&exam=1']);
   courses.unshift(['journey','人停了，图上的线为什么还在？','journey.html']);
-  const readalongs={beiying:6,baicao:24,chun:10};
+  const readalongs={beiying:6,baicao:24,chun:10,chentaiqiu:1};
   courses.unshift(['chun','共读《春》：一句话怎样让画面动起来？','chun.html']);
   courses.splice(courses.findIndex(course=>course[0]==='chun')+1,0,['triangle180','三角形三个角为什么正好是180°？','triangle180.html']);
   courses.splice(courses.findIndex(course=>course[0]==='triangle180')+1,0,['polygon360','四边形为什么是360°？更多边呢？','polygon360.html']);
@@ -21,7 +21,8 @@
   courses.splice(courses.findIndex(course=>course[0]==='oracle')+1,0,['guandimiao','没有名字的人，怎么走进历史？','guandimiao.html']);
   courses.splice(courses.findIndex(course=>course[0]==='guandimiao')+1,0,['ligui','利簋写下“甲子朝”，为什么还不能直接换算年份？','ligui.html']);
   courses.splice(courses.findIndex(course=>course[0]==='ligui')+1,0,['zhou-network','没有电话和现代公路，周天子怎样管理千里之外？','zhou-network.html']);
-  courses.splice(courses.findIndex(course=>course[0]==='zhou-network')+1,0,['activewords','认识这个词，为什么开口时还是想不起来？','activewords.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='zhou-network')+1,0,['chentaiqiu','共读《陈太丘与友期行》：一场迟到，怎样照见“信”与“礼”？','chentaiqiu.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='chentaiqiu')+1,0,['activewords','认识这个词，为什么开口时还是想不起来？','activewords.html']);
   const clone=value=>JSON.parse(JSON.stringify(value));
   const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
   let storageError=false;
@@ -129,7 +130,11 @@
       if (readalongId && records.length===1) {
         const r=records[0],last=r.attempts[r.attempts.length-1],p=r.draft?.$paragraph;
         const phases={'首答前':'留想法前','首答后':'留过想法后','完成后回看':'收好后回看'};
-        return `<section class="learning-report" aria-label="本次共读记录"><h3>共读便笺 · ${r.done?'这次先收好':'可以慢慢读'}</h3><p class="report-course">${esc(title)}</p>${storageError?'<p class="report-status">本机保存未成功，请先截图保留。</p>':''}<p class="report-note">阅读轨迹与个人想法，不自动判分，也不认定已经读懂。</p><ol class="report-list"><li><h4>这次留下的文字</h4>${Number.isInteger(p)&&p>=1&&p<=readalongs[readalongId]?`<p><b>上次页面停留：</b>原文第 ${p} 段（位置记录，不是读完证明）。</p>`:''}${r.draft?.quote?`<p><b>摘句：</b><span class="report-words">${esc(r.draft.quote)}</span></p>`:''}${r.draft?.note?`<p><b>感受、解释或疑问：</b><span class="report-words">${esc(r.draft.note)}</span></p>`:''}${r.first?`<p><b>第一次留存：</b><span class="report-words">${esc(r.first.answer)}</span></p>`:r.draft?.quote||r.draft?.note?'<p>便笺已自动保存；也可以用“留住这版想法”保留一个修改前的版本。</p>':'<p>这次还没留文字。可以只读、只聊，下次再留便笺。</p>'}${r.attempts.length>1?`<p><b>最近留存：</b><span class="report-words">${esc(last.answer)}</span></p>`:''}<p><b>便笺小启发：</b>${r.helps.length?r.helps.map(h=>`${esc(phases[h.phase]||h.phase)}·${esc(h.label)}`).join('；'):'未打开；正常共读讲解不计作答求助'}</p>${r.notes.map(n=>`<p class="report-note">${esc(n)}</p>`).join('')}</li></ol><p class="report-note">记录只在本机保存，可从学习记录导出备份。没有记录下来的口头交流无法自动识别；收好便笺不等于掌握阅读方法。</p></section>`;
+        const transferChoices={cold:'只抓开头，认为华歆始终冷漠',commitment:'比较前后，看到接受请托后的坚持',forced:'认为两人都别无选择'};
+        const transferEvidence={'hua-hesitate':'歆辄难之','wang-allow':'幸尚宽，何为不可','wang-abandon':'王欲舍所携人','hua-keep':'既已纳其自托……遂携拯如初'};
+        const transferSnapshot=snapshot=>snapshot&&transferChoices[snapshot.choice]?`${esc(transferChoices[snapshot.choice])}；证据：${(snapshot.evidence||[]).map(id=>esc(transferEvidence[id]||id)).join('、')||'未选择'}；提交前已打开 ${Number.isInteger(snapshot.hintLevel)?snapshot.hintLevel:0} 条提示`:'';
+        const transferTrace=readalongId==='chentaiqiu'&&r.draft?.$transferFirst?`<p><b>迁移首次：</b><span class="report-words">${transferSnapshot(r.draft.$transferFirst)}</span></p>${r.draft.$transferLast&&JSON.stringify(r.draft.$transferLast)!==JSON.stringify(r.draft.$transferFirst)?`<p><b>迁移最近：</b><span class="report-words">${transferSnapshot(r.draft.$transferLast)}</span></p>`:''}`:'';
+        return `<section class="learning-report" aria-label="本次共读记录"><h3>共读便笺 · ${r.done?'这次先收好':'可以慢慢读'}</h3><p class="report-course">${esc(title)}</p>${storageError?'<p class="report-status">本机保存未成功，请先截图保留。</p>':''}<p class="report-note">阅读轨迹与个人想法，不自动判分，也不认定已经读懂。</p><ol class="report-list"><li><h4>这次留下的文字</h4>${Number.isInteger(p)&&p>=1&&p<=readalongs[readalongId]?`<p><b>上次页面停留：</b>原文第 ${p} 段（位置记录，不是读完证明）。</p>`:''}${r.draft?.quote?`<p><b>摘句：</b><span class="report-words">${esc(r.draft.quote)}</span></p>`:''}${r.draft?.note?`<p><b>感受、解释或疑问：</b><span class="report-words">${esc(r.draft.note)}</span></p>`:''}${r.first?`<p><b>第一次留存：</b><span class="report-words">${esc(r.first.answer)}</span></p>`:r.draft?.quote||r.draft?.note?'<p>便笺已自动保存；也可以用“留住这版想法”保留一个修改前的版本。</p>':'<p>这次还没留文字。可以只读、只聊，下次再留便笺。</p>'}${transferTrace}${r.attempts.length>1?`<p><b>最近留存：</b><span class="report-words">${esc(last.answer)}</span></p>`:''}<p><b>便笺小启发：</b>${r.helps.length?r.helps.map(h=>`${esc(phases[h.phase]||h.phase)}·${esc(h.label)}`).join('；'):'未打开；正常共读讲解不计作答求助'}</p>${r.notes.map(n=>`<p class="report-note">${esc(n)}</p>`).join('')}</li></ol><p class="report-note">记录只在本机保存，可从学习记录导出备份。没有记录下来的口头交流无法自动识别；收好便笺不等于掌握阅读方法。</p></section>`;
       }
       if (title===courses.find(c=>c[0]==='focus')?.[1] && records.length===1) {
         const r=records[0],first=r.first,last=r.attempts[r.attempts.length-1],draft=r.draft?.text;

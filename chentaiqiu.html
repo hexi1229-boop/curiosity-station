@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#6b4f36">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <meta name="description" content="全文共读《陈太丘与友期行》，从时间、称谓和对话证据理解信与礼，再迁移到另一则《世说新语》。">
+  <title>共读《陈太丘与友期行》 · TY敏捷课堂</title>
+  <link rel="manifest" href="app.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="focus.css">
+  <link rel="stylesheet" href="beiying.css">
+  <link rel="stylesheet" href="learning-feedback.css">
+  <link rel="stylesheet" href="chentaiqiu.css">
+  <style>.chen-page .site-header a,.chen-main .workshop-nav a,.chen-page .chen-main button,.chen-main select,.chen-main summary{min-height:48px}.chen-main .story-text .annotated-word{min-width:48px;min-height:48px}.chen-main .story-text .annotated-word:after{width:max(100%,48px);height:48px}</style>
+  <script src="learning-feedback.js" defer></script>
+  <script src="chentaiqiu-content.js" defer></script>
+  <script src="chentaiqiu.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body class="chen-page">
+  <header class="site-header workshop-header">
+    <a class="back-link" href="courses.html?group=school&amp;subject=语文">← TY敏捷课堂</a>
+    <a class="back-link" href="records.html">学习记录 ↗</a>
+  </header>
+  <main class="workshop-main readalong-main chen-main">
+    <section class="workshop-intro readalong-intro chen-intro">
+      <p class="eyebrow">共读课 · 六年级 → 七年级</p>
+      <h1>一场迟到，怎样照见<br><span>“信”与“礼”？</span></h1>
+      <p class="readalong-author">《世说新语》· 陈太丘与友期行</p>
+      <p>先把全文读顺，再看元方怎样从事实走到判断。人物不是一道“贴标签题”：结尾可以有不同看法，但看法要落回原文。</p>
+      <div class="workshop-meta">
+        <span>约14—17分钟 · 可分两次</span>
+        <span>全文点读 · 判断与证据 · 独立迁移</span>
+      </div>
+      <a id="resume-reading" class="resume-reading" href="#read" hidden></a>
+    </section>
+
+    <nav class="workshop-nav" aria-label="共读导航">
+      <a href="#read">读全文</a>
+      <a href="#first-look">留初判</a>
+      <a href="#evidence">拆证据</a>
+      <a href="#transfer">换一篇</a>
+      <a href="#reconsider">回看</a>
+    </nav>
+
+    <section id="read" class="story-paper chen-reading" aria-labelledby="article-title">
+      <p class="section-label">全文共读 · 点线词句可点开</p>
+      <h2 id="article-title">陈太丘与友期行</h2>
+      <p class="story-credit">《世说新语》二则之一 · 人教版七年级上册</p>
+      <p class="reading-invitation">先顺着读，不必见词就查。遇到难字词或主语读乱了，再点带虚线的文字；小注浮在旁边，不挤开原文。</p>
+      <div id="article-text" class="story-text chen-full-text"></div>
+      <aside id="reading-annotation" class="reading-annotation" role="dialog" aria-modal="false" aria-labelledby="annotation-title" aria-describedby="annotation-text" tabindex="-1" hidden>
+        <div class="annotation-heading"><span id="annotation-kind">词句小注</span><button type="button" id="close-annotation" aria-label="收起词句注释">收起 ×</button></div>
+        <h3 id="annotation-title"></h3><p id="annotation-text"></p><small>点空白处、继续滚动或按 Escape，也会收起。</small>
+      </aside>
+      <div class="reading-end">
+        <p>读到结尾，再自己确认。页面不把滚动或点词当作读懂。</p>
+        <button type="button" id="mark-read" class="secondary">我读到结尾了</button>
+        <p id="read-status" class="draft-status" role="status">是否读完由你确认。</p>
+      </div>
+      <details class="old-words chen-word-index"><summary>集中看全部词句小注（可跳过）</summary><dl id="word-list"></dl></details>
+      <p class="text-version">正文与标点按<a href="https://www.pep.com.cn/xw/zt/hd/ywsd/sfsd/7s/201806/t20180629_1926012.shtml" target="_blank" rel="noopener">人教社官方全文与诵读页</a>核对。</p>
+    </section>
+
+    <section id="first-look" class="workshop-section chen-scene" aria-labelledby="first-title">
+      <p class="section-label">现场一 · 解释之前，先封存自己的第一反应</p>
+      <h2 id="first-title">读到“元方入门不顾”，你先站在哪里？</h2>
+      <p>这一步不判对错，也不要求写一段感想。选一个最接近的判断，再点一处让你这样想的结尾证据。</p>
+      <div id="initial-choices" class="chen-choice-list" role="radiogroup" aria-label="选择对结尾的初读判断"></div>
+      <h3>你刚才最注意哪一处？</h3>
+      <div id="initial-evidence" class="chen-chip-row" role="radiogroup" aria-label="选择一处结尾证据"></div>
+      <button type="button" id="save-initial" class="primary">封存初读，不被后面答案覆盖</button>
+      <p id="initial-status" class="action-status" role="status"></p>
+    </section>
+
+    <section id="evidence" class="workshop-section chen-scene" aria-labelledby="evidence-title">
+      <p class="section-label">现场二 · 示例与独立验证交替</p>
+      <h2 id="evidence-title">元方不是只贴标签，他先摆事实</h2>
+      <div class="chen-example" aria-label="无信判断的完整示例">
+        <span>约定</span><b>期日中</b><i>＋</i><span>事实</span><b>日中不至</b><i>→</i><strong>则是无信</strong>
+        <p>这是一个完整示例：先找约定和实际发生的事，再下判断。下面把提示慢慢撤掉。</p>
+      </div>
+      <div class="chen-lab-grid">
+        <article class="chen-lab-card">
+          <small>时间线</small><h3>四个时间动作怎样接起来？</h3>
+          <p>按发生顺序点卡片；点已选卡片可撤回。</p>
+          <div id="timeline-pool" class="chen-card-pool" aria-label="可选时间事件"></div>
+          <ol id="timeline-order" class="chen-order" aria-label="已经排列的时间事件"></ol>
+          <div class="chen-actions"><button type="button" id="timeline-reset" class="secondary">重新排</button><button type="button" id="timeline-check" class="primary">检查时间线</button></div>
+          <p id="timeline-feedback" class="chen-feedback" role="status"></p>
+        </article>
+        <article class="chen-lab-card">
+          <small>说话位置</small><h3>“尊君、家君、君”分别指谁？</h3>
+          <p>称谓跟着谁在说、对谁说而变化。</p>
+          <div id="address-map" class="chen-address-map"></div>
+          <button type="button" id="address-check" class="primary">检查称谓</button>
+          <p id="address-feedback" class="chen-feedback" role="status"></p>
+        </article>
+      </div>
+      <article class="chen-claim-card">
+        <small>提示撤掉 · 独立取证</small><h3>哪一处事实直接连到“则是无礼”？</h3>
+        <div id="claim-evidence" class="chen-chip-row chen-multi" role="group" aria-label="选择无礼判断的证据"></div>
+        <button type="button" id="claim-check" class="primary">用原文验证</button>
+        <p id="claim-feedback" class="chen-feedback" role="status"></p>
+      </article>
+      <div class="chen-dialogue-compare">
+        <blockquote><small>友人</small>“非人哉！”</blockquote>
+        <blockquote><small>元方</small>“日中不至，则是无信；对子骂父，则是无礼。”</blockquote>
+        <p>前一句先发怒、直接骂人；后一句用两个相同结构，把事实和判断一一对应。分号把“无信”和“无礼”两条并列理由隔开。</p>
+      </div>
+    </section>
+
+    <section id="transfer" class="workshop-section chen-scene" aria-labelledby="transfer-title">
+      <p class="section-label">现场三 · 换人物、换危机、换信息呈现</p>
+      <h2 id="transfer-title">再读一则《世说新语》，还能从言行判断人物吗？</h2>
+      <p>这次没有“无信、无礼”替你命名。先自己读，再同时看开头和危急时刻；有点线的词句仍可点读。</p>
+      <div class="chen-transfer-paper">
+        <h3 id="transfer-heading"></h3>
+        <p id="transfer-text" class="story-text"></p>
+      </div>
+      <h3>哪一个判断最能照顾全文前后？</h3>
+      <div id="transfer-choices" class="chen-choice-list" role="radiogroup" aria-label="选择对华歆王朗的判断"></div>
+      <h3>选两处能共同支撑判断的原文</h3>
+      <div id="transfer-evidence" class="chen-chip-row chen-multi" role="group" aria-label="选择迁移判断的证据"></div>
+      <div id="transfer-hints" class="chen-hints"></div>
+      <div class="chen-actions"><button type="button" id="transfer-hint" class="secondary">给我一条提示</button><button type="button" id="transfer-check" class="primary">提交判断与证据</button></div>
+      <p id="transfer-feedback" class="chen-feedback" role="status"></p>
+      <p class="text-version">迁移原文与词义参考<a href="https://www.nlc.cn/migrated/www.nlc.cn/bbjd/202108dzyd/zxyd/no6/202308/P020230801358615416293.pdf" target="_blank" rel="noopener">中国国家图书馆《世说新语》阅读材料</a>。</p>
+    </section>
+
+    <section id="reconsider" class="workshop-section chen-scene" aria-labelledby="reconsider-title">
+      <p class="section-label">现场四 · 回到结尾，可以坚持，也可以修订</p>
+      <h2 id="reconsider-title">“入门不顾”，只允许一种读法吗？</h2>
+      <div class="chen-balanced">
+        <p><b>可以理解元方：</b>友人先失约、又当着孩子骂父亲；元方坚持立场。</p>
+        <p><b>也可以继续追问：</b>友人“惭”且“下车引之”，元方是否可以给对方一个回应？</p>
+        <p>两种读法都不能越过原文：不能说友人已经正式道歉，也不能由一次“不顾”断言元方永远无礼。</p>
+      </div>
+      <div id="final-choices" class="chen-choice-list" role="radiogroup" aria-label="选择回看后的判断"></div>
+      <h3>现在你会保留哪些结尾证据？</h3>
+      <div id="final-evidence" class="chen-chip-row chen-multi" role="group" aria-label="选择回看后的结尾证据"></div>
+      <details class="parent-reading-note"><summary>可选便笺：留下孩子的一句话</summary>
+        <label class="writing-label" for="kept-quote">摘下一句<span>（可空着）</span></label>
+        <textarea id="kept-quote" maxlength="400" rows="2" placeholder="可以从两篇原文中选一句，不要求抄写。"></textarea>
+        <label class="writing-label" for="reading-note">记一句口头发现或疑问<span>（可空着）</span></label>
+        <textarea id="reading-note" maxlength="800" rows="3" placeholder="可注明是孩子原话还是家长概括。"></textarea>
+      </details>
+      <button type="button" id="finish-reading" class="primary">收好这次共读</button>
+      <p id="finish-status" class="action-status" role="status"></p>
+    </section>
+
+    <section id="review" class="workshop-section" aria-labelledby="review-title">
+      <p class="section-label">留下的是过程，不是“会了”证明</p>
+      <h2 id="review-title">共读回看</h2>
+      <div id="reading-report"></div>
+      <p class="workshop-note">首答、提示和最后判断会保存在本机，也可到<a href="records.html">学习记录</a>截图或导出。一次页面完成不等于以后能独立读懂新的文言文。</p>
+    </section>
+
+    <details class="parent-note" id="sources">
+      <summary>家长与版本说明</summary>
+      <p>本课对应人教版七年级上册《〈世说新语〉二则》中的《陈太丘与友期行》，用于六年级到七年级衔接。<a href="https://www.pep.com.cn/products/jc/czjks/201802/t20180209_1922672.shtml" target="_blank" rel="noopener">人教社教材页面</a>可核对目录。</p>
+      <p>正文选自《世说新语》中的《方正》篇，课题为教材编者所加。《世说新语》主要记录汉末至东晋士大夫的言谈、逸事；本页不把它当作现代现场录像，也不虚构友人的姓名、陈太丘的心情或正式道歉。</p>
+      <p>点读卡中“教材注释”和“本站解释”分开标明。人物判断只分原文明说、由言行作出的谨慎理解与越界结论；开放判断不自动判分。</p>
+    </details>
+    <noscript><p>请启用 JavaScript 使用点读、互动与本机学习记录。</p></noscript>
+  </main>
+  <footer class="site-footer"><span>先把事实摆稳，再让判断站起来。</span><span id="offline-status" role="status">iPad · 手机 · Mac</span></footer>
+</body>
+</html>
