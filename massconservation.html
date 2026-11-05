@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#2e5f66">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <meta name="description" content="从系统边界、原子重排和相反的秤读数理解质量守恒定律。">
+  <title>反应前后，究竟是什么不能凭空少掉？ · TY敏捷课堂</title>
+  <link rel="manifest" href="app.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="learning-feedback.css">
+  <link rel="stylesheet" href="massconservation.css">
+  <style>.mass-main [hidden]{display:none!important}.site-header a,.mass-main .atom-independent-before{min-height:48px}.mass-main .atom-independent-before{min-height:74px;margin:12px 0 18px;padding:14px;border:1px dashed #b9ccc7;border-radius:14px;background:#f3f7f2}.mass-main .mass-nav a,.mass-main button,.mass-main select,.mass-main summary{min-height:48px}</style>
+  <script src="learning-feedback.js" defer></script>
+  <script src="massconservation-content.js" defer></script>
+  <script src="massconservation.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="back-link" href="courses.html?group=school&amp;subject=化学">← 化学课程</a>
+    <a class="back-link" href="records.html">学习记录 ↗</a>
+  </header>
+  <main class="mass-main">
+    <section class="mass-intro">
+      <p class="eyebrow">化学 CH01 · 守恒观念与系统边界</p>
+      <h1>反应前后，究竟是什么<br><span>不能凭空少掉？</span></h1>
+      <p>先别急着背“质量守恒”。在不同称量边界下，秤可能不变、变轻，也可能变重。关键是先圈出秤正在称什么，再看有没有物质穿过边界。</p>
+      <div class="mass-meta"><span>约15—18分钟 · 可分两次</span><span>4个探究现场 · 题量自由</span><span>原子账 · 边界 · 独立迁移</span></div>
+    </section>
+    <nav class="mass-nav" aria-label="课程导航"><a href="#cold">冷判断</a><a href="#atoms" hidden>原子账</a><a href="#boundary" hidden>看边界</a><a href="#transfer" hidden>独立迁移</a><a href="#review">回看</a></nav>
+
+    <section id="cold" class="mass-section" aria-labelledby="cold-title">
+      <p class="section-label">现场一 · 模型前判断</p>
+      <h2 id="cold-title">敞口杯连杯一起称，反应后轻了2克</h2>
+      <p>先留下第一判断，不即时揭晓。这里没有真实实验操作；只分析一份虚拟称量记录。</p>
+      <div class="mass-scale-card"><div class="mass-beaker" aria-hidden="true"><i></i><b>气体？</b></div><div><span>反应前</span><strong>102.0 g</strong></div><div><span>反应后</span><strong>100.0 g</strong></div></div>
+      <div id="cold-choices" class="mass-choice-list" role="radiogroup" aria-label="选择第一判断"></div>
+      <label class="mass-reason" for="cold-reason">先说一句为什么</label><textarea id="cold-reason" rows="3" maxlength="700" placeholder="例如：我觉得还要查……"></textarea>
+      <label class="mass-unsure"><input type="checkbox" id="cold-unsure"> 我暂时说不清理由，先保留判断</label>
+      <button type="button" id="cold-submit" class="primary">封存第一判断</button><p id="cold-feedback" class="mass-feedback" role="status"></p>
+    </section>
+
+    <section id="atoms" class="mass-section" aria-labelledby="atoms-title" hidden>
+      <p class="section-label">现场二 · 示例后撤掉提示</p>
+      <h2 id="atoms-title">分子换了，原子账还能对上吗？</h2>
+      <p>下面只表示反应前后的“记账关系”，不是微粒真实碰撞路径。颜色之外还写着字母，不靠颜色区分。</p>
+      <div class="atom-example">
+        <div><h3>反应前 · 3个分子</h3><div id="atom-before" class="molecule-board" aria-label="反应前粒子模型"></div></div>
+        <div class="atom-arrow" aria-hidden="true">重新组合 →</div>
+        <div><h3>反应后 · 2个分子</h3><div id="atom-after" class="molecule-board" aria-label="反应后粒子模型"></div></div>
+      </div>
+      <div class="atom-count-panel"><p>别先数分子。点两次，逐种清点：</p><div><button type="button" data-count-atom="H">数 H</button><button type="button" data-count-atom="O">数 O</button></div><p id="atom-count-result" aria-live="polite">还没开始清点。</p></div>
+      <article class="mass-independent">
+        <small>独立判断 · 换成临时字母 X、Y</small>
+        <h3>反应前有两个 X₂ 和一个 Y₂，哪个产物图的原子账对得上？</h3>
+        <p><b>X₂</b> 在这张临时图里只表示“两个 X 原子连成一组”，Y₂ 同理；这里不要求先会写化学式。</p>
+        <div id="atom-independent-before" class="molecule-board atom-independent-before" aria-label="反应前有两个由两个X组成的粒子团和一个由两个Y组成的粒子团"></div>
+        <p>原子账对上，只说明它从守恒角度“有资格成为候选”，不能单独证明反应一定发生或产物一定如此。</p>
+        <div id="atom-candidates" class="atom-candidates" role="radiogroup" aria-label="选择原子守恒的候选产物"></div>
+        <label class="mass-reason" for="atom-reason">你核对了什么</label><textarea id="atom-reason" rows="2" maxlength="700" placeholder="例如：反应前后都有……"></textarea>
+        <label class="mass-unsure"><input type="checkbox" id="atom-unsure"> 我能选择，但暂时说不清</label>
+        <div id="atom-hints" class="mass-hints"></div><div class="mass-actions"><button type="button" id="atom-hint" class="secondary">给我一条提示</button><button type="button" id="atom-submit" class="primary">提交原子账</button></div><p id="atom-feedback" class="mass-feedback" role="status"></p>
+      </article>
+    </section>
+
+    <section id="boundary" class="mass-section" aria-labelledby="boundary-title" hidden>
+      <p class="section-label">现场三 · 边界跟着秤一起画</p>
+      <h2 id="boundary-title">气体出现了，秤为什么有时不变、有时变轻？</h2>
+      <p>切换同一虚拟产气过程。虚线框表示“秤正在称的系统”，箭头和质量账同步变化。</p>
+      <div class="boundary-workbench">
+        <div id="boundary-visual" class="boundary-visual" data-mode="closed" role="img" aria-labelledby="boundary-visual-title boundary-visual-desc">
+          <h3 id="boundary-visual-title">虚拟产气装置</h3><p id="boundary-visual-desc">当前气体留在密闭装置内，系统边界内没有质量进出。</p>
+          <div class="system-box"><div class="vessel"><i></i><b class="gas-dot one">G</b><b class="gas-dot two">G</b><b class="gas-dot three">G</b></div><span class="flow-arrow" aria-hidden="true">↑ 穿过边界</span></div>
+          <div class="scale-base"><span>秤读数</span><strong id="scale-reading">100.0 g</strong></div>
+        </div>
+        <div class="boundary-console"><div role="group" aria-label="切换系统边界"><button type="button" data-boundary-mode="closed" aria-pressed="true">密闭收集</button><button type="button" data-boundary-mode="open" aria-pressed="false">敞口逸出</button></div><p id="boundary-ledger">起始100.0 g；进入0 g；离开0 g；当前100.0 g。</p><p id="boundary-seen">已观察 0 / 2 种边界。</p></div>
+      </div>
+      <article class="mass-independent copper-lab">
+        <small>独立近迁移 · 换成吸收空气的反应</small>
+        <h3>虚拟数据：6.4克铜与空气中的氧反应，得到8.0克氧化物</h3>
+        <p>这是教学质量账，不是居家实验步骤。请选择系统边界和物质流向，再补出进入系统的氧气质量。</p>
+        <div class="copper-grid"><label>系统边界<select id="copper-boundary"><option value="">先选择</option></select></label><label>物质流向<select id="copper-flow"><option value="">先选择</option></select></label><label>进入的氧气质量<input id="copper-mass" inputmode="decimal" autocomplete="off" placeholder="填写数字"><span>克</span></label></div>
+        <fieldset id="copper-rules"><legend>这份质量账说明什么？</legend></fieldset>
+        <label class="mass-reason" for="copper-reason">用“边界、进入、总质量”说一句</label><textarea id="copper-reason" rows="2" maxlength="700" placeholder="也可以勾选暂时说不清。"></textarea>
+        <label class="mass-unsure"><input type="checkbox" id="copper-unsure"> 我能完成结构判断，但解释还要练</label>
+        <div id="copper-hints" class="mass-hints"></div><div class="mass-actions"><button type="button" id="copper-hint" class="secondary">给我一条提示</button><button type="button" id="copper-submit" class="primary">提交边界质量账</button></div><p id="copper-feedback" class="mass-feedback" role="status"></p>
+      </article>
+    </section>
+
+    <section id="transfer" class="mass-section" aria-labelledby="transfer-title" hidden>
+      <p class="section-label">现场四 · 撤掉粒子动画，独立读实验记录</p>
+      <h2 id="transfer-title">一份变轻，一份变重，能用同一原则解释吗？</h2>
+      <div id="transfer-reports" class="transfer-reports"></div>
+      <fieldset id="transfer-rules"><legend>两份报告共同说明什么？</legend></fieldset>
+      <label class="mass-reason" for="transfer-reason">留一句“判断—证据—边界”</label><textarea id="transfer-reason" rows="3" maxlength="700" placeholder="例如：读数方向不同，是因为……"></textarea>
+      <label class="mass-unsure"><input type="checkbox" id="transfer-unsure"> 结构判断完成，但我暂时说不清解释</label>
+      <div id="transfer-hints" class="mass-hints"></div><div class="mass-actions"><button type="button" id="transfer-hint" class="secondary">给我一条提示</button><button type="button" id="transfer-submit" class="primary">提交两份报告</button></div><p id="transfer-feedback" class="mass-feedback" role="status"></p>
+      <div class="mass-rule-box" id="mass-rule-box" hidden><h3>最后把定律说准确</h3><p>普通化学反应中，<b>参加反应的各物质总质量</b>，等于反应后<b>生成的各物质总质量</b>。微观上，同一批原子只是重新组合：每种原子的种类和数目不变；分子种类改变，分子个数不一定相同。</p><p>密闭装置便于把所有物质完整称量，但不是“密闭才守恒”。敞口装置读数可减、可增，也可能不变；必须先看物质是否穿过所称系统的边界。</p></div>
+    </section>
+
+    <section id="review" class="mass-section" aria-labelledby="review-title"><p class="section-label">学习记录</p><h2 id="review-title">这次留下了哪些判断？</h2><div id="mass-report"></div><p class="mass-note">首答、提示、修订与解释只保存在本机。完成页面不等于以后能独立处理新的守恒情境。</p></section>
+    <details class="mass-sources" id="mass-sources" hidden><summary>教材位置、模型边界与安全说明</summary><p>本课对齐教育部<a href="https://www.moe.gov.cn/srcsite/A26/s8001/202204/W020230605524875861384.pdf" target="_blank" rel="noopener">《义务教育化学课程标准（2022年版）》</a>中关于化学反应、质量守恒与微观解释的要求。人教社现有公开的<a href="https://www.pep.com.cn/products/jc/czjks/201510/t20151026_1250821.shtml" target="_blank" rel="noopener">旧版目录（2015年页面）</a>把“质量守恒定律”放在九年级上册第五单元课题1，随后才进入化学方程式书写和计算；这里只把它作为章节衔接参考，不据此声称新版目录完全相同。本页不提前教授配平、方程式计算或“摩尔”。</p><p>粒子图、质量数值和实验报告均为原创教学模型。粒子动画只比较反应前后原子清单，不模拟真实反应路径；原子账对上也不能单独证明反应一定会发生。实际测量还会有误差，本页整数／小数读数用于看清关系，不宣称实验零误差。</p><p><b>安全边界：</b>本课不提供居家实验步骤。不要在家密封产气反应，更不要加热密闭容器；涉及产气、加热和化学药品的实验应由学校在教师指导和规范防护下完成。</p></details>
+    <noscript><p>请启用 JavaScript 使用互动模型与本机学习记录。</p></noscript>
+  </main>
+  <footer class="site-footer"><span>先画边界，再看流向，最后核对原子账。</span><span id="offline-status" role="status">iPad · 手机 · Mac</span></footer>
+</body>
+</html>
