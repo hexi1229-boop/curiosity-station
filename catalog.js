@@ -19,6 +19,7 @@
     {id:'chun',readingTitle:'春',name:'共读《春》：一句话怎样让画面动起来？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','朱自清','春','写景','词汇','句式','拟人','感官','段落推进','阅读'],description:'在本页完整通读并按需点看词句小注，再让小草、春雨和晨雾动起来；从词语取证，看画面怎样获得方向、速度、声音和力量。',icon:'共读',time:'15—20分钟 · 可分次',format:'readalong',tasks:1,fresh:true},
     {id:'triangle180',name:'三角形三个角为什么正好是180°？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['三角形','内角和','180度','平行线','内错角','辅助线','证明','几何'],description:'先拖动不同三角形分清猜想与证明，再过顶点作平行线，把两个底角搬到同一个平角中；换成斜放钝角图，自己补线并排出完整证明。',icon:'△180°',time:'10–15 分钟',tasks:3,fresh:true},
     {id:'polygon360',name:'四边形为什么是360°？更多边呢？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['四边形','多边形','内角和','三角剖分','对角线','360度','化归','一般化','证明','几何'],description:'让三角形180°成为新工具：从四边形、五边形一路亲手拆到七边形，再用同一个构造证明凸n边形公式，体会“已有工具—构造—化归—一般化”。',icon:'□360°',time:'15–20 分钟 · 可分两次',tasks:3,fresh:true},
+    {id:'rigidmotion',name:'图形搬家后，什么一定不变？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级','八年级预览'],tags:['图形变换','平移','旋转','轴对称','不变量','保距','全等预览','证明','几何'],description:'让不规则徽标换位置、转方向、翻一面；再用工程记录判断哪些共同规则真的只让图形整块搬动。',icon:'形·不变',time:'15–18 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'history',name:'同一件事，两份记录为什么不一样？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['史料实证','史料','时间','来源','事实','解释','互证','证据边界','天津电车','秦统一','度量衡'],description:'把1905年的电车质疑与1906年的试运营现场放回时间、来源和范围，再用秦双诏版与《史记》独立判断“颁布度量衡命令”和“实际执行”的证据边界。',icon:'史·证',time:'12–18 分钟',tasks:3,fresh:true},
     {id:'prexia',name:'夏朝以前，真的叫“三皇五帝时代”吗？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['三皇五帝','陶寺','石峁','龙山时代','史记','考古','史料实证','传统叙事','早期国家','证据边界'],description:'乘时间舱勘察陶寺与石峁，把后世整理的传统人物线和考古材料线分层；再用虚构新遗址独立判断，避免给古城硬贴姓名。',icon:'史前',time:'15–20 分钟 · 可分两次',tasks:4,fresh:true},
     {id:'erlitou',name:'没有国名牌的都城：二里头到底是不是夏都？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['夏朝','二里头','都城','考古','殷墟','甲骨文','史料实证','证据强度','早期国家'],description:'扫描道路、宫城、作坊与墓葬，用两把证据尺分别判断大型都邑性质和夏都身份；再借殷墟互证标准完成证据升级实验。',icon:'都邑',time:'15–20 分钟 · 可分两次',tasks:4,fresh:true},
@@ -71,7 +72,7 @@
   ];
   const recommendedOrder=[
     'repair',
-    'discount','angle180','persuade','parallel','chun','triangle180','polygon360','history','prexia','erlitou','oracle','guandimiao','ligui','activewords','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','activewords','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
     'rotor','rocket','charts','parachute','glacier','buoyancy'
   ];

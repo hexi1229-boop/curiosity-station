@@ -13,7 +13,8 @@
   courses.unshift(['chun','共读《春》：一句话怎样让画面动起来？','chun.html']);
   courses.splice(courses.findIndex(course=>course[0]==='chun')+1,0,['triangle180','三角形三个角为什么正好是180°？','triangle180.html']);
   courses.splice(courses.findIndex(course=>course[0]==='triangle180')+1,0,['polygon360','四边形为什么是360°？更多边呢？','polygon360.html']);
-  courses.splice(courses.findIndex(course=>course[0]==='polygon360')+1,0,['history','同一件事，两份记录为什么不一样？','history.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='polygon360')+1,0,['rigidmotion','图形搬家后，什么一定不变？','rigidmotion.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='rigidmotion')+1,0,['history','同一件事，两份记录为什么不一样？','history.html']);
   courses.splice(courses.findIndex(course=>course[0]==='history')+1,0,['prexia','夏朝以前，真的叫“三皇五帝时代”吗？','prexia.html']);
   courses.splice(courses.findIndex(course=>course[0]==='prexia')+1,0,['erlitou','没有国名牌的都城：二里头到底是不是夏都？','erlitou.html']);
   courses.splice(courses.findIndex(course=>course[0]==='erlitou')+1,0,['oracle','甲骨会说话，但它说的是问题、判断，还是结果？','oracle.html']);
