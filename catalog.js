@@ -14,6 +14,7 @@
     {id:'discount',name:'打折再加运费，为什么不能一起乘？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['百分数','基数','整体','折扣','费用','配方','单位1'],description:'先留判断，再拖动优惠范围看哪笔钱被打折；换规则与配方表，自己认清整体和部分。',icon:'80%',time:'10–15 分钟',fresh:true},
     {id:'angle180',name:'180°从哪里来？角到底在量什么？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['角','角度','平角','邻补角','对顶角','证明','相交线','几何'],description:'分别改变边长、朝向和开口，亲手找到角真正度量的量；再从两组平角搭出第一条几何证明链。',icon:'180°',time:'12–15 分钟',tasks:3,fresh:true},
     {id:'persuade',name:'我选这个方案，但你能说服我改主意吗？',subject:'英语',group:'school',stages:['六年级','初中衔接','七年级'],tags:['口语','听力','表达观点','澄清问题','协商','主动词汇','理由','信息差'],description:'先锁定首选，再听队友的新顾虑、问到会改变决定的信息；换成科技展任务后，独立回应并说明为何调整或坚持。',icon:'Ask·Decide',time:'12–15 分钟',tasks:3,fresh:true},
+    {id:'activewords',name:'认识这个词，为什么开口时还是想不起来？',subject:'英语',group:'school',stages:['六年级','初中衔接','七年级'],tags:['听力','口语','主动词汇','词块','提取练习','游戏','运动','科技','迁移'],description:'先在没有词表时说一次，再听约30秒微故事并遮住词块，最后换成球场与聊天记录主动调用。',icon:'Recall',time:'12–15 分钟 · 可分两次',tasks:4,fresh:true},
     {id:'parallel',name:'不拿量角器，怎么把一个角搬过去？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['角','尺规作图','弦','全等预览','平行线','同位角','内错角','判定','性质','证明'],description:'用同半径与同弦长锁住角的开口；再把搬角变成证明工具，分清由角判平行和由平行推角。',icon:'∠→∥',time:'12–18 分钟',tasks:3,fresh:true},
     {id:'chun',readingTitle:'春',name:'共读《春》：一句话怎样让画面动起来？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','朱自清','春','写景','词汇','句式','拟人','感官','段落推进','阅读'],description:'在本页完整通读并按需点看词句小注，再让小草、春雨和晨雾动起来；从词语取证，看画面怎样获得方向、速度、声音和力量。',icon:'共读',time:'15—20分钟 · 可分次',format:'readalong',tasks:1,fresh:true},
     {id:'triangle180',name:'三角形三个角为什么正好是180°？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['三角形','内角和','180度','平行线','内错角','辅助线','证明','几何'],description:'先拖动不同三角形分清猜想与证明，再过顶点作平行线，把两个底角搬到同一个平角中；换成斜放钝角图，自己补线并排出完整证明。',icon:'△180°',time:'10–15 分钟',tasks:3,fresh:true},
@@ -70,7 +71,7 @@
   ];
   const recommendedOrder=[
     'repair',
-    'discount','angle180','persuade','parallel','chun','triangle180','polygon360','history','prexia','erlitou','oracle','guandimiao','ligui','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'discount','angle180','persuade','parallel','chun','triangle180','polygon360','history','prexia','erlitou','oracle','guandimiao','ligui','activewords','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
     'rotor','rocket','charts','parachute','glacier','buoyancy'
   ];
