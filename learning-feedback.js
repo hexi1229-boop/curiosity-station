@@ -20,7 +20,8 @@
   courses.splice(courses.findIndex(course=>course[0]==='erlitou')+1,0,['oracle','甲骨会说话，但它说的是问题、判断，还是结果？','oracle.html']);
   courses.splice(courses.findIndex(course=>course[0]==='oracle')+1,0,['guandimiao','没有名字的人，怎么走进历史？','guandimiao.html']);
   courses.splice(courses.findIndex(course=>course[0]==='guandimiao')+1,0,['ligui','利簋写下“甲子朝”，为什么还不能直接换算年份？','ligui.html']);
-  courses.splice(courses.findIndex(course=>course[0]==='ligui')+1,0,['activewords','认识这个词，为什么开口时还是想不起来？','activewords.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='ligui')+1,0,['zhou-network','没有电话和现代公路，周天子怎样管理千里之外？','zhou-network.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='zhou-network')+1,0,['activewords','认识这个词，为什么开口时还是想不起来？','activewords.html']);
   const clone=value=>JSON.parse(JSON.stringify(value));
   const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
   let storageError=false;
