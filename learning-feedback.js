@@ -18,6 +18,7 @@
   courses.splice(courses.findIndex(course=>course[0]==='prexia')+1,0,['erlitou','没有国名牌的都城：二里头到底是不是夏都？','erlitou.html']);
   courses.splice(courses.findIndex(course=>course[0]==='erlitou')+1,0,['oracle','甲骨会说话，但它说的是问题、判断，还是结果？','oracle.html']);
   courses.splice(courses.findIndex(course=>course[0]==='oracle')+1,0,['guandimiao','没有名字的人，怎么走进历史？','guandimiao.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='guandimiao')+1,0,['ligui','利簋写下“甲子朝”，为什么还不能直接换算年份？','ligui.html']);
   const clone=value=>JSON.parse(JSON.stringify(value));
   const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
   let storageError=false;
