@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102f43">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <title>AI 写的代码，为什么还不能直接发射？· 马斯克的太空学校</title>
+  <link rel="manifest" href="app.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="learning-feedback.css">
+  <link rel="stylesheet" href="aicoding.css">
+  <script src="learning-feedback.js" defer></script>
+  <script src="aicoding-content.js" defer></script>
+  <script src="aicoding.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header ai-header">
+    <a class="back-link" href="courses.html?group=explore">← 马斯克的太空学校</a>
+    <a class="back-link" href="records.html">学习记录 ↗</a>
+  </header>
+  <main class="ai-main">
+    <section class="ai-intro">
+      <p class="eyebrow">太空学校 · 火星任务控制室 / 007</p>
+      <h1>AI 写的代码，<br>为什么还不能<span>直接发射？</span></h1>
+      <p class="ai-lead">模拟 AI 助手只用了几秒就写出程序，而且演示成功了。真正的工程师接下来做什么？</p>
+      <div class="ai-meta"><span>约 15–18 分钟</span><span>3 个任务现场</span><span>规格 → 测试 → 修复 → 迁移</span></div>
+      <p class="ai-boundary">本课不连接真实 AI，也不运行任意代码；候选程序和火星车均为可复查的教学模拟。</p>
+    </section>
+    <ol class="ai-progress" aria-label="任务进度">
+      <li>01 写清成功</li><li>02 测试修复</li><li>03 换情境迁移</li>
+    </ol>
+    <div id="ai-task"></div>
+    <details class="ai-sources" id="aicoding-sources" hidden>
+      <summary>教学模型边界与参考来源</summary>
+      <div>
+        <p>页面里的“AI 助手”是预先写好的教学情境，不代表任何真实产品的现场输出。代码使用接近自然语言的伪代码，只表达顺序、条件、循环和变量，不是 Python、JavaScript 等语言的完整语法；孩子不能在页面中执行任意文本代码。</p>
+        <p>火星车模型把转向耗电忽略为 0，只让每次前进消耗 1 格电；沙暴迁移再改成不同地形对应不同能耗。地图、能耗和任务条件均为原创教学数据，不能用于真实航天任务设计。“测试全部通过”只说明通过本页已列出的测试，不证明程序没有其他错误。</p>
+        <p>课程设计参考：<a href="https://experience-ai.org/en-US/units" target="_blank" rel="noopener">Experience AI · 11–14 岁 AI 学习资源</a>、<a href="https://docs.github.com/en/copilot/tutorials/review-ai-generated-code" target="_blank" rel="noopener">GitHub Docs · Review AI-generated code</a>、<a href="https://resources.scratch.mit.edu/www/guides/en/ScratchLearningResource_DebuggingStrategies.pdf" target="_blank" rel="noopener">Scratch Foundation · Debugging Strategies</a>。</p>
+      </div>
+    </details>
+    <noscript><p>请启用 JavaScript 使用互动课程。</p></noscript>
+  </main>
+  <footer class="site-footer"><span>AI 提供候选；人写清要求，用测试负责。</span><span id="offline-status" role="status">学习记录自动保存在本机</span></footer>
+</body>
+</html>
