@@ -9,6 +9,7 @@
   courses.splice(courses.findIndex(course=>course[0]==='persuade')+1,0,['parallel','不拿量角器，怎么把一个角搬过去？','parallel.html']);
   courses.unshift(['repair','错题修复①：数量、语境与判断','repair.html'],['repair-words','错题修复②：词句与表达','repair.html?round=2'],['repair-math-01','近期数学强化考试①：分数运算与单位“1”','repair.html?round=math-01&exam=1'],['repair-math-transfer-01','换情境迁移测评：换了任务单，还能找到同一个关系吗？','repair.html?round=math-transfer-01&exam=1']);
   courses.unshift(['journey','人停了，图上的线为什么还在？','journey.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='daynight')+1,0,['seasons','地球为什么一边自转，一边还会有四季？','seasons.html']);
   const readalongs={beiying:6,baicao:24,chun:10,chentaiqiu:1};
   courses.unshift(['chun','共读《春》：一句话怎样让画面动起来？','chun.html']);
   courses.splice(courses.findIndex(course=>course[0]==='chun')+1,0,['triangle180','三角形三个角为什么正好是180°？','triangle180.html']);
@@ -21,7 +22,8 @@
   courses.splice(courses.findIndex(course=>course[0]==='oracle')+1,0,['guandimiao','没有名字的人，怎么走进历史？','guandimiao.html']);
   courses.splice(courses.findIndex(course=>course[0]==='guandimiao')+1,0,['ligui','利簋写下“甲子朝”，为什么还不能直接换算年份？','ligui.html']);
   courses.splice(courses.findIndex(course=>course[0]==='ligui')+1,0,['zhou-network','没有电话和现代公路，周天子怎样管理千里之外？','zhou-network.html']);
-  courses.splice(courses.findIndex(course=>course[0]==='zhou-network')+1,0,['chentaiqiu','共读《陈太丘与友期行》：一场迟到，怎样照见“信”与“礼”？','chentaiqiu.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='zhou-network')+1,0,['springautumn','乱世为什么反而出现大变化？','springautumn.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='springautumn')+1,0,['chentaiqiu','共读《陈太丘与友期行》：一场迟到，怎样照见“信”与“礼”？','chentaiqiu.html']);
   courses.splice(courses.findIndex(course=>course[0]==='chentaiqiu')+1,0,['massconservation','反应前后，究竟是什么不能凭空少掉？','massconservation.html']);
   courses.splice(courses.findIndex(course=>course[0]==='massconservation')+1,0,['activewords','认识这个词，为什么开口时还是想不起来？','activewords.html']);
   courses.splice(courses.findIndex(course=>course[0]==='activewords')+1,0,['readenglish','单词没全懂，也能抓住一篇英文在说什么吗？','readenglish.html']);

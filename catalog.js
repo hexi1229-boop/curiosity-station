@@ -29,6 +29,7 @@
     {id:'guandimiao',name:'没有名字的人，怎么走进历史？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['商朝','关帝庙遗址','普通人','考古','聚落','房址','生产工具','墓葬','史料实证','证据边界'],description:'走进一座没有可读姓名的晚商聚落，查房址、工具和身体痕迹，再把发掘事实、谨慎推断与场景想象分开。',icon:'田野',time:'12–15 分钟',tasks:4,fresh:true},
     {id:'ligui',name:'利簋写下“甲子朝”，为什么还不能直接换算年份？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['西周','利簋','武王克商','金文','干支纪日','甲子','历史纪年','夏商周断代工程','约束求交','史料实证'],description:'转动六十日干支轮，分开相对日序与公元坐标；再叠加考古、文献、历法和金文历谱约束，独立审核一套模拟年代方案。',icon:'甲子',time:'12–15 分钟',tasks:4,fresh:true},
     {id:'zhou-network',name:'没有电话和现代公路，周天子怎样管理千里之外？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['西周','分封制','诸侯','克罍','噩监簋','青铜铭文','道路','使者','治理网络','史料实证','证据边界'],description:'从克罍的一次具体王命出发，改变路线条件，搭出授权、地方治理、义务回流与选择性监督共同维系的高延迟治理网络。',icon:'周·网',time:'15–18 分钟 · 可分两次',tasks:4,fresh:true},
+    {id:'springautumn',name:'乱世为什么反而出现大变化？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['春秋战国','铁农具','商鞅变法','都江堰','百家争鸣','因果网络','多因素','史料边界'],description:'从铁农具、标准量器、水利工程和诸子方案四座证据台出发，搭出生产、竞争、改革与思想彼此推动的网络；再审查“一个人瞬间改变秦国”的单因果说法。',icon:'变·因',time:'12–16 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'chentaiqiu',readingTitle:'陈太丘与友期行',name:'共读《陈太丘与友期行》：一场迟到，怎样照见“信”与“礼”？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','世说新语','陈太丘与友期行','文言文','称谓','信','礼','事实与判断','人物评价','证据'],description:'完整通读并点看难词，把“日中—过中—舍去—乃至”排成时间线，再从事实走到判断，换读另一则《世说新语》独立迁移。',icon:'共读',time:'14–17 分钟 · 可分两次',format:'readalong',tasks:1,fresh:true},
     {id:'massconservation',name:'反应前后，究竟是什么不能凭空少掉？',subject:'化学',group:'school',stages:['六年级','初中衔接','九年级预览'],tags:['质量守恒','原子重排','系统边界','称量','气体逸出','氧气进入','化学反应','证据'],description:'先封存秤变轻的冷判断，再逐种核对原子账、切换称量边界；最后用同一原则解释敞口装置一份变轻、一份变重。',icon:'原子账',time:'15–18 分钟 · 可分两次',tasks:4,fresh:true},
     {id:'rotor',name:'空气往下走，无人机为什么往上？',subject:'物理',group:'explore',stages:['六年级','初中衔接','八年级'],tags:['无人机','旋翼','空气','推力','动量','牛顿第三定律','受力平衡','速度','加速度','水下探测器'],description:'先判断流动空气怎样持续传力，再调转速找悬停；最后换成水下探测器并反转螺旋桨，独立迁移相互作用关系。',icon:'气流↑',time:'10–15 分钟',tasks:3,fresh:true},
@@ -43,6 +44,7 @@
     {id:'photosynthesis',name:'植物的糖，是从土里吸来的吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['光合作用','原料','产物','叶绿体','能量','有机物','水培'],description:'切换光照与原料，比较土培和水培，再辨清叶片中的淀粉是原来就有，还是现在新造。',icon:'光→糖',time:'8–12 分钟'},
     {id:'quotient',name:'分装小站：除法到底在找什么？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','除法','倒数','分数','零','反例','逆运算'],description:'分装6升水，用乘法检查商，辨清负号和0，再反求潜水器到达目标的时间。',icon:'÷',time:'8–12 分钟'},
     {id:'daynight',name:'太阳没关灯，为什么天黑了？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['地球自转','昼夜更替','方向','周期','日出','日落','视角'],description:'跟着赤道上的点转过一天，排出昼夜顺序，再换光照与观察方向重新判断。',icon:'昼/夜',time:'8–12 分钟'},
+    {id:'seasons',name:'地球为什么一边自转，一边还会有四季？',subject:'地理',group:'school',stages:['六年级','初中衔接','七年级'],tags:['地球自转','地球公转','地轴倾斜','四季','太阳高度','昼长','南北半球','控制变量'],description:'先审查“离太阳近就是夏天”，再分别转一天、比较六月与十二月并切换地轴倾角，观察太阳高度与昼长；最后迁移到零倾角行星。',icon:'轴·季',time:'12–16 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'inertia',name:'车停了，人为什么还往前？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['惯性','牛顿第一定律','质量','阻力','运动状态','科学推理'],description:'切换初始状态与阻力，拖动时间看运动，再预测小车上释放的小球落在哪里。',icon:'v→',time:'8–12 分钟'},
     {id:'purity',name:'看起来一样，就是纯净物吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['纯净物','混合物','物质分类','成分','分子','过滤'],description:'改变蔗糖量、重新排列分子，区分外观与成分，再判断冰水和过滤后的样品。',icon:'1/多',time:'8–12 分钟'},
     {id:'supplies',name:'两瓶水，英语里究竟在数什么？',subject:'英语',group:'school',stages:['初中衔接','七年级'],tags:['可数名词','不可数名词','单复数','单位','much','many','口语'],description:'同样的水换装不同瓶数，听清物资清单，再用英语把新清单说准确。',icon:'2瓶',time:'8–12 分钟'},
@@ -79,8 +81,8 @@
   ];
   const recommendedOrder=[
     'repair',
-    'readenglish','poememotion','liketerms','brackets','equation','discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','chentaiqiu','massconservation','activewords','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
-    'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
+    'readenglish','poememotion','liketerms','brackets','equation','discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','springautumn','chentaiqiu','massconservation','activewords','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','seasons','elements','inertia','quotient','pressure','power','focus',
     'rotor','rocket','charts','parachute','glacier','buoyancy'
   ];
   const orderIndex=new Map(recommendedOrder.map((id,index)=>[id,index]));
