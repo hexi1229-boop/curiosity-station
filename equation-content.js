@@ -1,20 +1,109 @@
-/* Equalities and linear equations. No expression evaluation or automatic grading of prose. */
+/* Algebra bridge M-A03: equality properties and equivalent equations. */
 (function(root){
   'use strict';
-  const title='神秘货箱有多重？';
-  const questions=[
-    {kind:'choice',skill:'先自己判断',title:'要先去掉左边的 6 千克，怎样做还能保持两边相等？',context:'天秤平衡：左边3只质量相同的箱子和6千克砝码，右边21千克砝码。每只箱子的质量是x千克，3x＋6＝21。',options:['只从左边拿走 6 千克','两边各拿走 6 千克','左边拿走 6 千克，右边加上 6 千克'],answer:1,hint:'原来两边一样重。改变后，两边减少的质量一样吗？',explanation:'两边各减 6，仍然一样重：3x＋6−6＝21−6，所以 3x＝15。只动一边，会破坏原来的相等关系。'},
-    {kind:'open',skill:'把理由说清楚',title:'从 3x＝15 到 x＝5，为什么两边都要除以 3？',context:'3只质量相同的箱子共15千克。3x＝15 → x＝5。',hint:'左边从“3只”变成“1只”，右边对应的总质量应该怎样变？',reference:'3x 表示 3 个相同的 x。把两边都平均分成 3 份，每一份仍相等，所以 x＝15÷3＝5。若只把左边除以 3，右边仍是3只箱子的总质量，两边就不对应。',checks:['说明了左边从3个x变成1个x。','说明右边也要分成同样的3份，而不是只写“规定要这样”。']},
-    {kind:'choice',skill:'抓住错误的一步',title:'小宇解 4x−8＝20，写成 4x＝20−8。怎样修正？',context:'错误解法：4x−8＝20 → 4x＝20−8 → x＝3。',options:['两边都减 8，得到 4x＝12，x＝3','两边都加 8，得到 4x＝28，x＝7','只把左边的 −8 擦掉，得到 4x＝20，x＝5'],answer:1,hint:'想把“减去8”抵消，需要加8还是减8？另一边也要做同样的事。',explanation:'要消掉 −8，两边都加 8：4x−8＋8＝20＋8，得到 4x＝28，再两边除以 4 得 x＝7。代回去：4×7−8＝20。'},
-    {kind:'number',skill:'换个场景用一次',title:'他一共体验了几轮？',context:'模拟飞行馆收一次性的开卡费4元，每体验一轮另收3元。小林一共付了25元，没有其他费用。',label:'体验轮数（填数字）',unit:'轮',answer:7,hint:'总费用里，哪一部分只收一次？剩下的钱对应几轮体验？',explanation:'先扣除一次性开卡费，(25−4)÷3＝7 轮。也可设体验 x 轮：4＋3x＝25，解得 x＝7。检查：4＋3×7＝25。'},
-    {kind:'open',skill:'独立解一个新方程',title:'解出 4x−3＝2x＋9，并用原式检查。',context:'4x−3＝2x＋9。写一个简短解法，再把结果代回原式。可以在纸上算好后输入关键步骤。',hint:'先让等号的一边不再出现x。两边都减去2x，会留下什么？',reference:'两边都减 2x：2x−3＝9；两边都加 3：2x＝12；两边都除以 2：x＝6。检查原式：左边 4×6−3＝21，右边 2×6＋9＝21，两边相等。也可以用其他保持等价的步骤。',checks:['结果是x＝6，每次加减的量或除以的非零数两边一致。','把6代回原来的两边，分别算得21。不是只检查中途得到的式子。']}
+
+  const id='equation';
+  const title='等式变了，原来的答案还在吗？';
+  const tasks=[
+    {title:'四个改写里，哪些仍只让同一个 x 成立？',context:'先封存判断与理由，不显示天秤、规则或提示。'},
+    {title:'同一个方程，两条改写路线会走到哪里？',context:'在等式操作台比较两条路线，再检查特殊操作是否仍保留原问题。'},
+    {title:'没有天秤图，能从数据包清单独立找回未知数吗？',context:'根据固定文件与图像文件的总大小建模，选择操作链并代回原关系检查。'}
   ];
-  function balanceState(stage){
-    const states={start:{boxes:3,leftMass:6,rightMass:21,tilt:0,equation:'3x＋6＝21',caption:'3只同样的箱子，加上6千克砝码，和21千克一样重。'},one:{boxes:3,leftMass:0,rightMass:21,tilt:6,equation:'3x＜21',caption:'从原来的天秤只拿走左侧6千克，左边变轻，右边下沉。3x＝21已经不成立。'},both:{boxes:3,leftMass:0,rightMass:15,tilt:0,equation:'3x＝15',caption:'从原来的天秤两边各拿走6千克，仍然平衡。现在3只箱子共15千克。'},divide:{boxes:1,leftMass:0,rightMass:5,tilt:0,equation:'x＝5',caption:'把刚才两边都分成3份，取各自的一份：1只箱子和5千克一样重。'}};
-    if(!Object.hasOwn(states,stage))throw new Error('Unknown balance stage');
-    return {...states[stage]};
+
+  const coldClaims=[
+    {id:'minus-six',formula:'2x＝14'},
+    {id:'divide-two',formula:'x＋3＝10'},
+    {id:'missed-constant',formula:'x＋6＝10'},
+    {id:'zero',formula:'0＝0'}
+  ];
+  const coldAnswer=['minus-six','divide-two'];
+
+  const labStates={
+    start:{formula:'2x＋6＝20',left:['x','x','6'],right:['20'],caption:'原方程只在 x＝7 时成立。'},
+    minus6:{formula:'2x＝14',left:['x','x'],right:['14'],caption:'两边同时减6，仍然平衡，也仍然只让 x＝7 成立。'},
+    divide2:{formula:'x＋3＝10',left:['x','3'],right:['10'],caption:'把左右两个完整式子都除以2，仍然只让 x＝7 成立。'},
+    solved:{formula:'x＝7',left:['x'],right:['7'],caption:'沿任一条可逆路线，最后都会得到 x＝7。'},
+    broken:{formula:'2x＝20？',left:['x','x'],right:['20'],caption:'只让左边减6，左右不再相等；这不是原方程的等价改写。',tilt:6},
+    zero:{formula:'0＝0',left:['0'],right:['0'],caption:'两边乘0后仍然相等，但任何 x 都能通过，原来的唯一答案丢失了。'}
+  };
+
+  const transferModels=[
+    {id:'right',formula:'3m＋4＝25'},
+    {id:'grouped',formula:'3(m＋4)＝25'},
+    {id:'single',formula:'m＋4＝25'}
+  ];
+  const transferChains=[
+    {id:'right',text:'两边同时减4，再把两边同时除以3'},
+    {id:'left-only',text:'只把左边的＋4去掉，右边保持25'},
+    {id:'partial-divide',text:'两边都除以3，但左边只除3m，不处理＋4'}
+  ];
+  const transferReasons=[
+    {id:'whole',text:'每一步都对等号两边的整个式子做同一个可逆运算'},
+    {id:'move',text:'数字穿过等号会自动变号，所以不用说明两边做了什么'},
+    {id:'answer-only',text:'只要最后答案看起来合理，中间怎样改写都可以'}
+  ];
+
+  const sources=[
+    {title:'教育部《义务教育数学课程标准（2022年版）》',url:'https://www.moe.gov.cn/srcsite/A26/s8001/202204/W020220420582346895190.pdf'},
+    {title:'人教社公开的旧版数学七年级上册目录',url:'https://www.pep.com.cn/products/jc/czjks/201510/t20151026_1250813.shtml'},
+    {title:'人教版义务教育数学（七～九年级）新教材介绍',url:'https://www.pep.com.cn/xw/zt/hd/12/xjcjs/cz/202408/t20240826_1994351.html'}
+  ];
+
+  function uniqueAllowed(values,allowed){
+    if(!Array.isArray(values))return [];
+    const set=new Set(allowed),result=[];
+    for(const value of values)if(set.has(value)&&!result.includes(value))result.push(value);
+    return result;
   }
-  function numberValue(value){const s=String(value).normalize('NFKC').trim().replace(/−/g,'-');return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(s)&&Number.isFinite(Number(s))?Number(s):null;}
-  root.EquationLesson={title,questions,balanceState,numberValue};
-  if(typeof module!=='undefined'&&module.exports)module.exports=root.EquationLesson;
+  function sameSet(left,right){
+    const a=[...new Set(left||[])].sort(),b=[...new Set(right||[])].sort();
+    return a.length===b.length&&a.every((value,index)=>value===b[index]);
+  }
+  function integer(value){
+    const text=String(value??'').trim().normalize('NFKC').replace(/−/g,'-');
+    if(!/^[+-]?\d+$/.test(text))return null;
+    const number=Number(text);
+    return Number.isSafeInteger(number)?number:null;
+  }
+  function stepLab(node,action){
+    if(action==='reset')return {node:'start',view:'start'};
+    if(node==='start'&&action==='minus6')return {node:'minus6',view:'minus6'};
+    if(node==='start'&&action==='divide2')return {node:'divide2',view:'divide2'};
+    if(node==='start'&&action==='left-only')return {node:'start',view:'broken'};
+    if(node==='start'&&action==='times0')return {node:'start',view:'zero'};
+    if(node==='minus6'&&action==='divide2')return {node:'solved',view:'solved',path:'minus6-divide2'};
+    if(node==='divide2'&&action==='minus3')return {node:'solved',view:'solved',path:'divide2-minus3'};
+    return {node,view:node};
+  }
+  function gradeLab(state){
+    return {
+      path:['minus6-divide2','divide2-minus3'].includes(state?.labPath),
+      zero:state?.zeroChoice==='information-lost',
+      check:integer(state?.checkValue)===20
+    };
+  }
+  function gradeTransfer(state){
+    return {
+      model:state?.model==='right',
+      chain:state?.chain==='right',
+      result:integer(state?.resultValue)===7,
+      check:integer(state?.transferCheck)===25,
+      reason:state?.reason==='whole'
+    };
+  }
+  function cleanText(value,max=900){return typeof value==='string'?value.slice(0,max):'';}
+  function sanitizeState(raw){
+    const source=raw&&typeof raw==='object'?raw:{};
+    const node=['start','minus6','divide2','solved'].includes(source.labNode)?source.labNode:'start';
+    const view=Object.hasOwn(labStates,source.labView)?source.labView:node;
+    return {
+      coldChoices:uniqueAllowed(source.coldChoices,coldClaims.map(item=>item.id)),coldReason:cleanText(source.coldReason),coldUnsure:!!source.coldUnsure,
+      labNode:node,labView:view,labPath:['minus6-divide2','divide2-minus3'].includes(source.labPath)?source.labPath:null,seenActions:uniqueAllowed(source.seenActions,['minus6','divide2','minus3','left-only','times0','reset']),zeroChoice:['information-lost','still-seven','false-equality'].includes(source.zeroChoice)?source.zeroChoice:null,checkValue:cleanText(source.checkValue,20),labReason:cleanText(source.labReason),labUnsure:!!source.labUnsure,labAttempted:!!source.labAttempted,
+      model:transferModels.some(item=>item.id===source.model)?source.model:null,chain:transferChains.some(item=>item.id===source.chain)?source.chain:null,resultValue:cleanText(source.resultValue,20),transferCheck:cleanText(source.transferCheck,20),reason:transferReasons.some(item=>item.id===source.reason)?source.reason:null,transferExplanation:cleanText(source.transferExplanation),transferUnsure:!!source.transferUnsure,transferAttempted:!!source.transferAttempted
+    };
+  }
+
+  const api={id,title,tasks,coldClaims,coldAnswer,labStates,transferModels,transferChains,transferReasons,sources,uniqueAllowed,sameSet,integer,stepLab,gradeLab,gradeTransfer,sanitizeState};
+  root.EquationLesson=api;
+  if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

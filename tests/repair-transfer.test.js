@@ -63,5 +63,5 @@ test('课程入口、学习记录和离线缓存注册保持一致',()=>{
  assert.match(repair,/r\.questions\.length/);
  assert.doesNotMatch(repair,/'约15分钟 · 6题 · 先考后看'/);
  assert.match(sw,/curiosity-station-`|CACHE_PREFIX/);
- assert.match(sw,/v163/);
+ assert.match(sw,/v164/);
 });

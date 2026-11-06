@@ -65,7 +65,7 @@
     {id:'change',name:'冒泡了，就一定发生化学变化吗？',subject:'化学',group:'school',stages:['初中衔接','九年级'],tags:['物理变化','化学变化','新物质','分子','原子','证据'],description:'比较沸腾与电解，区分眼前的现象和判断变化的证据。',icon:'H₂O',time:'8–12 分钟'},
     {id:'map',name:'地图转了，北方也会跟着转吗？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['地图判读','方向','指向标','参照点','比例尺','路线'],description:'转动一张地图，找准方向，再用自己的话给朋友指路。',icon:'N↗',time:'8–12 分钟'},
     {id:'speed',name:'跑得远，就一定更快吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['平均速度','路程','时间','单位换算','运动'],description:'改变用时，比较同样时间里的路程，再看途中停留怎样影响平均速度。',icon:'m/s',time:'8–12 分钟'},
-    {id:'equation',name:'神秘货箱有多重？',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['一元一次方程','等式','天秤','移项','检验'],description:'亲手改变天秤两边，看清解方程的每一步为什么成立。',icon:'x＝?',time:'8–12 分钟'},
+    {id:'equation',name:'等式变了，原来的答案还在吗？',recordTitle:'等式变了，原来的答案还在吗？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['一元一次方程','等式性质','等价变形','天秤','非零条件','检验'],description:'先封存同解判断，再在等式操作台比较不同路线；最后撤掉天秤，从数据包清单独立建模。',icon:'＝',time:'12–16 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'reading',name:'这句话能证明你的答案吗？',subject:'语文',group:'school',stages:['六年级','初中衔接'],tags:['阅读理解','依据','推断','分点回答'],description:'从短文里找依据，把“我觉得”说得有根有据。',icon:'证',time:'8–12 分钟'},
     {id:'english',name:'你会选一只机器狗吗？',subject:'英语',group:'school',stages:['六年级','初中衔接'],tags:['口语','词汇','听力','表达'],description:'听懂一个想法，用英语说出自己的选择和理由。',icon:'Aa',time:'8–10 分钟'},
     {id:'math',name:'圆，遇上正方形',subject:'数学',group:'school',stages:['六年级'],tags:['圆','周长','面积','组合图形','内切','外接'],description:'分清周长与面积，看懂圆与正方形套在一起怎么算。',icon:'◎',time:'8–12 分钟'},
@@ -77,7 +77,7 @@
   ];
   const recommendedOrder=[
     'repair',
-    'liketerms','brackets','discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','chentaiqiu','massconservation','activewords','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'liketerms','brackets','equation','discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','chentaiqiu','massconservation','activewords','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
     'rotor','rocket','charts','parachute','glacier','buoyancy'
   ];
@@ -85,7 +85,7 @@
   items.sort((a,b)=>(orderIndex.get(a.id)??Number.MAX_SAFE_INTEGER)-(orderIndex.get(b.id)??Number.MAX_SAFE_INTEGER));
   function latest(sessions){const byCourse={};for(const s of [...sessions].sort((a,b)=>b.updatedAt-a.updatedAt))if(!byCourse[s.courseId])byCourse[s.courseId]=s;return byCourse;}
   function select({group='all',subject='all',stage='all',query=''}={}){const words=query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);return items.filter(c=>(group==='all'||c.group===group)&&(subject==='all'||(c.subjects||[c.subject]).includes(subject))&&(stage==='all'||c.stages.includes(stage))&&words.every(w=>[c.name,c.subject,...c.tags,...c.stages].join(' ').toLocaleLowerCase().includes(w)));}
-  function sessionsFor(course,progress){return (course.sessionIds||[course.id]).map(id=>progress[id]).filter(Boolean);}
+  function sessionsFor(course,progress){const sessions=(course.sessionIds||[course.id]).map(id=>progress[id]).filter(Boolean);return course.recordTitle?sessions.filter(session=>session.title===course.recordTitle):sessions;}
   function home(sessions){
     const progress=latest(sessions),saved=c=>sessionsFor(c,progress);
     const complete=c=>saved(c).length===(c.sessionIds||[c.id]).length&&saved(c).every(s=>s.records.every(r=>r.done));
