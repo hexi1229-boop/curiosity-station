@@ -7,7 +7,7 @@
   courses.unshift(['rotor','空气往下走，无人机为什么往上？','rotor.html']);
   courses.splice(courses.findIndex(course=>course[0]==='angle180')+1,0,['persuade','我选这个方案，但你能说服我改主意吗？','persuade.html']);
   courses.splice(courses.findIndex(course=>course[0]==='persuade')+1,0,['parallel','不拿量角器，怎么把一个角搬过去？','parallel.html']);
-  courses.unshift(['repair','错题修复①：数量、语境与判断','repair.html'],['repair-words','错题修复②：词句与表达','repair.html?round=2'],['repair-math-01','近期数学强化考试①：分数运算与单位“1”','repair.html?round=math-01&exam=1']);
+  courses.unshift(['repair','错题修复①：数量、语境与判断','repair.html'],['repair-words','错题修复②：词句与表达','repair.html?round=2'],['repair-math-01','近期数学强化考试①：分数运算与单位“1”','repair.html?round=math-01&exam=1'],['repair-math-transfer-01','换情境迁移测评：换了任务单，还能找到同一个关系吗？','repair.html?round=math-transfer-01&exam=1']);
   courses.unshift(['journey','人停了，图上的线为什么还在？','journey.html']);
   const readalongs={beiying:6,baicao:24,chun:10,chentaiqiu:1};
   courses.unshift(['chun','共读《春》：一句话怎样让画面动起来？','chun.html']);
@@ -142,7 +142,7 @@
         const phases={'首答前':'初稿前','首答后':'留住初稿后','完成后回看':'收好后回看'};
         return `<section class="learning-report" aria-label="本次写作过程"><h3>作品回看 · ${r.done?'已收好':'可继续写与改'}</h3><p class="report-course">${esc(title)}</p>${storageError?'<p class="report-status">本机保存未成功，请先截图保留这次文字。</p>':''}<p class="report-note">保留作品与表达选择，不自动判分，也不据此认定长期掌握。</p><ol class="report-list"><li><h4>${esc(r.title)}</h4><p><b>初稿：</b><span class="report-words">${esc(first?.answer||'还没有留住初稿，可以先读、先写。')}</span></p>${r.attempts.length>1?`<p><b>最近留稿：</b><span class="report-words">${esc(last.answer)}</span></p>`:''}${last?.explanation?`<p><b>这次修改的理由：</b><span class="report-words">${esc(last.explanation)}</span></p>`:''}${!r.done&&draft&&draft!==last?.answer?`<p><b>自动保存的草稿：</b><span class="report-words">${esc(draft)}</span></p>`:''}${!r.done&&r.draft?.reason&&r.draft.reason!==last?.explanation?`<p><b>草稿中的修改说明：</b>${esc(r.draft.reason)}</p>`:''}<p><b>写作提示：</b>${r.helps.length?r.helps.map(h=>`${esc(phases[h.phase]||h.phase)}·${esc(h.label)}`).join('；'):'未打开写作小提示（正常共读、品词句不计求助）'}</p><p>已留 ${r.attempts.length} 版文字${r.done?'；这次先收好，以后可继续改。':'；随时可回来接着写。'}</p>${r.notes.map(n=>`<p class="report-note">${esc(n)}</p>`).join('')}</li></ol><p class="report-note">记录仅保存在当前设备的浏览器／桌面入口，不上传。外部帮助无法自动识别。学习记录中的导出可用来备份、转移或交给家长分析。</p></section>`;
       }
-      return `<section class="learning-report" aria-label="本次学习反馈"><h3>本次学习反馈 · ${records.filter(r=>r.done).length} / ${records.length} ${records.length===5||title.includes('考试')?'题':'环节'}完成</h3><p class="report-course">${esc(title)}</p>${storageError?'<p class="report-status">本机保存未成功，请先截图保留这次记录。</p>':''}<p class="report-note">记录按作答过程保留，随时可以截图给家长；首答与求助记录帮助发现下一步，不等于已经长期掌握。</p><ol class="report-list">${records.map((r,i)=>{
+      return `<section class="learning-report" aria-label="本次学习反馈"><h3>本次学习反馈 · ${records.filter(r=>r.done).length} / ${records.length} ${records.length===5||title.includes('考试')||title.includes('测评')?'题':'环节'}完成</h3><p class="report-course">${esc(title)}</p>${storageError?'<p class="report-status">本机保存未成功，请先截图保留这次记录。</p>':''}<p class="report-note">记录按作答过程保留，随时可以截图给家长；首答与求助记录帮助发现下一步，不等于已经长期掌握。</p><ol class="report-list">${records.map((r,i)=>{
         const first = r.first;
         const last = r.attempts[r.attempts.length-1];
         const laterExplanation = last?.explanation && last.explanation !== first?.explanation;
