@@ -82,7 +82,7 @@ test('state sanitizer accepts only whitelisted work and never trusts forged comp
 test('course is registered across catalog, records and offline release',()=>{
   const catalog=read('catalog.js'),feedback=read('learning-feedback.js'),html=read('liketerms.html'),js=read('liketerms.js'),sw=read('sw.js');
   assert.match(catalog,/id:'liketerms'.*subject:'数学'.*tasks:3.*fresh:true/s);
-  assert.match(catalog,/recommendedOrder=\[\s*'repair',\s*'liketerms'/s);
+  assert.match(catalog,/recommendedOrder=\[\s*'repair',\s*'readenglish','liketerms'/s);
   assert.doesNotMatch(catalog,/name:'3a＋2a能合并/);
   assert.match(catalog,/name:'字母式长得很像，哪些真的能合并？'/);
   assert.equal((feedback.match(/\['liketerms'/g)||[]).length,1);
@@ -95,5 +95,5 @@ test('course is registered across catalog, records and offline release',()=>{
   assert.match(js,/一次不一致足以推翻“总成立”/);
   assert.match(js,/log\.submit\(1,[\s\S]*?log\.help\(1,'自动反馈/);
   assert.match(js,/log\.submit\(2,[\s\S]*?log\.help\(2,'自动反馈/);
-  assert.match(sw,/CACHE_PREFIX\}v164/);
+  assert.match(sw,/CACHE_PREFIX\}v165/);
 });

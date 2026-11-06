@@ -62,7 +62,7 @@ test('sanitizer keeps only whitelisted work and rejects forged mastery state',()
 test('existing equation URL is upgraded once, ordered in the algebra chain and offline-versioned',()=>{
   const catalog=read('catalog.js'),feedback=read('learning-feedback.js'),html=read('equation.html'),js=read('equation.js'),sw=read('sw.js');
   assert.match(catalog,/id:'equation'.*name:'等式变了，原来的答案还在吗？'.*tasks:3.*fresh:true/s);
-  assert.match(catalog,/recommendedOrder=\[\s*'repair',\s*'liketerms','brackets','equation'/s);
+  assert.match(catalog,/recommendedOrder=\[\s*'repair',\s*'readenglish','liketerms','brackets','equation'/s);
   assert.equal((catalog.match(/id:'equation'/g)||[]).length,1);
   assert.equal((feedback.match(/\['equation'/g)||[]).length,1);
   assert.match(feedback,/\['equation','等式变了，原来的答案还在吗？','equation\.html'\]/);
@@ -78,7 +78,7 @@ test('existing equation URL is upgraded once, ordered in the algebra chain and o
   assert.match(js,/乘0会得到真等式，却丢掉原方程的信息/);
   assert.doesNotMatch(E.tasks[1].title,/x＝7|两边同时|乘0/);
   assert.doesNotMatch(E.tasks[1].context,/x＝7|可逆|丢信息/);
-  assert.match(sw,/CACHE_PREFIX\}v164/);
+  assert.match(sw,/CACHE_PREFIX\}v165/);
 });
 
 test('an old five-question completion stays in history but does not complete the upgraded course',()=>{
