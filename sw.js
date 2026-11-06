@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'curiosity-station-';
-const CACHE = `${CACHE_PREFIX}v168`;
+const CACHE = `${CACHE_PREFIX}v169`;
 const INSTALL_CACHE = `${CACHE}-installing`;
 const CORE_FILES = [
   './',

@@ -73,5 +73,5 @@ test('course registration stays ordered, neutral before the first answer and off
   assert.match(js,/货舱净增加质量的建模式/);
   assert.match(js,/log\.submit\(1,[\s\S]*?log\.help\(1,'自动反馈/);
   assert.match(js,/log\.submit\(2,[\s\S]*?log\.help\(2,'自动反馈/);
-  assert.match(sw,/CACHE_PREFIX\}v168/);
+  assert.match(sw,/CACHE_PREFIX\}v169/);
 });
