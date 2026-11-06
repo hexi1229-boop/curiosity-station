@@ -4,6 +4,7 @@
   const items=[
     {id:'repair',name:'错题修复站',subject:'数学 · 语文 · 英语',subjects:['数学','语文','英语'],group:'school',stages:['六年级','初中衔接'],tags:['错题修复','近期强化考试','换情境迁移测评','分数运算','单位1','单位1变化','倒数','工程问题','工作量','效率','消元','数量关系','多音字','词块','课文顺序','字形','悬','悬停','名句','比喻','排比','分条表达','句式','标点','语境','阅读','动作描写'],description:'按知识点选择讲解、变式与换情境迁移测评；首答、理由、提示和订正分别保留，不把当次完成等同掌握。',icon:'修复',time:'按需复习 · 可分次',format:'repair',sessionIds:['repair','repair-words','repair-math-01','repair-math-transfer-01']},
     {id:'readenglish',name:'单词没全懂，也能抓住一篇英文在说什么吗？',subject:'英语',group:'school',stages:['六年级','初中衔接','七年级'],tags:['英语阅读','主旨','原文证据','语境猜词','读写结合','真实回复','信息整合'],description:'先在没有词表时冷读整篇，再用转折、对比和结果检查证据；最后换成群聊，独立拼出关键信息并写3—4句真实回复。',icon:'Read',time:'12—16 分钟 · 可分两次',tasks:3,fresh:true},
+    {id:'poememotion',name:'景物都看懂了，诗人的心情从哪里来？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['古诗词','天净沙秋思','次北固山下','景物','意象','情感','原文证据','结论范围','点读注释'],description:'先完整冷读《天净沙·秋思》，遮住、恢复尾句看景物怎样连到人物处境；再换读《次北固山下》，用开阔、更新与思乡两类证据修正片面结论。',icon:'景·情',time:'12—16 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'journey',name:'人停了，图上的线为什么还在？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['读图','时间','路程','分段关系','坐标','累计','变化量','函数入门'],description:'让人物移动与描点同步，切换离家距离和累计路程；再独立读机器人行程与水箱记录，分清图能说明什么。',icon:'读图',time:'10–15 分钟',tasks:4,fresh:true},
     {id:'baicao',name:'共读《从百草园到三味书屋》：小园子里，藏着多少趣味？',readingTitle:'从百草园到三味书屋',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','鲁迅','百草园','三味书屋','词汇','句式','拟人','比喻','动作描写','阅读','北大'],description:'从北大游览认识鲁迅，读绍兴童年的草木、虫声和书屋。全文可分两次，点读词句、品句式和人物，不安排练笔。',icon:'共读',time:'可分两次 · 每次10—15分钟',format:'readalong',tasks:1,fresh:true},
     {id:'beiying',readingTitle:'背影',name:'共读《背影》：那个背影，为什么留在记忆里？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级','八年级'],tags:['共读课','朱自清','背影','散文','词汇','动作描写','叙述视角','语气','阅读'],description:'完整读一篇经典，挑一处聊动作、语气与前后看法；带走一句或一个疑问，阅读位置与便笺自动留存。',icon:'共读',time:'15—20分钟 · 可分次',format:'readalong',tasks:1,fresh:true},
@@ -78,7 +79,7 @@
   ];
   const recommendedOrder=[
     'repair',
-    'readenglish','liketerms','brackets','equation','discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','chentaiqiu','massconservation','activewords','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'readenglish','poememotion','liketerms','brackets','equation','discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','chentaiqiu','massconservation','activewords','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
     'rotor','rocket','charts','parachute','glacier','buoyancy'
   ];

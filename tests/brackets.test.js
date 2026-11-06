@@ -59,7 +59,7 @@ test('sanitizer whitelists learning work and rejects forged completion state',()
 test('course registration stays ordered, neutral before the first answer and offline-versioned',()=>{
   const catalog=read('catalog.js'),feedback=read('learning-feedback.js'),html=read('brackets.html'),js=read('brackets.js'),sw=read('sw.js');
   assert.match(catalog,/id:'brackets'.*subject:'数学'.*tasks:3.*fresh:true/s);
-  assert.match(catalog,/recommendedOrder=\[\s*'repair',\s*'readenglish','liketerms','brackets'/s);
+  assert.match(catalog,/recommendedOrder=\[\s*'repair',\s*'readenglish','poememotion','liketerms','brackets'/s);
   assert.match(catalog,/name:'括号里的式子，拆开后还一样吗？'/);
   assert.doesNotMatch(catalog,/name:'括号一打开，为什么每一项/);
   assert.equal((feedback.match(/\['brackets'/g)||[]).length,1);
@@ -73,5 +73,5 @@ test('course registration stays ordered, neutral before the first answer and off
   assert.match(js,/货舱净增加质量的建模式/);
   assert.match(js,/log\.submit\(1,[\s\S]*?log\.help\(1,'自动反馈/);
   assert.match(js,/log\.submit\(2,[\s\S]*?log\.help\(2,'自动反馈/);
-  assert.match(sw,/CACHE_PREFIX\}v165/);
+  assert.match(sw,/CACHE_PREFIX\}v166/);
 });

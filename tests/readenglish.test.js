@@ -59,7 +59,7 @@ test('state sanitizer keeps only bounded whitelisted work and rejects forged com
 test('course is uniquely registered, first in the new batch and released for offline refresh',()=>{
   const catalog=read('catalog.js'),feedback=read('learning-feedback.js'),html=read('readenglish.html'),js=read('readenglish.js'),sw=read('sw.js');
   assert.match(catalog,/id:'readenglish'.*subject:'英语'.*tasks:3.*fresh:true/s);
-  assert.match(catalog,/recommendedOrder=\[\s*'repair',\s*'readenglish','liketerms','brackets','equation'/s);
+  assert.match(catalog,/recommendedOrder=\[\s*'repair',\s*'readenglish','poememotion','liketerms','brackets','equation'/s);
   assert.equal((catalog.match(/id:'readenglish'/g)||[]).length,1);
   assert.equal((feedback.match(/\['readenglish'/g)||[]).length,1);
   assert.match(feedback,/\['readenglish','单词没全懂，也能抓住一篇英文在说什么吗？','readenglish\.html'\]/);
@@ -72,7 +72,7 @@ test('course is uniquely registered, first in the new batch and released for off
   assert.match(js,/L\.meaningfulEnglish\(reply,12\)/);
   assert.match(js,/log\.submit\(1,[\s\S]*?log\.help\(1,'自动反馈/);
   assert.match(js,/log\.submit\(2,[\s\S]*?log\.help\(2,'自动反馈/);
-  assert.match(sw,/CACHE_PREFIX\}v165/);
+  assert.match(sw,/CACHE_PREFIX\}v166/);
 });
 
 test('a new learning session is bound to readenglish and keeps open replies unscored',()=>{
