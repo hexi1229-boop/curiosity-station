@@ -46,6 +46,7 @@
     {id:'supplies',name:'两瓶水，英语里究竟在数什么？',subject:'英语',group:'school',stages:['初中衔接','七年级'],tags:['可数名词','不可数名词','单复数','单位','much','many','口语'],description:'同样的水换装不同瓶数，听清物资清单，再用英语把新清单说准确。',icon:'2瓶',time:'8–12 分钟'},
     {id:'qualifier',name:'一个“约”字，为什么不能随便删？',subject:'语文',group:'school',stages:['初中衔接','七年级'],tags:['词语作用','限定词','准确表达','阅读理解','条件','改写'],description:'在编辑台改词对照，分清精确程度、对象和条件，再独立修好一份试飞说明。',icon:'约',time:'8–12 分钟'},
     {id:'power',name:'3⁴是12吗？把乘方拆开看',subject:'数学',group:'school',stages:['初中衔接','七年级'],tags:['有理数','乘方','底数','指数','括号','幂'],description:'展开因子卡，看清负号是否属于底数，再破解探测器复制游戏。',icon:'aⁿ',time:'8–12 分钟'},
+    {id:'liketerms',name:'字母式长得很像，哪些真的能合并？',subject:'数学',group:'school',stages:['六年级','初中衔接','七年级'],tags:['代数式','整式','同类项','系数','变量部分','分配律'],description:'先封存独立判断，再拆开验证；最后撤掉颜色，在五边形路线图中自己找规律。',icon:'3a＋2a',time:'12–16 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'division',name:'细胞变多了，分工就会自动出现吗？',subject:'生物',group:'school',stages:['初中衔接','七年级'],tags:['细胞','生长','分裂','分化','组织','遗传信息'],description:'切换细胞变化模型，区分变大、变多和分工，再解释一份新的培养记录。',icon:'1→2',time:'8–12 分钟'},
     {id:'grid',name:'只差一个字母，地点能跑到哪儿？',subject:'地理',group:'school',stages:['初中衔接','七年级'],tags:['经纬网','纬度','经度','定位','赤道','方向'],description:'拖动探测点，分清N/S和E/W，再到一张新的局部图中寻找站点。',icon:'N/E',time:'8–12 分钟'},
     {id:'forces',name:'两个力一样大，就会互相抵消吗？',subject:'物理',group:'school',stages:['初中衔接','八年级'],tags:['力','受力对象','相互作用','二力平衡','合力','运动状态'],description:'把力按受力者分组，调节拉力，再解释书与无人机怎样平衡。',icon:'⇄',time:'8–12 分钟'},
@@ -75,7 +76,7 @@
   ];
   const recommendedOrder=[
     'repair',
-    'discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','chentaiqiu','massconservation','activewords','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
+    'liketerms','discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','chentaiqiu','massconservation','activewords','equation','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','elements','inertia','quotient','pressure','power','focus',
     'rotor','rocket','charts','parachute','glacier','buoyancy'
   ];

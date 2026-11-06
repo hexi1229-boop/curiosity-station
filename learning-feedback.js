@@ -24,6 +24,7 @@
   courses.splice(courses.findIndex(course=>course[0]==='zhou-network')+1,0,['chentaiqiu','共读《陈太丘与友期行》：一场迟到，怎样照见“信”与“礼”？','chentaiqiu.html']);
   courses.splice(courses.findIndex(course=>course[0]==='chentaiqiu')+1,0,['massconservation','反应前后，究竟是什么不能凭空少掉？','massconservation.html']);
   courses.splice(courses.findIndex(course=>course[0]==='massconservation')+1,0,['activewords','认识这个词，为什么开口时还是想不起来？','activewords.html']);
+  courses.splice(courses.findIndex(course=>course[0]==='power')+1,0,['liketerms','字母式长得很像，哪些真的能合并？','liketerms.html']);
   const clone=value=>JSON.parse(JSON.stringify(value));
   const newId=()=>Date.now().toString(36)+'-'+(root.crypto?.randomUUID?.() || Math.random().toString(36).slice(2));
   let storageError=false;
