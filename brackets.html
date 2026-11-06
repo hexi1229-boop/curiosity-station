@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#674e7d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="好奇心小站">
+  <meta name="description" content="先独立判断括号式的等值改写，再动手验证，最后在航天货舱清单中独立迁移。">
+  <title>括号里的式子，拆开后还一样吗？ · TY敏捷课堂</title>
+  <link rel="manifest" href="app.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="learning-feedback.css">
+  <link rel="stylesheet" href="parallel.css">
+  <link rel="stylesheet" href="brackets.css">
+  <script src="learning-feedback.js" defer></script>
+  <script src="brackets-content.js" defer></script>
+  <script src="brackets.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="back-link" href="courses.html?group=school&amp;subject=数学">← 数学课程</a>
+    <a class="back-link" href="records.html">学习记录 ↗</a>
+  </header>
+  <main class="parallel-main brackets-main">
+    <section class="parallel-intro brackets-intro">
+      <p class="eyebrow">数学 · 代数桥梁 A2 · 六年级到七年级衔接</p>
+      <h1>括号里的式子，<br>拆开后还一样吗<span>？</span></h1>
+      <p>先封存自己的判断，再把变化过程放慢看；最后换成一份货舱清单，自己决定该怎样改写。</p>
+      <div class="parallel-meta">
+        <span>约 12–16 分钟 · 可分两次</span>
+        <span>3 个学习环节</span>
+        <span>首答、提示、操作与解释自动保存</span>
+      </div>
+      <div class="brackets-bridge" aria-label="本课在代数学习链中的位置">
+        <span>同类项</span><i>→</i><strong>括号与整式</strong><i>→</i><span>方程</span>
+      </div>
+    </section>
+    <ol class="parallel-nav" aria-label="学习进度">
+      <li>01 先判断</li>
+      <li>02 拆开验证</li>
+      <li>03 货舱迁移</li>
+    </ol>
+    <div id="brackets-task"></div>
+    <noscript><p>请启用 JavaScript 使用互动课程。</p></noscript>
+    <details class="parallel-sources" id="brackets-sources" hidden>
+      <summary>课程边界、教材位置与来源</summary>
+      <p>教育部数学课程标准把合并同类项、去括号和简单整式加减列为第四学段“数与式”的内容。本课承接上一课同类项，只建立一层括号的第一层理解，不写死教材页码。</p>
+      <p>去括号不是擦掉符号，而是保持值不变的改写。对数或代数式 A、B，有 k(A＋B)＝kA＋kB，k(A－B)＝kA－kB。括号前单独的减号可看成乘以－1，因此－(A－B)＝－A＋B。</p>
+      <p>“每一项过门”只是帮助看见作用范围的动画比喻；依据仍是乘法对加法、减法的分配律。这里的“项”指括号内顶层、连同自身符号一起看的加数，不能把分配律错误套到一个乘积内部。</p>
+      <p>代入数值可以发现某个改写错误，却不能靠少数取值证明恒等。本课只覆盖一层括号、整数外因数和展开后一次合并同类项；不进入嵌套括号、分数系数、乘法公式、整式乘法或解方程。</p>
+      <p><a href="https://www.moe.gov.cn/srcsite/A26/s8001/202204/W020220420582346895190.pdf" target="_blank" rel="noopener">教育部《义务教育数学课程标准（2022年版）》</a>；<a href="https://www.pep.com.cn/xw/zt/hd/12/xjcjs/cz/202408/t20240826_1994351.html" target="_blank" rel="noopener">人教版义务教育数学（七～九年级）新教材介绍</a>；<a href="https://www.pep.com.cn/rjdt/rjdt/202506/t20250618_2002139.shtml" target="_blank" rel="noopener">人教社：七年级核心内容说明</a>。</p>
+    </details>
+  </main>
+  <footer class="site-footer">
+    <span>先判断，再验证每一步是否保持原式的值。</span>
+    <span id="offline-status" role="status">记录自动保存在本机</span>
+  </footer>
+</body>
+</html>

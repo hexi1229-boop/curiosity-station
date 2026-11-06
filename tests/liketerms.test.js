@@ -95,5 +95,5 @@ test('course is registered across catalog, records and offline release',()=>{
   assert.match(js,/一次不一致足以推翻“总成立”/);
   assert.match(js,/log\.submit\(1,[\s\S]*?log\.help\(1,'自动反馈/);
   assert.match(js,/log\.submit\(2,[\s\S]*?log\.help\(2,'自动反馈/);
-  assert.match(sw,/CACHE_PREFIX\}v162/);
+  assert.match(sw,/CACHE_PREFIX\}v163/);
 });

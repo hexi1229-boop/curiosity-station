@@ -105,6 +105,6 @@ test('course is registered once across catalog, records, sequence and offline re
   assert.match(catalog,/recommendedOrder=[\s\S]*'chentaiqiu','massconservation','activewords'/);
   assert.equal((feedback.match(/\['massconservation'/g)||[]).length,1);
   assert.match(previous,/href="massconservation\.html"/);
-  assert.match(sw,/curiosity-station-`?v162|CACHE_PREFIX\}v162/);
+  assert.match(sw,/curiosity-station-`?v163|CACHE_PREFIX\}v163/);
 });
 
