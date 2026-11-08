@@ -99,5 +99,5 @@ test('catalog, records and cache register H08 once in the intended history seque
   assert.match(catalog,/'zhou-network','springautumn','chentaiqiu'/);
   assert.equal((feedback.match(/\['springautumn'/g)||[]).length,1);
   assert.match(feedback,/findIndex\(course=>course\[0\]==='zhou-network'\)\+1/);
-  assert.match(sw,/const CACHE = `\$\{CACHE_PREFIX\}v169`/);
+  assert.match(sw,/const CACHE = `\$\{CACHE_PREFIX\}v170`/);
 });

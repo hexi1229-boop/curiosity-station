@@ -32,6 +32,7 @@
     {id:'springautumn',name:'乱世为什么反而出现大变化？',subject:'历史',group:'school',stages:['六年级','初中衔接','七年级'],tags:['春秋战国','铁农具','商鞅变法','都江堰','百家争鸣','因果网络','多因素','史料边界'],description:'从铁农具、标准量器、水利工程和诸子方案四座证据台出发，搭出生产、竞争、改革与思想彼此推动的网络；再审查“一个人瞬间改变秦国”的单因果说法。',icon:'变·因',time:'12–16 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'chentaiqiu',readingTitle:'陈太丘与友期行',name:'共读《陈太丘与友期行》：一场迟到，怎样照见“信”与“礼”？',subject:'语文',group:'school',stages:['六年级','初中衔接','七年级'],tags:['共读课','世说新语','陈太丘与友期行','文言文','称谓','信','礼','事实与判断','人物评价','证据'],description:'完整通读并点看难词，把“日中—过中—舍去—乃至”排成时间线，再从事实走到判断，换读另一则《世说新语》独立迁移。',icon:'共读',time:'14–17 分钟 · 可分两次',format:'readalong',tasks:1,fresh:true},
     {id:'massconservation',name:'反应前后，究竟是什么不能凭空少掉？',subject:'化学',group:'school',stages:['六年级','初中衔接','九年级预览'],tags:['质量守恒','原子重排','系统边界','称量','气体逸出','氧气进入','化学反应','证据'],description:'先封存秤变轻的冷判断，再逐种核对原子账、切换称量边界；最后用同一原则解释敞口装置一份变轻、一份变重。',icon:'原子账',time:'15–18 分钟 · 可分两次',tasks:4,fresh:true},
+    {id:'yungong',name:'听《云宫迅音》：一架钢琴，怎样听见一支乐队？',subject:'音乐',group:'explore',stages:['六年级','初中衔接','七年级'],tags:['音乐赏析','云宫迅音','西游记','许镜清','钢琴','声部','旋律','伴奏','节拍','重音','音色'],description:'从熟悉的《云宫迅音》出发，留下首听线索，用原创小样拆层、移动重音，再回到原曲与自己的钢琴版本找声音证据。',icon:'云宫',time:'12–16 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'music',name:'同一段旋律，怎样配出不同的画面？',subject:'音乐',group:'explore',stages:['六年级','初中衔接','七年级'],tags:['音乐制作','听辨','节奏','拍点','旋律','配器','编配','钢琴','太阳照常升起','久石让'],description:'带着喜欢的音乐走进小配乐工作室：听辨变化、轻点拍子，再用原创短句叠加声部，为不同画面调整编配。',icon:'听·配',time:'12–18 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'aicoding',name:'AI 写的代码，为什么还不能直接发射？',subject:'计算机',group:'explore',stages:['六年级','初中衔接','七年级'],tags:['AI编程','人工智能','算法','条件','循环','变量','测试','调试','边界值','火星车'],description:'先写清任务要求，再用普通、岩石和临界电量测试修复模拟 AI 候选程序；最后换成沙暴能耗表重新建立规则。',icon:'AI·TEST',time:'15–18 分钟 · 可分两次',tasks:3,fresh:true},
     {id:'rotor',name:'空气往下走，无人机为什么往上？',subject:'物理',group:'explore',stages:['六年级','初中衔接','八年级'],tags:['无人机','旋翼','空气','推力','动量','牛顿第三定律','受力平衡','速度','加速度','水下探测器'],description:'先判断流动空气怎样持续传力，再调转速找悬停；最后换成水下探测器并反转螺旋桨，独立迁移相互作用关系。',icon:'气流↑',time:'10–15 分钟',tasks:3,fresh:true},
@@ -85,7 +86,7 @@
     'repair',
     'readenglish','poememotion','liketerms','brackets','equation','discount','angle180','persuade','parallel','chun','triangle180','polygon360','rigidmotion','history','prexia','erlitou','oracle','guandimiao','ligui','zhou-network','springautumn','chentaiqiu','massconservation','activewords','chinese','gist','english','briefing','math','scale','reading','journey','weighted','balance','qualifier','causal','character','baicao','beiying','fairtest',
     'negative','now','tomato','map','change','speed','addition','supplies','cell','grid','particle','density','subtract','hangar','division','contour','purity','forces','multiply','past','photosynthesis','daynight','seasons','elements','inertia','quotient','pressure','power','focus',
-    'music','aicoding','rotor','rocket','charts','parachute','glacier','buoyancy'
+    'yungong','music','aicoding','rotor','rocket','charts','parachute','glacier','buoyancy'
   ];
   const orderIndex=new Map(recommendedOrder.map((id,index)=>[id,index]));
   items.sort((a,b)=>(orderIndex.get(a.id)??Number.MAX_SAFE_INTEGER)-(orderIndex.get(b.id)??Number.MAX_SAFE_INTEGER));

@@ -7,6 +7,7 @@
   courses.unshift(['rotor','空气往下走，无人机为什么往上？','rotor.html']);
   courses.unshift(['aicoding','AI 写的代码，为什么还不能直接发射？','aicoding.html']);
   courses.unshift(['music','同一段旋律，怎样配出不同的画面？','music.html']);
+  courses.unshift(['yungong','听《云宫迅音》：一架钢琴，怎样听见一支乐队？','yungong.html']);
   courses.splice(courses.findIndex(course=>course[0]==='angle180')+1,0,['persuade','我选这个方案，但你能说服我改主意吗？','persuade.html']);
   courses.splice(courses.findIndex(course=>course[0]==='persuade')+1,0,['parallel','不拿量角器，怎么把一个角搬过去？','parallel.html']);
   courses.unshift(['repair','错题修复①：数量、语境与判断','repair.html'],['repair-words','错题修复②：词句与表达','repair.html?round=2'],['repair-math-01','近期数学强化考试①：分数运算与单位“1”','repair.html?round=math-01&exam=1'],['repair-math-transfer-01','换情境迁移测评：换了任务单，还能找到同一个关系吗？','repair.html?round=math-transfer-01&exam=1']);
