@@ -78,7 +78,7 @@ test('existing equation URL is upgraded once, ordered in the algebra chain and o
   assert.match(js,/乘0会得到真等式，却丢掉原方程的信息/);
   assert.doesNotMatch(E.tasks[1].title,/x＝7|两边同时|乘0/);
   assert.doesNotMatch(E.tasks[1].context,/x＝7|可逆|丢信息/);
-  assert.match(sw,/CACHE_PREFIX\}v171/);
+  assert.match(sw,/CACHE_PREFIX\}v172/);
 });
 
 test('an old five-question completion stays in history but does not complete the upgraded course',()=>{

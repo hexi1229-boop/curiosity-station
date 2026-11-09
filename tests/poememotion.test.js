@@ -66,7 +66,7 @@ test('course is uniquely registered, recommended after English reading and relea
   assert.match(js,/class="poem-tail" hidden aria-hidden="true"/);
   assert.match(js,/class="scene-bridge"'\+\(hidden\?' hidden aria-hidden="true"/);
   assert.match(js,/requestAnimationFrame\(\(\)=>host\.querySelector\('\[data-lens=/);
-  assert.match(sw,/CACHE_PREFIX\}v171/);
+  assert.match(sw,/CACHE_PREFIX\}v172/);
 });
 
 test('a new learning session binds to poememotion and keeps open readings unscored',()=>{

@@ -16,8 +16,12 @@
   let state=L.sanitizeState(log.checkpoint.liketerms);
   state.labAttempted=state.labAttempted&&!!log.records[1]?.attempts?.length;
   state.transferAttempted=state.transferAttempted&&!!log.records[2]?.attempts?.length;
+  if(log.checkpoint.liketermsObservationPolicy!==2){
+    if(log.records[1]?.attempts?.length)log.note(1,'课程已修复：示例操作次数不再纳入数学答案判定。更新前的首答与旧判定原样保留；旧判定可能包含操作次数不足，不能单凭它认定数学答错。');
+    log.point({liketermsObservationPolicy:2});
+  }
   function save(){log.point({liketerms:state});}
-  function answerText(value,unsure){return value.trim()||(unsure?'暂时说不清':'');}
+  function answerText(value,unsure){const text=value.trim();return unsure?'暂时说不清'+(text?'；已写下：'+text:''):text;}
   function message(value,error=false){const box=host.querySelector('#liketerms-message');if(box){box.textContent=value;box.dataset.error=String(error);}}
   function progress(){
     document.querySelectorAll('.parallel-nav li').forEach((item,index)=>{
@@ -30,7 +34,7 @@
     return '<section class="parallel-card"><p class="parallel-label">'+esc(label)+'</p><h2 tabindex="-1">'+esc(title)+'</h2>'+body+'<p class="parallel-error" id="liketerms-message" role="status" aria-live="polite"></p>'+actions+'</section>';
   }
   function reason(prefix,label,value,unsure,placeholder){
-    return '<div class="parallel-reason"><label for="'+prefix+'-reason">'+esc(label)+'</label><textarea id="'+prefix+'-reason" rows="3" maxlength="900" placeholder="'+esc(placeholder)+'">'+esc(value)+'</textarea><label class="parallel-unsure"><input id="'+prefix+'-unsure" type="checkbox" '+(unsure?'checked':'')+'>暂时说不清，先如实记录</label></div>';
+    return '<div class="parallel-reason"><label for="'+prefix+'-reason">'+esc(label)+'</label><textarea id="'+prefix+'-reason" rows="3" maxlength="900" placeholder="'+esc(placeholder)+'">'+esc(value)+'</textarea><label class="parallel-unsure"><input id="'+prefix+'-unsure" type="checkbox" '+(unsure?'checked':'')+'>理由暂时说不清，先如实记录</label></div>';
   }
   function bindReason(prefix,valueKey,unsureKey){
     const input=host.querySelector('#'+prefix+'-reason'),checkbox=host.querySelector('#'+prefix+'-unsure');
@@ -55,11 +59,18 @@
     };
   }
 
+  function sampleStatus(){
+    return (state.sampleValues.length?'示例操作记录：a＝'+state.sampleValues.join('、')+'。':'可以拖动 a 比较不同取值，也可以直接往下分组。')+'代入帮助观察，分配律才是一般理由。';
+  }
+  function sampleNumbers(){
+    const a=state.sampleValue;
+    return '<span><b>3a＋2a</b>'+3*a+'＋'+2*a+'＝'+5*a+'</span><span><b>5a</b>5×'+a+'＝'+5*a+'</span>';
+  }
   function sampleMarkup(){
     const merged=state.sampleExpanded;
     const before='<div class="segment-row" style="--a-size:'+state.sampleValue+'" aria-label="三个a与两个a"><span>a</span><span>a</span><span>a</span><b>＋</b><span>a</span><span>a</span></div>';
     const after='<div class="segment-row merged" style="--a-size:'+state.sampleValue+'" aria-label="五个相同的a"><span>a</span><span>a</span><span>a</span><span>a</span><span>a</span></div>';
-    return '<section class="algebra-sample"><div class="algebra-sample-head"><h3>完整示例：让 a 换几个值</h3><output>a＝'+state.sampleValue+'</output></div><p>这里先把 <b>a</b> 看成一段可变长度。长度条只是帮助观察；一般理由在下面的分配律。</p><input id="sample-value" type="range" min="1" max="5" step="1" value="'+state.sampleValue+'" aria-label="改变a的示例值">'+(merged?after:before)+'<div class="sample-equation"><span>3a＋2a</span><i>＝</i><span>(3＋2)a</span><i>＝</i><span>5a</span></div><p class="sample-proof"><b>为什么对所有 a 都成立？</b><br>3a 和 2a 都把 a 当作共同因子。分配律反过来用：3×a＋2×a＝(3＋2)×a。改变 a 只会同时改变每一份，不会改变一共有5份。</p><div class="sample-actions"><button type="button" id="toggle-sample">'+(merged?'重新分成3份和2份':'把相同的5份收在一起')+'</button></div><p class="sample-status">已亲手改变过 '+new Set(state.sampleValues).size+' / 2 个不同的 a 值。代入能帮助检查，分配律才是一般理由。</p></section>';
+    return '<section class="algebra-sample"><div class="algebra-sample-head"><h3>完整示例：让 a 换几个值</h3><output>a＝'+state.sampleValue+'</output></div><p>这里先把 <b>a</b> 看成一段可变长度。长度条只是帮助观察；一般理由在下面的分配律。</p><input id="sample-value" type="range" min="1" max="5" step="1" value="'+state.sampleValue+'" aria-label="改变a的示例值">'+(merged?after:before)+'<div class="sample-equation"><span>3a＋2a</span><i>＝</i><span>(3＋2)a</span><i>＝</i><span>5a</span></div><div class="sample-numbers" aria-live="polite">'+sampleNumbers()+'</div><p class="sample-proof"><b>为什么对所有 a 都成立？</b><br>3a 和 2a 都把 a 当作共同因子。分配律反过来用：3×a＋2×a＝(3＋2)×a。改变 a 只会同时改变每一份，不会改变一共有5份。</p><div class="sample-actions"><button type="button" id="toggle-sample">'+(merged?'重新分成3份和2份':'把相同的5份收在一起')+'</button></div><p class="sample-status">'+sampleStatus()+'</p></section>';
   }
   function sorterMarkup(){
     return '<section class="term-sorter"><h3>提示撤掉：把 4x－x＋2y＋3－1 分组</h3><p>每一行只看它的<strong>变量部分</strong>。−x 的系数是 −1；不含字母的数是常数项。</p><div class="term-sorter-header"><span>这一项</span><span>放进哪一组</span></div>'+L.labTerms.map(term=>'<label class="term-row"><b>'+term.label+'</b><select data-term="'+term.id+'"><option value="">先判断</option>'+L.groupOptions.map(group=>'<option value="'+group.id+'" '+(state.groups[term.id]===group.id?'selected':'')+'>'+group.label+'</option>').join('')+'</select></label>').join('')+'<div class="coefficient-grid"><label>x 项合并后的系数<input id="x-coefficient" inputmode="numeric" value="'+esc(state.xCoefficient)+'"></label><label>y 项合并后的系数<input id="y-coefficient" inputmode="numeric" value="'+esc(state.yCoefficient)+'"></label><label>常数项合并后的数<input id="constant" inputmode="numeric" value="'+esc(state.constant)+'"></label></div></section>';
@@ -70,7 +81,6 @@
   function labFeedback(){
     if(!state.labAttempted)return '';
     const result=L.gradeLab(state),notes=[];
-    if(!result.samples)notes.push('先把 a 调到至少两个不同的值，观察两边同步变化；再把理由落回分配律。');
     if(!result.grouped)notes.push('分组还没完全对应：4x 与 −x 是 x 项；2y 是 y 项；3 与 −1 都是常数项。');
     if(!result.x)notes.push('x 项的系数是 4＋(−1)，不是4＋1。');
     if(!result.y)notes.push('这里只有一个 y 项2y，所以它的系数仍是2。');
@@ -86,7 +96,8 @@
       state.sampleValue=Number(slider.value);state.sampleValues=L.uniqueAllowed([...state.sampleValues,state.sampleValue],[1,2,3,4,5]);save();
       host.querySelector('.algebra-sample output').textContent='a＝'+state.sampleValue;
       host.querySelectorAll('.segment-row').forEach(row=>row.style.setProperty('--a-size',state.sampleValue));
-      host.querySelector('.sample-status').textContent='已亲手改变过 '+new Set(state.sampleValues).size+' / 2 个不同的 a 值。代入能帮助检查，分配律才是一般理由。';
+      host.querySelector('.sample-status').textContent=sampleStatus();
+      host.querySelector('.sample-numbers').innerHTML=sampleNumbers();
     };
     host.querySelector('#toggle-sample').onclick=()=>{state.sampleExpanded=!state.sampleExpanded;state.sampleValues=L.uniqueAllowed([...state.sampleValues,state.sampleValue],[1,2,3,4,5]);save();render();host.querySelector('#toggle-sample')?.focus({preventScroll:true});};
     host.querySelectorAll('[data-term]').forEach(select=>select.onchange=()=>{if(select.value)state.groups[select.dataset.term]=select.value;else delete state.groups[select.dataset.term];save();});
@@ -103,7 +114,8 @@
       log.submit(1,groups+'；结果：'+state.xCoefficient+'x＋'+state.yCoefficient+'y＋'+state.constant+'；3a＋2a²：'+(state.powerChoice==='cannot'?'不能合并':'能合并'),correct,why);
       state.labAttempted=true;save();
       if(!correct){log.help(1,'自动反馈：分组、系数或指数');render();return;}
-      log.note(1,'孩子操作过的a示例值：'+state.sampleValues.join('、')+'。数值代入只作检查，一般理由使用分配律。');
+      log.note(1,'示例操作值记录：'+(state.sampleValues.join('、')||'未操作')+'；只记操作，不计数学正误。开放解释保留原话，不自动判为理解分配律。');
+      if(state.labUnsure)log.note(1,'本次自述理由暂时说不清；结构答案正确不代表已经能解释。');
       log.finish(1,(log.records[1].helps.some(help=>help.phase!=='完成后回看')?'使用过提示或自动反馈；':'未打开提示；')+'完成撤架分组');render(true);
     };
   }

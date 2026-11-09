@@ -19,7 +19,7 @@
 .algebra-sample-head output{font-size:20px;font-weight:750;color:var(--alg-deep)}
 .algebra-sample input[type=range]{width:100%;min-height:44px;accent-color:var(--alg);margin:9px 0}
 .segment-row{display:flex;gap:5px;align-items:center;min-height:44px;margin:9px 0;overflow:hidden}
-.segment-row span{display:grid;place-items:center;flex:0 0 calc(var(--a-size)*10px + 22px);max-width:72px;min-width:32px;height:37px;border:1px solid #92a5c9;border-radius:8px;background:#fff;color:var(--alg-deep);font:700 16px ui-serif,serif;transition:flex-basis .25s,background .25s}
+.segment-row span{display:grid;place-items:center;flex:0 1 calc(var(--a-size)*10px + 22px);max-width:72px;min-width:0;height:37px;border:1px solid #92a5c9;border-radius:8px;background:#fff;color:var(--alg-deep);font:700 16px ui-serif,serif;transition:flex-basis .25s,background .25s}
 .segment-row.merged span{background:#dfe7f8;border-color:var(--alg)}
 .sample-equation{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:8px;text-align:center;font:700 21px/1.5 ui-serif,serif;color:var(--alg-deep);margin:17px 0}
 .sample-equation i{font-style:normal;color:var(--alg-gold)}
@@ -62,5 +62,7 @@
 .algebra-final div{border:1px solid var(--alg-line);border-radius:13px;padding:14px;background:#fff}
 .algebra-final b{display:block;color:var(--alg-deep);margin-bottom:6px}
 @media(max-width:760px){.route-transfer{grid-template-columns:1fr}.coefficient-grid,.variable-parts,.algebra-final{grid-template-columns:1fr}.algebra-claim{grid-template-columns:1fr;gap:5px}.term-sorter-header,.term-row{grid-template-columns:80px 1fr}.sample-equation{font-size:17px;gap:4px}.claim-options{grid-template-columns:1fr}}
-@media(max-width:420px){.algebra-bridge{align-items:stretch;flex-direction:column;text-align:center}.algebra-bridge i{transform:rotate(90deg)}.power-diagnostic .parallel-choices{grid-template-columns:1fr}.segment-row span{min-width:28px}}
+@media(max-width:420px){.algebra-bridge{align-items:stretch;flex-direction:column;text-align:center}.algebra-bridge i{transform:rotate(90deg)}.power-diagnostic .parallel-choices{grid-template-columns:1fr}.segment-row span{min-width:0}}
 @media(prefers-reduced-motion:reduce){.segment-row span{transition:none}}
+
+.sample-numbers{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;background:#fff;border-radius:12px;color:var(--alg-deep);font-size:20px;text-align:center;font-variant-numeric:tabular-nums}.sample-numbers b{display:block;font-size:14px;color:#66738b;margin-bottom:5px}

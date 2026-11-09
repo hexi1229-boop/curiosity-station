@@ -112,8 +112,7 @@
       x:integer(state?.xCoefficient)===3,
       y:integer(state?.yCoefficient)===2,
       constant:integer(state?.constant)===2,
-      power:state?.powerChoice==='cannot',
-      samples:Array.isArray(state?.sampleValues)&&new Set(state.sampleValues).size>=2
+      power:state?.powerChoice==='cannot'
     };
   }
   function gradeTransfer(state){

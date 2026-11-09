@@ -47,10 +47,10 @@ test('a special value cannot turn unlike terms into a structural identity',()=>{
   assert.equal(L.areLikeTerms(left[0],left[1]),false);
 });
 
-test('lab grading requires two sample values, exact grouping, coefficients and power diagnosis',()=>{
+test('correct mathematics is accepted with zero or one slider value; observation count is not an answer',()=>{
   const correct={sampleValues:[2,5],groups:{'4x':'x','-x':'x','2y':'y','3':'constant','-1':'constant'},xCoefficient:'3',yCoefficient:'2',constant:'2',powerChoice:'cannot'};
-  assert.deepEqual(L.gradeLab(correct),{grouped:true,x:true,y:true,constant:true,power:true,samples:true});
-  assert.equal(L.gradeLab({...correct,sampleValues:[2,2]}).samples,false);
+  const expected={grouped:true,x:true,y:true,constant:true,power:true};
+  for(const values of [[],[3],[2,2],[2,5]])assert.deepEqual(L.gradeLab({...correct,sampleValues:values}),expected);
   assert.equal(L.gradeLab({...correct,groups:{...correct.groups,'-x':'constant'}}).grouped,false);
   assert.equal(L.gradeLab({...correct,xCoefficient:'5'}).x,false);
   assert.equal(L.gradeLab({...correct,powerChoice:'can'}).power,false);
@@ -95,5 +95,5 @@ test('course is registered across catalog, records and offline release',()=>{
   assert.match(js,/一次不一致足以推翻“总成立”/);
   assert.match(js,/log\.submit\(1,[\s\S]*?log\.help\(1,'自动反馈/);
   assert.match(js,/log\.submit\(2,[\s\S]*?log\.help\(2,'自动反馈/);
-  assert.match(sw,/CACHE_PREFIX\}v171/);
+  assert.match(sw,/CACHE_PREFIX\}v172/);
 });
