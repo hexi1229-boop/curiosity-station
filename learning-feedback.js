@@ -10,6 +10,7 @@
   courses.unshift(['yungong','听《云宫迅音》：一架钢琴，怎样听见一支乐队？','yungong.html']);
   courses.splice(courses.findIndex(course=>course[0]==='angle180')+1,0,['persuade','我选这个方案，但你能说服我改主意吗？','persuade.html']);
   courses.splice(courses.findIndex(course=>course[0]==='persuade')+1,0,['parallel','不拿量角器，怎么把一个角搬过去？','parallel.html']);
+  courses.unshift(['repair-direction-01','错题修复：位置与方向','repair.html?round=direction-01&lesson=direction']);
   courses.unshift(['repair','错题修复①：数量、语境与判断','repair.html'],['repair-words','错题修复②：词句与表达','repair.html?round=2'],['repair-math-01','近期数学强化考试①：分数运算与单位“1”','repair.html?round=math-01&exam=1'],['repair-math-transfer-01','换情境迁移测评：换了任务单，还能找到同一个关系吗？','repair.html?round=math-transfer-01&exam=1']);
   courses.unshift(['journey','人停了，图上的线为什么还在？','journey.html']);
   courses.splice(courses.findIndex(course=>course[0]==='daynight')+1,0,['seasons','地球为什么一边自转，一边还会有四季？','seasons.html']);

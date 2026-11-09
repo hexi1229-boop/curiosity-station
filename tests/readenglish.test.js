@@ -72,7 +72,7 @@ test('course is uniquely registered, first in the new batch and released for off
   assert.match(js,/L\.meaningfulEnglish\(reply,12\)/);
   assert.match(js,/log\.submit\(1,[\s\S]*?log\.help\(1,'自动反馈/);
   assert.match(js,/log\.submit\(2,[\s\S]*?log\.help\(2,'自动反馈/);
-  assert.match(sw,/CACHE_PREFIX\}v170/);
+  assert.match(sw,/CACHE_PREFIX\}v171/);
 });
 
 test('a new learning session is bound to readenglish and keeps open replies unscored',()=>{
