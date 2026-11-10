@@ -9,7 +9,7 @@ const backupInput=document.querySelector('#backup-file');
 const backupStatus=document.querySelector('#backup-status');
 let importing=false;
 const date=value=>new Date(value).toLocaleString('zh-CN',{month:'long',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
-LearningFeedback.courses.forEach(([id,title])=>{const option=document.createElement('option');option.value=id;option.textContent=title;filter.append(option);});
+LearningFeedback.courses.filter((course,index,all)=>all.findIndex(c=>c[0]===course[0])===index).forEach(([id,title])=>{const option=document.createElement('option');option.value=id;option.textContent=title;filter.append(option);});
 function renderRecords() {
   exportButton.disabled=importing||logs.length===0;
   importButton.disabled=importing;

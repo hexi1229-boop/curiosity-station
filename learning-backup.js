@@ -54,7 +54,7 @@
   }
   function validate(s) {
     s=root.LearningFeedback.resolveCourse?.(s) || s;
-    const course=root.LearningFeedback.courses.find(c=>c[0]===s?.courseId);
+    const course=root.LearningFeedback.courses.find(c=>c[0]===s?.courseId&&c[1]===s?.title);
     if(!plain(s)||s.version!==1||!id(s.id)||!course||course[1]!==s.title||!time(s.startedAt)||!time(s.updatedAt)||!maybe(s.completedAt,time)||!integer(s.revision)||
       !maybe(s.backupOriginId,id)||!root.LearningFeedback.validTaskCount(s)||!s.records.every(record)||!checkpoint(s.checkpoint,s.courseId))throw Error('备份中的课程记录不完整或版本不兼容，未导入任何记录。请保留原文件。');
     return s;

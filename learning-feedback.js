@@ -8,6 +8,7 @@
   courses.unshift(['aicoding','AI 写的代码，为什么还不能直接发射？','aicoding.html']);
   courses.unshift(['music','同一段旋律，怎样配出不同的画面？','music.html']);
   courses.unshift(['yungong','听《云宫迅音》：一架钢琴，怎样听见一支乐队？','yungong.html']);
+  courses.unshift(['yungong','听《云宫迅音》：跟着乐句，看懂钢琴改编','yungong.html']);
   courses.splice(courses.findIndex(course=>course[0]==='angle180')+1,0,['persuade','我选这个方案，但你能说服我改主意吗？','persuade.html']);
   courses.splice(courses.findIndex(course=>course[0]==='persuade')+1,0,['parallel','不拿量角器，怎么把一个角搬过去？','parallel.html']);
   courses.unshift(['repair-direction-01','错题修复：位置与方向','repair.html?round=direction-01&lesson=direction']);

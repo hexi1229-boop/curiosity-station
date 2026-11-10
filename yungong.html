@@ -1,25 +1,29 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#263b46"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="好奇心小站">
-  <title>听《云宫迅音》：一架钢琴，怎样听见一支乐队？· 马斯克的太空学校</title>
-  <link rel="manifest" href="app.webmanifest"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="icon" href="assets/icon.svg">
-  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="learning-feedback.css"><link rel="stylesheet" href="music.css"><link rel="stylesheet" href="yungong.css">
-  <script src="learning-feedback.js" defer></script><script src="yungong-content.js" defer></script><script src="music-audio.js" defer></script><script src="yungong.js" defer></script><script src="app.js" defer></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#263b46"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="好奇心小站">
+<title>听《云宫迅音》：跟着乐句，看懂钢琴改编 · 马斯克的太空学校</title>
+<link rel="manifest" href="app.webmanifest"><link rel="apple-touch-icon" href="assets/icon-180.png"><link rel="icon" href="assets/icon.svg">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="learning-feedback.css"><link rel="stylesheet" href="music.css"><link rel="stylesheet" href="yungong.css">
+<script src="learning-feedback.js" defer></script><script src="yungong-content.js" defer></script><script src="yungong.js" defer></script><script src="app.js" defer></script>
 </head>
 <body>
-  <header class="site-header music-header"><a class="back-link" href="courses.html?group=explore">← 马斯克的太空学校</a><a class="back-link" href="records.html">学习记录 ↗</a></header>
-  <main class="music-main">
-    <section class="music-intro">
-      <div><p class="eyebrow">LISTENING ROOM / 02 · 云宫听音室</p><h1>一架钢琴，<br>怎样听见<span>一支乐队？</span></h1><p class="music-lead">听许镜清《云宫迅音》。从“这首我弹过”，走到“我知道自己正在听哪一层”。</p><p class="music-meta">约 12–16 分钟 · 可分两次 · 不打总分</p></div>
-      <div class="cloud-score" aria-hidden="true"><span class="cloud-orbit"></span><span class="cloud-ridge ridge-one"></span><span class="cloud-ridge ridge-two"></span><div class="cloud-glyph">云宫<br><small>迅音</small></div><span class="cloud-caption">ONE PIANO / MANY VOICES</span></div>
-    </section>
-    <nav class="studio-nav" aria-label="听音室区域"><button type="button" data-tab="0">01 带着耳朵进来</button><button type="button" data-tab="1">02 拆开声音</button><button type="button" data-tab="2">03 回到原曲</button></nav>
-    <div class="transport"><span class="transport-dot" aria-hidden="true"></span><p id="audio-status" role="status">先用舒适的小音量。本站小样点击后才发声。</p><button id="stop-audio" type="button">停止小样 ■</button></div>
-    <div id="yungong-workspace"></div>
-    <details class="music-sources"><summary>给家长 · 作品来源与观察边界</summary><p>《云宫迅音》也称《西游记序曲》，由许镜清作曲，是 86 版《西游记》的片头音乐。电子声与民乐、管弦乐的结合，是本课回听原曲的背景线索。听感不设标准答案；指定某个乐器前，应能找到对应的录音或乐谱依据。</p><p>原曲通过央视公开页面或自己的音乐应用收听。本站没有复制原曲录音、乐谱或制作所谓“原曲分轨”；拆层台使用独立创作的 4/4 拍四小节小样，合成音也不等于真实钢琴。外部播放可能受网站和设备影响，打开链接不能证明已经听过。离线时仍可使用已缓存的小样。</p><p>孩子的钢琴视频仅供家庭参考，没有放入本课。两段短视频、一次听辨或完成本页，均不足以判断钢琴等级或长期能力。本课只保留文字、试听完成状态和编配快照，不录音、不上传。</p><p>来源：<a href="https://tv.cctv.com/2018/09/06/VIDECU1XosNT9PfHrHbU2zdU180906.shtml" target="_blank" rel="noopener">央视 ·《西游记》序曲《云宫迅音》</a>；<a href="https://m.thepaper.cn/newsDetail_forward_1430490" target="_blank" rel="noopener">澎湃新闻 · 许镜清谈《西游记》配乐（2016）</a>；<a href="https://v.cctv.com/2024/10/01/VIDEJ4RyHiSomErtId1aKDqO241001.shtml" target="_blank" rel="noopener">央视 · 许镜清讲述敲饭盒带来的灵感（2024）</a>。</p></details>
-    <noscript><p>请启用 JavaScript 使用拆层试听与本机记录。</p></noscript>
-  </main>
-  <footer class="site-footer"><span>听见一个细节，再回到整首音乐。</span><span id="offline-status" role="status">学习记录自动保存在本机</span></footer>
+<header class="site-header music-header"><a class="back-link" href="courses.html?group=explore">← 马斯克的太空学校</a><a class="back-link" href="records.html">学习记录 ↗</a></header>
+<main class="music-main">
+<section class="music-intro"><div><p class="eyebrow">LISTENING ROOM / 云宫共听</p><h1>听熟悉的《云宫迅音》，<br>发现<span>音符怎样讲故事。</span></h1><p class="music-lead">一首曲子，四处停下来听。用王宁编配的钢琴版和对应曲谱，听清旋律怎样登场、舒展、升高，再把音乐送向结尾。</p><p class="music-meta">约 10–15 分钟 · 想听哪处就从哪处开始 · 可以只听、只聊</p></div><div class="cloud-score" aria-hidden="true"><span>云宫<br>迅音</span><small>LISTEN · NOTICE · RETURN</small></div></section>
+<section class="record-player" aria-label="作品播放器">
+<div class="record-heading"><div><p class="kicker">音乐就在这里</p><h2 id="track-name">王宁编配 · 谱面配套试听</h2></div><span id="playing-bar">先听，再看</span></div>
+<audio id="work-audio" controls preload="metadata" src="assets/yungong/piano-1052381.mp3">浏览器不支持音频播放。</audio>
+<div class="studio-actions"><button type="button" class="studio-button primary" data-full="piano">▶ 听完整钢琴版 · 2:58</button><button type="button" class="studio-button" data-full="original">▶ 听原版参考 · 2:56</button><button type="button" class="studio-button" id="stop-audio">停止</button></div>
+<p id="audio-status" role="status">小音量开始。整首听过后，也可以直接选择下面的乐句回放。</p><label class="loop-label"><input id="repeat-clip" type="checkbox">反复听当前小节片段</label>
+<p class="small-note">下方小节定位对应王宁钢琴版。两版编配与时长不同，原版按整曲收听。</p>
+<p id="audio-error" role="alert" hidden>音频暂未载入，请检查网络后重试。也可打开<a href="https://cc.lzjoy.com/public/web/webmobile/share_v2.html?opern_id=1052381" target="_blank" rel="noopener">曲谱原页面</a>。讲解和记录仍可使用。</p>
+</section>
+<nav class="studio-nav" aria-label="四处细听"><button type="button" data-tab="0">01 旋律登场</button><button type="button" data-tab="1">02 长音与流动</button><button type="button" data-tab="2">03 熟悉句子变高</button><button type="button" data-tab="3">04 结尾的接力</button></nav>
+<div id="yungong-workspace"></div>
+<details class="full-score"><summary>展开完整五页曲谱 · 可放大查看</summary><p>许镜清作曲；编配／制谱：王宁 @ 虫虫钢琴。采用曲谱 1052381。点击谱页可在单独页面放大。</p><div id="score-pages"></div></details>
+<details class="music-sources"><summary>给家长 · 版本、依据与本机记录</summary><p>本课采用家长指定的《86版西游记主题曲〈云宫迅音〉燃爆改编》五页谱与同页试听，编配／制谱署名王宁 @ 虫虫钢琴。<a href="https://cc.lzjoy.com/public/web/webmobile/share_v2.html?opern_id=1052381" target="_blank" rel="noopener">查看曲谱来源</a>。谱图由家长提供的 PDF 渲染，保留原谱标识；配套试听来自该页面提供的文件。原版参考由家长提供，本课不含孩子的私人演奏录像。</p><p>音符、时值与音高对照以这份钢琴谱为依据。配套试听文件标记由 Sibelius 制作，适合对谱，不把它当作真人演奏能力示范。首页未印拍号，本课四拍示意按所用小节的时值合计核对；115 为谱面所标每分钟四分音符拍数。小节回放按此试听校准，不套用于其他演奏版本。</p><p>感受可以不同，音符关系要有依据。自动听评中不能复核的时间点与配器判断没有进入本课。选择、文字和打开讲解的情况保存在当前设备，首次想法不会被修改覆盖；“看过”不等于掌握，也不自动推断钢琴等级。</p><p id="legacy-note" hidden>旧版的三环节记录仍保存在“学习记录”，本页另存这版四处细听的记录。</p><a href="records.html">查看或导出学习记录 ↗</a></details>
+<noscript><p>启用 JavaScript 后可使用小节回放、谱面讲解与本机记录。上方播放器仍可收听钢琴版。</p></noscript>
+</main><footer class="site-footer"><span>从一个听见的细节，重新认识整首音乐。</span><span id="offline-status" role="status">学习记录自动保存在本机</span></footer>
 </body></html>

@@ -75,5 +75,5 @@ test('catalog, records and cache register the geography lesson once after day an
   assert.match(catalog,/'daynight','seasons','elements'/);
   assert.equal((feedback.match(/\['seasons'/g)||[]).length,1);
   assert.match(feedback,/findIndex\(course=>course\[0\]==='daynight'\)\+1/);
-  assert.match(sw,/const CACHE = `\$\{CACHE_PREFIX\}v172`/);
+  assert.match(sw,/const CACHE = `\$\{CACHE_PREFIX\}v173`/);
 });
