@@ -4,7 +4,7 @@
   const title='听《云宫迅音》：跟着乐句，看懂钢琴改编',legacyTitle='听《云宫迅音》：一架钢琴，怎样听见一支乐队？';
   const source='https://cc.lzjoy.com/public/web/webmobile/share_v2.html?opern_id=1052381';
   const bpm=115,offset=.068,barStart=bar=>offset+(bar-1)*4*60/bpm;
-  const tracks={piano:{name:'王宁编配 · 谱面配套试听',src:'assets/yungong/piano-1052381.mp3',duration:178.0803},original:{name:'原版参考 · 家长提供',src:'assets/yungong/original-reference.m4a',duration:176.1}};
+  const tracks={piano:{name:'钢琴版 · 配套试听',src:'assets/yungong/piano-1052381.mp3',duration:178.0803},original:{name:'原版参考',src:'assets/yungong/original-reference.m4a',duration:176.1}};
   const clips={intro:{label:'第 1–2 小节 · 伴奏先走',from:1,to:2},entrance:{label:'第 3–4 小节 · 旋律进入',from:3,to:4},opening:{label:'连起来听 · 第 1–4 小节',from:1,to:4},phrase:{label:'第 24–25 小节 · 一句长线条',from:24,to:25},held:{label:'第 25 小节 · 长音与流动',from:25,to:25},before:{label:'先听 · 第 24 小节',from:24,to:24},after:{label:'再听 · 第 48 小节',from:48,to:48},raised:{label:'连起来听 · 第 48–49 小节',from:48,to:49},ending:{label:'第 72–75 小节 · 谁还在继续？',from:72,to:75}};
   Object.values(clips).forEach(c=>{c.start=barStart(c.from);c.end=barStart(c.to+1);});
   const stages=[

@@ -59,7 +59,7 @@
   document.querySelectorAll('[data-tab]').forEach(n=>n.onclick=()=>go(Number(n.dataset.tab)));
   document.querySelectorAll('[data-full]').forEach(n=>n.onclick=()=>play(n.dataset.full));$('#stop-audio').onclick=()=>halt();
   $('#repeat-clip').checked=state.loop;$('#repeat-clip').onchange=event=>{state.loop=event.target.checked;save();};
-  $('.full-score').addEventListener('toggle',event=>{if(event.target.open&&!$('#score-pages').childElementCount)$('#score-pages').innerHTML=Array.from({length:5},(_,i)=>`<a href="assets/yungong/score-${i+1}.webp" target="_blank" rel="noopener"><img src="assets/yungong/score-${i+1}.webp" loading="lazy" alt="王宁编配《云宫迅音》曲谱第 ${i+1} 页"><span>第 ${i+1} 页 · 点击放大</span></a>`).join('');});
+  $('.full-score').addEventListener('toggle',event=>{if(event.target.open&&!$('#score-pages').childElementCount)$('#score-pages').innerHTML=Array.from({length:5},(_,i)=>`<a href="assets/yungong/score-${i+1}.webp" target="_blank" rel="noopener"><img src="assets/yungong/score-${i+1}.webp" loading="lazy" alt="《云宫迅音》曲谱第 ${i+1} 页"><span>第 ${i+1} 页 · 点击放大</span></a>`).join('');});
   $('#legacy-note').hidden=!F.history().some(s=>s.title===L.legacyTitle);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)halt('离开页面时已暂停，回来后点击继续收听。');});window.addEventListener('pagehide',()=>halt());
   if(state.track==='original'){audio.src=L.tracks.original.src;$('#track-name').textContent=L.tracks.original.name;}

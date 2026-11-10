@@ -111,5 +111,5 @@ test('catalog, record link, filter and offline cache register the course once',(
   assert.equal((feedback.match(/\['aicoding'/g)||[]).length,1);
   assert.match(feedback,/\['aicoding','AI 写的代码，为什么还不能直接发射？','aicoding\.html'\]/);
   assert.match(courses,/<option>计算机<\/option>/);
-  assert.match(sw,/const CACHE = `\$\{CACHE_PREFIX\}v173`/);
+  assert.match(sw,/const CACHE = `\$\{CACHE_PREFIX\}v174`/);
 });
